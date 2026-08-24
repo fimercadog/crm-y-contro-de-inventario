@@ -65,7 +65,16 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 7 — Productos
 
-⬜ Pendiente.
+✅ Backend: `Product` (soft deletes, multiempresa, SKU único por empresa, `current_stock` deliberadamente fuera de `$fillable` y de ambos form requests — nace en 0 por default de columna y de ahí en adelante solo lo toca `InventoryService` en la Fase 8), relación `Product ↔ Supplier` con pivot, `stockStatus()` calculado (normal/bajo/crítico/agotado). Policy: inventario/administrador/super-admin gestionan; comercial solo lectura (`viewAny`/`view`); vendedor sin acceso. Controlador con búsqueda/filtros (categoría, marca, estado, `low_stock`, `out_of_stock`)/orden/paginación/exportación CSV-PDF. Seeder con 32 productos reales del rubro de ferretería (nombres reales, no Foo/Bar), con stock variado a propósito (algunos en 0, crítico, bajo y normal) para poder probar Stock/alertas en fases futuras. 8 tests nuevos, 61 en total, todos verdes.
+✅ Frontend: `/inventario/productos` (DataTable con búsqueda, filtro de estado, botón "Stock bajo", exportar CSV/PDF, crear/editar/eliminar) con diálogo de formulario que carga categorías/marcas/unidades/proveedores, incluye checkboxes de proveedores, y muestra "Stock actual" como campo deshabilitado con nota explicando que solo cambia por entradas/salidas/ajustes — nunca editable desde este formulario.
+
+**Bugs reales encontrados y corregidos en esta fase (todos verificados en navegador real):**
+- `Product::create()` no reflejaba el valor por *default* de la columna `current_stock` (0) en el modelo devuelto — Eloquent no vuelve a leer los defaults de base de datos tras un insert. Se cambió `->load(...)` por `->refresh()` + `->load(...)` en el controlador.
+- Ese mismo cambio casi introduce un bug nuevo: usar `->fresh(...)` en vez de `->refresh()` habría hecho perder la bandera `wasRecentlyCreated`, de la cual depende Laravel para devolver 201 en vez de 200 al crear un recurso. `refresh()` sí la preserva porque muta la misma instancia.
+- El picker de "Columnas" seguía mostrando texto sin traducir (`Sale Price`, `Current Stock`) en columnas que usan un header con función (encabezado ordenable), porque el fix de la Fase 6 solo cubría headers de tipo string. Se generalizó para leer el prop `title` del elemento renderizado por esas funciones antes de recurrir al *fallback* que humaniza el id.
+- El checkbox de proveedores estaba anidado dentro de un `<label>` nativo envolviendo un componente `Checkbox` de Base UI (que internamente es un `<button>`), lo cual es HTML inválido y hacía que un clic normal cerrara todo el diálogo. Se separó en un patrón `id`/`htmlFor` como hermanos, que es el que shadcn espera.
+- Los checkboxes de proveedores nunca aparecían marcados al editar, porque el listado (`index`) no carga la relación `suppliers` (por rendimiento, ya que se pagina) y el diálogo reutilizaba esa fila en vez de pedir el detalle completo. Ahora el diálogo llama a `GET /api/products/{id}` al abrir en modo edición.
+- Dejar "Stock máximo" vacío enviaba silenciosamente `0` en vez de "sin tope", porque `z.coerce.number()` de Zod convierte `""` a `0` *durante la validación*, antes de que el `onSubmit` pudiera distinguir "vacío" de "cero". Con `stock_mínimo > 0` esto disparaba un 422 del backend (`gte:minimum_stock`) que parecía "no pasa nada" si no se veía el toast de error. Se cambió el campo a string crudo con validación cruzada explícita (`superRefine`) contra el mínimo, con mensaje de error en el campo antes de tocar el backend.
 
 ## Fase 8 — InventoryService + movimientos
 

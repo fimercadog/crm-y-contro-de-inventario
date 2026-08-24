@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PipelineStageController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\UnitController;
@@ -61,4 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get("/{$uri}/export/pdf", [$controller, 'exportPdf']);
         Route::apiResource($uri, $controller)->except('show');
     }
+
+    Route::get('/products/export/csv', [ProductController::class, 'exportCsv']);
+    Route::get('/products/export/pdf', [ProductController::class, 'exportPdf']);
+    Route::apiResource('products', ProductController::class);
 });

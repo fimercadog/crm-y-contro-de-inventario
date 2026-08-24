@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import {
+  Column,
   ColumnDef,
   ColumnFiltersState,
   ColumnVisibilityState,
@@ -33,6 +34,12 @@ export type AppColumnDef<
 > = ColumnDef<AppTableFeatures, TData, TValue>
 
 export type AppTable<TData extends RowData> = ReactTable<AppTableFeatures, TData>
+
+export type AppColumn<TData extends RowData, TValue = unknown> = Column<
+  AppTableFeatures,
+  TData,
+  TValue
+>
 
 interface DataTableProps<TData extends RowData> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- a column array mixes many cell value types

@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             OpportunitySeeder::class,
             ActivitySeeder::class,
             CatalogSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }
