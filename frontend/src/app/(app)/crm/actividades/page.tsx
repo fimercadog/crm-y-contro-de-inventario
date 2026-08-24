@@ -1,0 +1,208 @@
+"use client"
+
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { PaginationState } from "@tanstack/react-table"
+import { Plus } from "lucide-react"
+import { toast } from "sonner"
+import axios from "axios"
+
+import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { DataTable } from "@/components/data-table/data-table"
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
+import { deleteActivity, listActivities } from "@/features/activities/api"
+import type { Activity } from "@/features/activities/types"
+import { activityColumns } from "./columns"
+import { ActivityFormDialog } from "@/components/activities/activity-form-dialog"
+
+const statusOptions = [
+  { label: "Pendiente", value: "pendiente" },
+  { label: "Completada", value: "completada" },
+  { label: "Cancelada", value: "cancelada" },
+]
+
+const priorityOptions = [
+  { label: "Baja", value: "baja" },
+  { label: "Media", value: "media" },
+  { label: "Alta", value: "alta" },
+]
+
+export default function ActividadesPage() {
+  const [data, setData] = useState<Activity[]>([])
+  const [total, setTotal] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string>()
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 20,
+  })
+  const [search, setSearch] = useState("")
+  const [status, setStatus] = useState<string[]>([])
+  const [priority, setPriority] = useState<string[]>([])
+
+  const [formOpen, setFormOpen] = useState(false)
+  const [editing, setEditing] = useState<Activity | null>(null)
+  const [deleting, setDeleting] = useState<Activity | null>(null)
+
+  const isFiltered = status.length > 0 || priority.length > 0 || search.length > 0
+
+  const queryParams = useMemo(
+    () => ({
+      page: pagination.pageIndex + 1,
+      per_page: pagination.pageSize,
+      search: search || undefined,
+      status: status[0],
+      priority: priority[0],
+    }),
+    [pagination, search, status, priority]
+  )
+
+  const fetchData = useCallback(() => {
+    setIsLoading(true)
+    setErrorMessage(undefined)
+    listActivities(queryParams)
+      .then(({ data }) => {
+        setData(data.data)
+        setTotal(data.meta.total)
+      })
+      .catch(() => setErrorMessage("No se pudieron cargar las actividades."))
+      .finally(() => setIsLoading(false))
+  }, [queryParams])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  async function handleConfirmDelete() {
+    if (!deleting) return
+    try {
+      await deleteActivity(deleting.id)
+      toast.success("Actividad eliminada")
+      setDeleting(null)
+      fetchData()
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data?.message as string | undefined)
+        : undefined
+      toast.error(message ?? "No se pudo eliminar la actividad")
+    }
+  }
+
+  const columns = useMemo(
+    () =>
+      activityColumns({
+        onEdit: (activity) => {
+          setEditing(activity)
+          setFormOpen(true)
+        },
+        onDelete: setDeleting,
+      }),
+    []
+  )
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold">Actividades</h2>
+          <p className="text-sm text-muted-foreground">
+            {total} actividad{total === 1 ? "" : "es"} registradas
+          </p>
+        </div>
+        <Button
+          onClick={() => {
+            setEditing(null)
+            setFormOpen(true)
+          }}
+        >
+          <Plus />
+          Nueva actividad
+        </Button>
+      </div>
+
+      <DataTable
+        columns={columns}
+        data={data}
+        total={total}
+        isLoading={isLoading}
+        errorMessage={errorMessage}
+        emptyMessage="No hay actividades que coincidan con los filtros."
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        toolbar={(table) => (
+          <DataTableToolbar
+            table={table}
+            searchPlaceholder="Buscar por título..."
+            searchValue={search}
+            onSearchChange={(value) => {
+              setSearch(value)
+              setPagination((p) => ({ ...p, pageIndex: 0 }))
+            }}
+            isFiltered={isFiltered}
+            onReset={() => {
+              setSearch("")
+              setStatus([])
+              setPriority([])
+              setPagination((p) => ({ ...p, pageIndex: 0 }))
+            }}
+            filters={
+              <>
+                <DataTableFacetedFilter
+                  title="Estado"
+                  options={statusOptions}
+                  value={status}
+                  onChange={(value) => {
+                    setStatus(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+                <DataTableFacetedFilter
+                  title="Prioridad"
+                  options={priorityOptions}
+                  value={priority}
+                  onChange={(value) => {
+                    setPriority(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+              </>
+            }
+          />
+        )}
+      />
+
+      <ActivityFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        activity={editing}
+        onSaved={fetchData}
+      />
+
+      <AlertDialog open={!!deleting} onOpenChange={(open) => !open && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar actividad?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción eliminará &quot;{deleting?.title}&quot; permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>Eliminar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}

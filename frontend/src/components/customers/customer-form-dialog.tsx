@@ -27,13 +27,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { IdSelect } from "@/components/forms/id-select"
 import { createCustomer, updateCustomer } from "@/features/customers/api"
 import type { Customer } from "@/features/customers/types"
 import { listCompanyUsers, type CompanyUser } from "@/features/users/api"
@@ -176,17 +170,14 @@ export function CustomerFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="persona">Persona</SelectItem>
-                      <SelectItem value="empresa">Empresa</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <IdSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={[
+                      { value: "persona", label: "Persona" },
+                      { value: "empresa", label: "Empresa" },
+                    ]}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -197,18 +188,15 @@ export function CustomerFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="activo">Activo</SelectItem>
-                      <SelectItem value="prospecto">Prospecto</SelectItem>
-                      <SelectItem value="inactivo">Inactivo</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <IdSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={[
+                      { value: "activo", label: "Activo" },
+                      { value: "prospecto", label: "Prospecto" },
+                      { value: "inactivo", label: "Inactivo" },
+                    ]}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -349,21 +337,14 @@ export function CustomerFormDialog({
               render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Responsable</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value={UNASSIGNED}>Sin asignar</SelectItem>
-                      {users.map((user) => (
-                        <SelectItem key={user.id} value={String(user.id)}>
-                          {user.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <IdSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={[
+                      { value: UNASSIGNED, label: "Sin asignar" },
+                      ...users.map((user) => ({ value: String(user.id), label: user.name })),
+                    ]}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

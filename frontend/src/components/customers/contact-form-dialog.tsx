@@ -26,13 +26,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { IdSelect } from "@/components/forms/id-select"
 import { createContact, updateContact } from "@/features/customers/api"
 import type { Contact } from "@/features/customers/types"
 
@@ -219,17 +213,14 @@ export function ContactFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="activo">Activo</SelectItem>
-                      <SelectItem value="inactivo">Inactivo</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <IdSelect
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={[
+                      { value: "activo", label: "Activo" },
+                      { value: "inactivo", label: "Inactivo" },
+                    ]}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

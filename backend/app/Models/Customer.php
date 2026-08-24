@@ -44,4 +44,14 @@ class Customer extends Model
     {
         return $this->hasMany(Contact::class);
     }
+
+    public function opportunities(): HasMany
+    {
+        return $this->hasMany(Opportunity::class);
+    }
+
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class);
+    }
 }

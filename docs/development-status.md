@@ -47,7 +47,11 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 5 — Oportunidades + pipeline + actividades
 
-⬜ Pendiente.
+✅ Backend: `Opportunity` (con `OpportunityStageHistory` inmutable — cada creación y cada cambio de etapa queda registrado), `Activity`. Policies (comercial/administrador/super-admin acceso completo; vendedor limitado a lo propio; inventario sin acceso a ninguno de los dos). `PATCH /api/opportunities/{id}/stage` mueve de etapa y registra el historial en una transacción. `GET /api/pipeline` agrupa oportunidades abiertas por etapa para el Kanban. Exportación CSV/PDF de oportunidades reutilizando `TableExporter`. Seeders: 15 oportunidades + 25 actividades coherentes. 13 tests nuevos (Opportunity, Activity, Pipeline), 34 en total, todos verdes.
+✅ Frontend: `/crm/oportunidades` (lista con filtros/exportación), `/crm/pipeline` (Kanban con `@dnd-kit`, drag-and-drop entre etapas persistido en backend), `/crm/actividades` (lista con filtros por estado/prioridad).
+🟡 Verificación en navegador: se probó de punta a punta (listas, crear/editar, filtros, exportación CSV, y el flujo completo de arrastrar-soltar en el pipeline incluyendo persistencia tras recargar — sin errores de consola). Quedaron dos hallazgos de esa sesión:
+  - **Corregido**: los `Select` de IDs (cliente, etapa, responsable) mostraban el valor crudo en vez del nombre — Base UI (a diferencia de Radix) no resuelve la etiqueta automáticamente desde el `SelectItem` seleccionado. Se creó `components/forms/id-select.tsx`, que pasa el mapa `items` que Base UI sí usa para resolver la etiqueta, y se migraron todos los `Select` de la app (no solo los de esta fase) a este componente.
+  - **Sin confirmar todavía**: el botón "Nueva oportunidad"/"Nueva actividad" pareció necesitar más de un clic para abrir el diálogo en una corrida de pruebas automatizadas. No se reprodujo de forma concluyente ni se descartó como artefacto de temporización del navegador automatizado (clic disparado antes de que termine la hidratación). Revisar con una interacción manual real antes de dar por cerrado.
 
 ## Fase 6 — Catálogos de inventario
 
