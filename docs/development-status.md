@@ -55,7 +55,13 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 6 — Catálogos de inventario
 
-⬜ Pendiente.
+✅ Backend: `Category`, `Brand`, `Unit`, `Supplier` — migraciones, modelos, factories, policies (única regla compartida vía `ManagesInventoryCatalog`: solo super-admin/administrador/inventario administran catálogos; comercial/vendedor no tienen acceso directo, ya que solo necesitan leer productos, no gestionar catálogos). Controladores con búsqueda/filtro por estado/paginación/exportación CSV-PDF. Seeder con datos reales (6 categorías, 5 marcas, 7 unidades con las del spec — Unidad/Caja/Kg/Gramo/Litro/Metro/Paquete —, 6 proveedores). 12 tests nuevos con data providers (uno por catálogo × 3 escenarios), 46 en total, todos verdes.
+✅ Frontend: `/inventario/categorias`, `/marcas`, `/unidades`, `/proveedores`, construidos sobre un `CatalogPage` genérico compartido (paginación/búsqueda/filtro/exportación/eliminar quedan en un solo lugar) con un diálogo de formulario propio por catálogo. Verificado en navegador real: las 4 páginas cargan, el picker de columnas (que había crasheado antes en otra pantalla) no crashea aquí, crear/editar/eliminar funciona con toasts correctos, filtro por estado funciona.
+
+**Bugs reales encontrados y corregidos en esta fase:**
+- El picker de "Columnas" mostraba el nombre crudo del campo (`contact_name`, `description`) en vez de la etiqueta en español. Ahora usa el `header` de la columna cuando es un string, con un *fallback* que humaniza el id.
+- Los toasts y botones de los catálogos usaban terminaciones masculinas fijas ("Categoría creado", "Nuevo unidad") sin importar el género gramatical del sustantivo. `CatalogPage` ahora recibe un prop `gender` explícito por catálogo.
+- Nota (no confirmada como bug real): en varias corridas de QA automatizado, algunos botones parecieron necesitar un segundo clic para responder. Ocurrió siempre mientras se editaban archivos activamente (Fast Refresh de Next.js recompilando en caliente), nunca en una build de producción — probablemente un artefacto del hot-reload del servidor de desarrollo, no un bug de la aplicación. Si vuelve a aparecer fuera de una sesión de edición activa, investigar en serio.
 
 ## Fase 7 — Productos
 

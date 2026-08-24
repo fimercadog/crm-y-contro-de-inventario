@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             CustomerSeeder::class,
             OpportunitySeeder::class,
             ActivitySeeder::class,
+            CatalogSeeder::class,
         ]);
     }
 }

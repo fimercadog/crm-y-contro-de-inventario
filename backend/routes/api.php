@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PipelineStageController;
+use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,4 +46,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('opportunities', OpportunityController::class);
 
     Route::apiResource('activities', ActivityController::class);
+
+    foreach ([
+        'categories' => CategoryController::class,
+        'brands' => BrandController::class,
+        'units' => UnitController::class,
+        'suppliers' => SupplierController::class,
+    ] as $uri => $controller) {
+        Route::get("/{$uri}/export/csv", [$controller, 'exportCsv']);
+        Route::get("/{$uri}/export/pdf", [$controller, 'exportPdf']);
+        Route::apiResource($uri, $controller)->except('show');
+    }
 });

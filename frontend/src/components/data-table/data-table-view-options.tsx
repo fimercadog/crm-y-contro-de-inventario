@@ -17,6 +17,13 @@ interface DataTableViewOptionsProps<TData extends RowData> {
   table: AppTable<TData>
 }
 
+function humanize(id: string) {
+  return id
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+}
+
 export function DataTableViewOptions<TData extends RowData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
@@ -41,16 +48,20 @@ export function DataTableViewOptions<TData extends RowData>({
             (column) =>
               typeof column.accessorFn !== "undefined" && column.getCanHide()
           )
-          .map((column) => (
-            <DropdownMenuCheckboxItem
-              key={column.id}
-              className="capitalize"
-              checked={column.getIsVisible()}
-              onCheckedChange={(value) => column.toggleVisibility(!!value)}
-            >
-              {column.id}
-            </DropdownMenuCheckboxItem>
-          ))}
+          .map((column) => {
+            const header = column.columnDef.header
+            const label = typeof header === "string" ? header : humanize(column.id)
+
+            return (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              >
+                {label}
+              </DropdownMenuCheckboxItem>
+            )
+          })}
       </DropdownMenuContent>
     </DropdownMenu>
   )
