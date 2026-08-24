@@ -27,7 +27,14 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 3 — Empresa y configuración
 
-⬜ Pendiente.
+✅ Backend: `CompanyController` (`GET/PUT /api/company`, siempre resuelto desde el usuario autenticado — sin parámetro de ruta, así que no hay vector IDOR posible), `CompanyPolicy` (ver: mismo tenant; editar: solo super-admin/administrador), `PipelineStage` (modelo + migración + `Company::seedDefaultPipelineStages()` con las 7 etapas de la sección 9, listas para que Fase 5 las consuma). Tests de autorización y aislamiento multiempresa.
+✅ Frontend: página `/admin/configuracion` con formulario de empresa (nombre, NIT, correo, teléfono, dirección, moneda, permitir stock negativo — deshabilitado para roles sin permiso) y tarjeta de apariencia (Claro/Oscuro/Sistema). Verificado en navegador real (editar, guardar, recargar, confirmar persistencia).
+🟡 Fuentes de clientes / estados configurables: por ahora son enums fijos definidos en el backend (ver sección 6/10 del spec), no listas editables por el usuario — se evalúa si conviene hacerlos configurables cuando exista un caso de uso real que lo pida.
+⬜ Numeración de documentos (entradas/salidas): se construye en la Fase 9 cuando esos módulos existan, no antes.
+
+**Bugs reales encontrados y corregidos en esta fase:**
+- El `Controller` base de Laravel 12 no incluye `AuthorizesRequests` por defecto — `$this->authorize()` fallaba con 500 en cualquier controlador. Se agregó el trait una sola vez en `app/Http/Controllers/Controller.php`.
+- El menú de usuario del sidebar (Fase 2) crasheaba con Base UI (`MenuGroupContext is missing`) porque `DropdownMenuLabel` no estaba envuelto en `DropdownMenuGroup`. Corregido y verificado en navegador.
 
 ## Fase 4 — CRM: clientes + contactos
 

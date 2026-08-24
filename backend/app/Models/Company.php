@@ -32,4 +32,35 @@ class Company extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function pipelineStages(): HasMany
+    {
+        return $this->hasMany(PipelineStage::class)->orderBy('order');
+    }
+
+    /**
+     * The default CRM pipeline (section 9 of the product spec). Called once
+     * when a company is created; stages are editable afterwards.
+     */
+    public function seedDefaultPipelineStages(): void
+    {
+        $stages = [
+            'Prospecto',
+            'Contactado',
+            'Calificado',
+            'Propuesta',
+            'Negociación',
+            'Ganada',
+            'Perdida',
+        ];
+
+        foreach ($stages as $index => $name) {
+            $this->pipelineStages()->create([
+                'name' => $name,
+                'order' => $index + 1,
+                'is_won' => $name === 'Ganada',
+                'is_lost' => $name === 'Perdida',
+            ]);
+        }
+    }
 }

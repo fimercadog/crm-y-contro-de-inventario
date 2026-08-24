@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'contacto@distribuidoraandina.com',
             'currency' => 'USD',
         ]);
+        $company->seedDefaultPipelineStages();
 
         $admin = User::factory()->create([
             'company_id' => $company->id,
