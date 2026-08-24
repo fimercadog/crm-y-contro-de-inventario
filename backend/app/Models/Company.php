@@ -38,6 +38,11 @@ class Company extends Model
         return $this->hasMany(PipelineStage::class)->orderBy('order');
     }
 
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class);
+    }
+
     /**
      * The default CRM pipeline (section 9 of the product spec). Called once
      * when a company is created; stages are editable afterwards.

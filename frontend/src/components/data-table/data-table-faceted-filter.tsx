@@ -1,4 +1,3 @@
-import { Column, RowData } from "@tanstack/react-table"
 import { CheckIcon, PlusCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -15,24 +14,27 @@ import {
 } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
-import type { AppTableFeatures } from "@/components/data-table/table-features"
 
-interface DataTableFacetedFilterProps<TData extends RowData, TValue> {
-  column?: Column<AppTableFeatures, TData, TValue>
+interface DataTableFacetedFilterProps {
   title?: string
   options: {
     label: string
     value: string
     icon?: React.ComponentType<{ className?: string }>
   }[]
+  /** Every DataTable in this app is server-driven, so filter state is
+   * owned by the page, not by TanStack's column-filter state. */
+  value: string[]
+  onChange: (value: string[]) => void
 }
 
-export function DataTableFacetedFilter<TData extends RowData, TValue>({
-  column,
+export function DataTableFacetedFilter({
   title,
   options,
-}: DataTableFacetedFilterProps<TData, TValue>) {
-  const selectedValues = new Set(column?.getFilterValue() as string[])
+  value,
+  onChange,
+}: DataTableFacetedFilterProps) {
+  const selectedValues = new Set(value)
 
   return (
     <Popover>
@@ -94,10 +96,7 @@ export function DataTableFacetedFilter<TData extends RowData, TValue>({
                       } else {
                         selectedValues.add(option.value)
                       }
-                      const filterValues = Array.from(selectedValues)
-                      column?.setFilterValue(
-                        filterValues.length ? filterValues : undefined
-                      )
+                      onChange(Array.from(selectedValues))
                     }}
                   >
                     <div
@@ -123,7 +122,7 @@ export function DataTableFacetedFilter<TData extends RowData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => onChange([])}
                     className="justify-center text-center"
                   >
                     Limpiar filtros

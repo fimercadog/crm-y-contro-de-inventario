@@ -38,7 +38,12 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 4 — CRM: clientes + contactos
 
-⬜ Pendiente.
+✅ Backend: `Customer` (soft deletes, multiempresa, `assigned_user_id`) y `Contact` completos — migraciones, modelos, factories, policies (comercial/administrador/super-admin ven todo; vendedor solo sus clientes asignados; inventario sin acceso), form requests, resources, controladores con búsqueda/filtros/orden/paginación desde backend, exportación CSV y PDF (respetando los filtros activos, vía `App\Support\TableExporter`, reutilizable por los próximos módulos). Endpoint mínimo `GET /api/users` para poblar el picker de "responsable" (la gestión completa de usuarios sigue pendiente para Administración). Seeders: 20 clientes + contactos coherentes, más usuarios demo con roles comercial/vendedor/inventario. 17 tests nuevos (Customer + Contact), 24 en total, todos verdes.
+✅ Frontend: `/crm/clientes` (DataTable con búsqueda, filtros por estado/tipo, exportar CSV/PDF, crear/editar/eliminar), `/crm/clientes/[id]` (ficha con datos generales, notas, y gestión de contactos inline), `/crm/contactos` (listado plano de todos los contactos con filtro por estado). Verificado de punta a punta en navegador real (CRUD completo de clientes y contactos, filtros, exportación, paginación) — 0 errores de consola.
+
+**Bugs reales encontrados y corregidos en esta fase:**
+- `StoreContactRequest::authorize()` llamaba `Customer::findOrFail($this->route('customer'))`, pero Laravel ya había resuelto ese parámetro de ruta a una instancia de `Customer` (route-model binding), así que `findOrFail` recibía un objeto en vez de un id y siempre devolvía 404. Corregido para usar el modelo ya vinculado directamente.
+- El `DataTableFacetedFilter` original asumía columnas de TanStack Table (client-side), pero todos los filtros de esta app son server-side. Se generalizó para recibir `value`/`onChange` en vez de fingir un objeto `Column` con `as any`.
 
 ## Fase 5 — Oportunidades + pipeline + actividades
 

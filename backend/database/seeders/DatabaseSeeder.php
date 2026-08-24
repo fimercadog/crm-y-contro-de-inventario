@@ -31,5 +31,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@distribuidoraandina.com',
         ]);
         $admin->assignRole('super-admin');
+
+        $this->call([
+            UserSeeder::class,
+            CustomerSeeder::class,
+        ]);
     }
 }
