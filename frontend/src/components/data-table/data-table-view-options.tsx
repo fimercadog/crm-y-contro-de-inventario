@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -29,8 +30,10 @@ export function DataTableViewOptions<TData extends RowData>({
           </Button>
         }
       />
-      <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuLabel>Mostrar columnas</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Mostrar columnas</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
