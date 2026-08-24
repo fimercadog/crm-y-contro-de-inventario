@@ -20,7 +20,10 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 2 — Auth, usuarios, roles y permisos
 
-⬜ Pendiente.
+✅ Backend: `Company` + `User` (con `company_id`, `status`), Sanctum token auth (`/api/login`, `/api/logout`, `/api/me`), 5 roles base sembrados (super-admin, administrador, comercial, inventario, vendedor) vía Spatie Permission. Tests de auth (login válido/ inválido, usuario inactivo, logout revoca token, /me requiere auth).
+✅ Frontend: slice de Redux (`auth`), página `/login` (shadcn Form + zod), `AuthGuard` que protege el grupo `(app)` y redirige a `/login`, menú de usuario real en el sidebar (avatar, nombre, tema, cerrar sesión). Verificado en navegador real (login → dashboard → menú de usuario → logout → bloqueo de rutas protegidas).
+🟡 Permisos granulares por módulo: los roles existen pero aún no tienen permisos asignados — cada módulo los define y asigna cuando se construye (CRM, Inventario, etc.).
+⬜ Pantallas de gestión de usuarios/roles (eso es el módulo de Administración, no esta fase de base de auth).
 
 ## Fase 3 — Empresa y configuración
 

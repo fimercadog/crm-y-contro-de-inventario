@@ -17,7 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { ThemeToggle } from "@/components/layout/theme-toggle"
+import { NavUser } from "@/components/layout/nav-user"
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -68,7 +68,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <ThemeToggle />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )
