@@ -9,9 +9,11 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PipelineStageController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
@@ -28,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/company', [CompanyController::class, 'update']);
 
     Route::get('/users', [UserController::class, 'index']);
+    Route::apiResource('admin/users', UserManagementController::class)->except('show');
+    Route::get('/admin/roles', [RoleController::class, 'index']);
 
     Route::get('/customers/export/csv', [CustomerController::class, 'exportCsv']);
     Route::get('/customers/export/pdf', [CustomerController::class, 'exportPdf']);
