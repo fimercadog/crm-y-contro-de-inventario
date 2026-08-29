@@ -135,8 +135,8 @@ export default function LandingPage() {
             </Reveal>
             <Reveal mount delay={0.3}>
               <div className="mt-8 flex flex-wrap gap-3">
-                <CtaLink href="#demo">Solicitar demostración</CtaLink>
-                <CtaLink href="#producto" variant="outline">
+                <CtaLink href="/demo">Solicitar demostración</CtaLink>
+                <CtaLink href="/producto" variant="outline">
                   Ver cómo funciona
                 </CtaLink>
               </div>

@@ -19,12 +19,27 @@ export const site = {
       )}`
     : null,
   nav: [
-    { label: "Producto", href: "#producto" },
-    { label: "Funciones", href: "#funciones" },
-    { label: "Beneficios", href: "#beneficios" },
-    { label: "IA", href: "#ia" },
-    { label: "Seguridad", href: "#seguridad" },
-    { label: "Demo", href: "#demo" },
-    { label: "Contacto", href: "#contacto" },
+    { label: "Producto", href: "/producto" },
+    { label: "Funciones", href: "/funciones" },
+    { label: "Beneficios", href: "/beneficios" },
+    { label: "IA", href: "/asistente-ia" },
+    { label: "Seguridad", href: "/seguridad" },
+    { label: "Demo", href: "/demo" },
+    { label: "Contacto", href: "/contacto" },
   ],
 } as const
+
+/**
+ * Landing section paths (no #hash) → id of the section element on `/`.
+ * Kept in sync with the rewrites in next.config.ts. SmoothAnchors uses this
+ * to scroll on click and on deep-link load while keeping the clean URL.
+ */
+export const landingSections: Record<string, string> = {
+  "/producto": "producto",
+  "/funciones": "funciones",
+  "/beneficios": "beneficios",
+  "/asistente-ia": "ia",
+  "/seguridad": "seguridad",
+  "/demo": "demo",
+  "/contacto": "contacto",
+}

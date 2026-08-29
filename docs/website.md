@@ -9,12 +9,14 @@ se añadió ninguna librería nueva.
 | Ruta | Qué es |
 | --- | --- |
 | `/` | Landing pública (grupo `(marketing)`, layout con header/footer propios) |
+| `/producto`, `/funciones`, `/beneficios`, `/asistente-ia`, `/seguridad`, `/demo`, `/contacto` | Secciones de la landing con ruta propia (sin `#`). `rewrites` en `next.config.ts` las sirven desde `/`; `SmoothAnchors` hace scroll a la sección al hacer clic y al abrir la URL directa. Mapa slug→id en `lib/site.ts` (`landingSections`) |
 | `/login` | App (sin cambios) |
 | `/dashboard`, `/crm/**`, `/inventario/**`, `/admin/**`, … | App detrás de `AuthGuard` (sin cambios) |
 | `/sitemap.xml`, `/robots.txt`, `/opengraph-image` | Generados por convención de Next |
 
 El antiguo `/` que redirigía a `/dashboard` se eliminó. Un visitante nuevo cae
-en la landing; desde ahí va a `/login`.
+en la landing; desde ahí va a `/login`. Las rutas de sección canonizan a `/`
+(`alternates.canonical`), así que no generan contenido duplicado en buscadores.
 
 ## Estructura (basada en la guía visual del proyecto)
 
@@ -84,7 +86,8 @@ Verificadas contra el código y la app en ejecución:
 
 | Componente | Por qué |
 | --- | --- |
-| `components/marketing/marketing-header.tsx` | Header público (nav ancla + menú móvil). El header de la app tiene sidebar/breadcrumbs; no aplica. |
+| `components/marketing/marketing-header.tsx` | Header público (nav a rutas de sección + menú móvil). El header de la app tiene sidebar/breadcrumbs; no aplica. |
+| `components/marketing/smooth-anchors.tsx` | Intercepta clics a rutas de sección (fase de captura, antes del `<Link>` de Next): scroll suave + `history.replaceState` a la ruta limpia. Sin `#` en la URL. |
 | `components/marketing/marketing-footer.tsx` | No existía footer en la app. |
 | `components/marketing/cta-link.tsx` | `<a>`/`<Link>` con estilo de botón. `Button render={<a>}` de Base UI emite warning (semántica de botón en un ancla). |
 | `components/marketing/reveal.tsx` | Entrada CSS (fade/rise) sin librería; contenido siempre visible (SSR/no-JS safe). |

@@ -71,7 +71,7 @@ export function MarketingHeader() {
           <CtaLink href="/login" variant="ghost" size="default">
             Iniciar sesión
           </CtaLink>
-          <CtaLink href="#demo" size="default">
+          <CtaLink href="/demo" size="default">
             Solicitar demostración
           </CtaLink>
         </div>
@@ -113,7 +113,7 @@ export function MarketingHeader() {
               />
               <SheetClose
                 render={
-                  <a href="#demo" className={buttonVariants()}>
+                  <a href="/demo" className={buttonVariants()}>
                     Solicitar demostración
                   </a>
                 }

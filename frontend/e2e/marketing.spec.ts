@@ -30,22 +30,31 @@ test.describe("landing page", () => {
     }
   })
 
-  test("anchor navigation reaches every section and keeps the URL clean", async ({ page }) => {
+  test("nav scrolls to every section and sets a clean path (no #)", async ({ page }) => {
     await page.goto("/")
-    const sections: Record<string, string> = {
-      Producto: "producto",
-      Funciones: "funciones",
-      IA: "ia",
-      Seguridad: "seguridad",
-      Beneficios: "beneficios",
-      Demo: "demo",
-    }
-    for (const [label, id] of Object.entries(sections)) {
+    const sections: Array<[label: string, id: string, path: string]> = [
+      ["Producto", "producto", "/producto"],
+      ["Funciones", "funciones", "/funciones"],
+      ["IA", "ia", "/asistente-ia"],
+      ["Seguridad", "seguridad", "/seguridad"],
+      ["Beneficios", "beneficios", "/beneficios"],
+      ["Demo", "demo", "/demo"],
+    ]
+    for (const [label, id, path] of sections) {
       await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: label }).click()
       await page.waitForTimeout(700)
       await expect(page.locator(`#${id}`)).toBeInViewport()
-      expect(new URL(page.url()).hash, `no #hash after clicking ${label}`).toBe("")
+      const url = new URL(page.url())
+      expect(url.hash, `no #hash after clicking ${label}`).toBe("")
+      expect(url.pathname, `clean path after clicking ${label}`).toBe(path)
     }
+  })
+
+  test("a section path deep-links straight to that section", async ({ page }) => {
+    await page.goto("/beneficios")
+    await expect(page).toHaveURL(/\/beneficios$/)
+    await expect(page.locator("h1")).toHaveCount(1) // still the one-page landing
+    await expect(page.locator("#beneficios")).toBeInViewport()
   })
 
   test("hero screenshot loads", async ({ page }) => {
@@ -122,7 +131,9 @@ test.describe("mobile", () => {
     await menu.getByRole("link", { name: "Funciones" }).click()
     await expect(menu).toBeHidden()
     await expect(page.locator("#funciones")).toBeInViewport()
-    expect(new URL(page.url()).hash).toBe("")
+    const url = new URL(page.url())
+    expect(url.hash).toBe("")
+    expect(url.pathname).toBe("/funciones")
   })
 
   test("hero heading and a CTA are visible on a phone", async ({ page }) => {
