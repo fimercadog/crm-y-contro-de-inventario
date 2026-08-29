@@ -25,6 +25,12 @@ class ContactController extends Controller
             ->whereHas('customer', fn ($q) => $q->where('company_id', $user->company_id))
             ->with('customer');
 
+        match ($request->string('trashed')->value()) {
+            'only' => $query->onlyTrashed(),
+            'with' => $query->withTrashed(),
+            default => null,
+        };
+
         if ($user->hasRole('vendedor') && ! $user->hasAnyRole(['super-admin', 'administrador', 'comercial'])) {
             $query->whereHas('customer', fn ($q) => $q->where('assigned_user_id', $user->id));
         }
@@ -70,8 +76,19 @@ class ContactController extends Controller
     {
         $this->authorize('delete', $contact);
 
-        $contact->delete();
+        $contact->delete(); // soft delete — the row stays in the DB
 
         return response()->json(null, 204);
+    }
+
+    public function restore(int $contact)
+    {
+        $contact = Contact::onlyTrashed()->findOrFail($contact);
+
+        $this->authorize('delete', $contact);
+
+        $contact->restore();
+
+        return new ContactResource($contact->load('customer'));
     }
 }

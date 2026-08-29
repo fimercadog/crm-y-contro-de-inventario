@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { IdSelect } from "@/components/forms/id-select"
-import { createContact, updateContact } from "@/features/customers/api"
+import { createContact, listCustomers, updateContact } from "@/features/customers/api"
 import type { Contact } from "@/features/customers/types"
 
 const contactSchema = z.object({
@@ -57,7 +57,8 @@ const emptyValues: ContactFormValues = {
 interface ContactFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  customerId: number
+  /** Fixed customer (from a customer's page). Omit to let the user pick one. */
+  customerId?: number | null
   contact?: Contact | null
   onSaved: () => void
 }
@@ -70,6 +71,20 @@ export function ContactFormDialog({
   onSaved,
 }: ContactFormDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [customers, setCustomers] = useState<{ value: number; label: string }[]>([])
+  const [pickedCustomerId, setPickedCustomerId] = useState<number | undefined>()
+
+  const needsCustomerPicker = !customerId && !contact
+
+  useEffect(() => {
+    if (!open || !needsCustomerPicker) return
+    setPickedCustomerId(undefined)
+    listCustomers({ per_page: 200 })
+      .then(({ data }) =>
+        setCustomers(data.data.map((c) => ({ value: c.id, label: c.name })))
+      )
+      .catch(() => setCustomers([]))
+  }, [open, needsCustomerPicker])
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
@@ -96,13 +111,18 @@ export function ContactFormDialog({
   }, [open, contact])
 
   async function onSubmit(values: ContactFormValues) {
+    const targetCustomerId = customerId ?? pickedCustomerId
+    if (!contact && !targetCustomerId) {
+      toast.error("Elige un cliente para el contacto")
+      return
+    }
     setIsSubmitting(true)
     try {
       if (contact) {
         await updateContact(contact.id, values)
         toast.success("Contacto actualizado")
       } else {
-        await createContact(customerId, values)
+        await createContact(targetCustomerId!, values)
         toast.success("Contacto creado")
       }
       onOpenChange(false)
@@ -129,6 +149,17 @@ export function ContactFormDialog({
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid grid-cols-2 gap-4"
           >
+            {needsCustomerPicker && (
+              <FormItem className="col-span-2">
+                <FormLabel>Cliente</FormLabel>
+                <IdSelect
+                  value={pickedCustomerId ? String(pickedCustomerId) : ""}
+                  onChange={(v) => setPickedCustomerId(v ? Number(v) : undefined)}
+                  placeholder="Selecciona un cliente"
+                  options={customers.map((c) => ({ value: String(c.value), label: c.label }))}
+                />
+              </FormItem>
+            )}
             <FormField
               control={form.control}
               name="first_name"

@@ -25,6 +25,7 @@ class UpdateUnitRequest extends FormRequest
                 'max:255',
                 Rule::unique('units')
                     ->where('company_id', $this->user()->company_id)
+                    ->whereNull('deleted_at')
                     ->ignore($this->route('unit')),
             ],
             'abbreviation' => ['required', 'string', 'max:10'],

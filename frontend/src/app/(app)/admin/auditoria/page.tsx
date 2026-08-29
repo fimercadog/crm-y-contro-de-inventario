@@ -13,22 +13,25 @@ import type { AuditEvent, AuditLog } from "@/features/audit/api"
 
 const dateTime = new Intl.DateTimeFormat("es-CO", { dateStyle: "medium", timeStyle: "short" })
 
-const eventVariant: Record<AuditEvent, "default" | "secondary" | "destructive"> = {
+const eventVariant: Record<AuditEvent, "default" | "secondary" | "destructive" | "outline"> = {
   created: "default",
   updated: "secondary",
   deleted: "destructive",
+  restored: "outline",
 }
 
 const eventLabel: Record<AuditEvent, string> = {
   created: "Creado",
   updated: "Actualizado",
   deleted: "Eliminado",
+  restored: "Restaurado",
 }
 
 const eventOptions = [
   { label: "Creado", value: "created" },
   { label: "Actualizado", value: "updated" },
   { label: "Eliminado", value: "deleted" },
+  { label: "Restaurado", value: "restored" },
 ]
 
 const entityOptions = [

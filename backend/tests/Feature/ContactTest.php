@@ -77,7 +77,7 @@ class ContactTest extends TestCase
             ->assertJsonPath('data.0.first_name', 'A');
     }
 
-    public function test_deleting_a_contact(): void
+    public function test_deleting_a_contact_soft_deletes_it_and_it_can_be_restored(): void
     {
         $company = Company::factory()->create();
         $admin = User::factory()->create(['company_id' => $company->id]);
@@ -91,6 +91,37 @@ class ContactTest extends TestCase
             ->deleteJson("/api/contacts/{$contact->id}")
             ->assertNoContent();
 
-        $this->assertDatabaseMissing('contacts', ['id' => $contact->id]);
+        $this->assertSoftDeleted('contacts', ['id' => $contact->id]);
+
+        // Hidden from the default list, visible with ?trashed=only.
+        $this->actingAs($admin)->getJson('/api/contacts')->assertJsonCount(0, 'data');
+        $this->actingAs($admin)->getJson('/api/contacts?trashed=only')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $contact->id);
+
+        $this->actingAs($admin)
+            ->postJson("/api/contacts/{$contact->id}/restore")
+            ->assertOk()
+            ->assertJsonPath('data.deleted_at', null);
+
+        $this->assertNotSoftDeleted('contacts', ['id' => $contact->id]);
+    }
+
+    public function test_a_contact_can_be_created_from_the_standalone_screen(): void
+    {
+        $company = Company::factory()->create();
+        $comercial = User::factory()->create(['company_id' => $company->id]);
+        $comercial->assignRole('comercial');
+        $customer = Customer::factory()->create(['company_id' => $company->id]);
+
+        // The standalone screen posts to the same customer-scoped endpoint.
+        $this->actingAs($comercial)
+            ->postJson("/api/customers/{$customer->id}/contacts", [
+                'first_name' => 'Nuevo', 'last_name' => 'Contacto', 'status' => 'activo',
+            ])
+            ->assertCreated();
+
+        $this->assertDatabaseHas('contacts', ['customer_id' => $customer->id, 'first_name' => 'Nuevo']);
     }
 }

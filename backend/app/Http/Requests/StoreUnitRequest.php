@@ -24,7 +24,7 @@ class StoreUnitRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('units')->where('company_id', $this->user()->company_id),
+                Rule::unique('units')->where('company_id', $this->user()->company_id)->whereNull('deleted_at'),
             ],
             'abbreviation' => ['required', 'string', 'max:10'],
             'status' => ['required', Rule::in(['activo', 'inactivo'])],

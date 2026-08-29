@@ -15,10 +15,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
-import { deleteContact, listContacts } from "@/features/customers/api"
+import { deleteContact, listContacts, restoreContact } from "@/features/customers/api"
 import type { Contact } from "@/features/customers/types"
 import { contactColumns } from "./columns"
 import { ContactFormDialog } from "@/components/customers/contact-form-dialog"
@@ -26,6 +27,11 @@ import { ContactFormDialog } from "@/components/customers/contact-form-dialog"
 const statusOptions = [
   { label: "Activo", value: "activo" },
   { label: "Inactivo", value: "inactivo" },
+]
+
+const viewOptions = [
+  { label: "Activos", value: "active" },
+  { label: "Eliminados", value: "deleted" },
 ]
 
 export default function ContactosPage() {
@@ -40,12 +46,14 @@ export default function ContactosPage() {
   })
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string[]>([])
+  const [view, setView] = useState<string[]>([])
 
   const [editing, setEditing] = useState<Contact | null>(null)
+  const [creating, setCreating] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
   const [deleting, setDeleting] = useState<Contact | null>(null)
 
-  const isFiltered = status.length > 0 || search.length > 0
+  const isFiltered = status.length > 0 || search.length > 0 || view.length > 0
 
   const queryParams = useMemo(
     () => ({
@@ -53,8 +61,9 @@ export default function ContactosPage() {
       per_page: pagination.pageSize,
       search: search || undefined,
       status: status[0],
+      trashed: view[0] === "deleted" ? ("only" as const) : undefined,
     }),
-    [pagination, search, status]
+    [pagination, search, status, view]
   )
 
   const fetchData = useCallback(() => {
@@ -77,7 +86,7 @@ export default function ContactosPage() {
     if (!deleting) return
     try {
       await deleteContact(deleting.id)
-      toast.success("Contacto eliminado")
+      toast.success(`Contacto "${deleting.full_name}" eliminado`)
       setDeleting(null)
       fetchData()
     } catch (error) {
@@ -88,26 +97,49 @@ export default function ContactosPage() {
     }
   }
 
+  async function handleRestore(contact: Contact) {
+    try {
+      await restoreContact(contact.id)
+      toast.success(`Contacto "${contact.full_name}" restaurado`)
+      fetchData()
+    } catch {
+      toast.error("No se pudo restaurar el contacto")
+    }
+  }
+
   const columns = useMemo(
     () =>
       contactColumns({
         onEdit: (contact) => {
           setEditing(contact)
+          setCreating(false)
           setFormOpen(true)
         },
         onDelete: setDeleting,
+        onRestore: handleRestore,
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <h2 className="text-lg font-semibold">Contactos</h2>
-        <p className="text-sm text-muted-foreground">
-          {total} contacto{total === 1 ? "" : "s"} en todos los clientes. Para agregar uno
-          nuevo, ábrelo desde la ficha del cliente correspondiente.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold">Contactos</h2>
+          <p className="text-sm text-muted-foreground">
+            {total} contacto{total === 1 ? "" : "s"} en todos los clientes.
+          </p>
+        </div>
+        <Button
+          onClick={() => {
+            setEditing(null)
+            setCreating(true)
+            setFormOpen(true)
+          }}
+        >
+          Nuevo contacto
+        </Button>
       </div>
 
       <DataTable
@@ -132,28 +164,46 @@ export default function ContactosPage() {
             onReset={() => {
               setSearch("")
               setStatus([])
+              setView([])
               setPagination((p) => ({ ...p, pageIndex: 0 }))
             }}
             filters={
-              <DataTableFacetedFilter
-                title="Estado"
-                options={statusOptions}
-                value={status}
-                onChange={(value) => {
-                  setStatus(value)
-                  setPagination((p) => ({ ...p, pageIndex: 0 }))
-                }}
-              />
+              <>
+                <DataTableFacetedFilter
+                  title="Estado"
+                  options={statusOptions}
+                  value={status}
+                  onChange={(value) => {
+                    setStatus(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+                <DataTableFacetedFilter
+                  title="Ver"
+                  options={viewOptions}
+                  value={view}
+                  onChange={(value) => {
+                    setView(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+              </>
             }
           />
         )}
       />
 
-      {editing && (
+      {(editing || creating) && (
         <ContactFormDialog
           open={formOpen}
-          onOpenChange={setFormOpen}
-          customerId={editing.customer_id}
+          onOpenChange={(open) => {
+            setFormOpen(open)
+            if (!open) {
+              setEditing(null)
+              setCreating(false)
+            }
+          }}
+          customerId={editing?.customer_id}
           contact={editing}
           onSaved={fetchData}
         />
@@ -164,7 +214,8 @@ export default function ContactosPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar contacto?</AlertDialogTitle>
             <AlertDialogDescription>
-              Se eliminará a &quot;{deleting?.full_name}&quot;.
+              &quot;{deleting?.full_name}&quot; se marcará como eliminado. Puedes verlo y
+              restaurarlo con el filtro &quot;Ver → Eliminados&quot;.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

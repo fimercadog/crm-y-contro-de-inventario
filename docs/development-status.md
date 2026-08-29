@@ -132,6 +132,19 @@ Ajustes tras la revisión visual:
 
 Todos los módulos crean y editan mediante modales (diálogos), incluida la ficha de cliente — ya era así desde sus fases respectivas.
 
+## Cierre — soft delete en todo el proyecto (2026-08-29)
+
+Regla del proyecto: **eliminar nunca borra la fila, hace soft delete**. Clientes y productos ya lo tenían; ahora también `contacts`, `activities`, `opportunities`, `categories`, `brands`, `units`, `suppliers` (trait `SoftDeletes` + columna `deleted_at`). Los `unique(company_id, name)` de los catálogos ignoran las filas eliminadas, así que se puede volver a usar un nombre liberado. El trait `Auditable` registra ahora `deleted` y `restored` (una sola fila por soft delete — el `updated` que también dispara queda sin cambios porque `deleted_at` está excluido).
+
+**Contactos** (`/crm/contactos`) recibió el tratamiento completo:
+- Botón "Nuevo contacto" con selector de cliente en el mismo modal (antes solo se creaba desde la ficha del cliente).
+- Al eliminar: soft delete, el toast nombra al contacto, y el diálogo explica que se puede restaurar.
+- Filtro "Ver → Eliminados" muestra los contactos borrados con badge "Eliminado" y acción "Restaurar" (`POST /api/contacts/{id}/restore`).
+
+Rate limit de `/api/login` subido a `throttle:30,1` (6/min bloqueaba la suite E2E; 30 fallos/min sigue frenando fuerza bruta).
+
+Suite: 89 tests backend, 7 E2E (Edge).
+
 ## Notas técnicas
 
 - PHP local es 8.2.12 (el pedido original sugería 8.3+). Laravel 12 solo requiere `^8.2`, así que no bloquea nada; se puede subir el entorno a 8.3 más adelante sin cambios de código.

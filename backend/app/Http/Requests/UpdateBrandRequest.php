@@ -25,6 +25,7 @@ class UpdateBrandRequest extends FormRequest
                 'max:255',
                 Rule::unique('brands')
                     ->where('company_id', $this->user()->company_id)
+                    ->whereNull('deleted_at')
                     ->ignore($this->route('brand')),
             ],
             'description' => ['nullable', 'string'],

@@ -48,12 +48,17 @@ export function deleteContact(id: number) {
   return api.delete(`/contacts/${id}`)
 }
 
+export function restoreContact(id: number) {
+  return api.post<{ data: Contact }>(`/contacts/${id}/restore`)
+}
+
 export interface ContactListParams {
   page?: number
   per_page?: number
   search?: string
   customer_id?: number
   status?: string
+  trashed?: "only" | "with"
 }
 
 export function listContacts(params: ContactListParams) {

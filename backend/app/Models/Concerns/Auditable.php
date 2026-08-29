@@ -15,13 +15,19 @@ use Illuminate\Support\Facades\Auth;
 trait Auditable
 {
     /** @var array<int, string> */
-    protected array $auditExclude = ['password', 'remember_token', 'updated_at', 'created_at'];
+    protected array $auditExclude = ['password', 'remember_token', 'updated_at', 'created_at', 'deleted_at'];
 
     public static function bootAuditable(): void
     {
         static::created(fn (Model $model) => $model->writeAuditLog('created', $model->getAttributes()));
+        // A soft delete also fires "updated" (deleted_at is excluded, so that pass is a no-op).
         static::updated(fn (Model $model) => $model->writeAuditLog('updated', $model->getChanges(), $model->getOriginal()));
         static::deleted(fn (Model $model) => $model->writeAuditLog('deleted', []));
+
+        // Only models that also use SoftDeletes expose the restored event.
+        if (method_exists(static::class, 'restored')) {
+            static::restored(fn (Model $model) => $model->writeAuditLog('restored', []));
+        }
     }
 
     protected function writeAuditLog(string $event, array $new, array $original = []): void

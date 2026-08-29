@@ -24,7 +24,7 @@ class StoreCategoryRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('categories')->where('company_id', $this->user()->company_id),
+                Rule::unique('categories')->where('company_id', $this->user()->company_id)->whereNull('deleted_at'),
             ],
             'description' => ['nullable', 'string'],
             'status' => ['required', Rule::in(['activo', 'inactivo'])],

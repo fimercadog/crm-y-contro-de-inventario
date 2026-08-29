@@ -27,6 +27,7 @@ class ContactResource extends JsonResource
             'status' => $this->status,
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

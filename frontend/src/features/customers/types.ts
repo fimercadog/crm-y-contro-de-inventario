@@ -16,6 +16,7 @@ export interface Contact {
   status: "activo" | "inactivo"
   customer?: Customer
   created_at: string
+  deleted_at?: string | null
 }
 
 export interface Customer {

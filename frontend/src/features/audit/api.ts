@@ -1,7 +1,7 @@
 import { api } from "@/lib/api"
 import type { PaginatedResponse } from "@/features/customers/types"
 
-export type AuditEvent = "created" | "updated" | "deleted"
+export type AuditEvent = "created" | "updated" | "deleted" | "restored"
 
 export interface AuditLog {
   id: number

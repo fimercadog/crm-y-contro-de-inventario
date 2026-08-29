@@ -17,9 +17,14 @@ import type { Contact } from "@/features/customers/types"
 interface ColumnActions {
   onEdit: (contact: Contact) => void
   onDelete: (contact: Contact) => void
+  onRestore: (contact: Contact) => void
 }
 
-export function contactColumns({ onEdit, onDelete }: ColumnActions): AppColumnDef<Contact>[] {
+export function contactColumns({
+  onEdit,
+  onDelete,
+  onRestore,
+}: ColumnActions): AppColumnDef<Contact>[] {
   return [
     {
       accessorKey: "full_name",
@@ -64,11 +69,14 @@ export function contactColumns({ onEdit, onDelete }: ColumnActions): AppColumnDe
     {
       accessorKey: "status",
       header: "Estado",
-      cell: ({ row }) => (
-        <Badge variant={row.original.status === "activo" ? "default" : "outline"}>
-          {row.original.status === "activo" ? "Activo" : "Inactivo"}
-        </Badge>
-      ),
+      cell: ({ row }) =>
+        row.original.deleted_at ? (
+          <Badge variant="destructive">Eliminado</Badge>
+        ) : (
+          <Badge variant={row.original.status === "activo" ? "default" : "outline"}>
+            {row.original.status === "activo" ? "Activo" : "Inactivo"}
+          </Badge>
+        ),
     },
     {
       id: "actions",
@@ -82,10 +90,21 @@ export function contactColumns({ onEdit, onDelete }: ColumnActions): AppColumnDe
             }
           />
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onEdit(row.original)}>Editar</DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onClick={() => onDelete(row.original)}>
-              Eliminar
-            </DropdownMenuItem>
+            {row.original.deleted_at ? (
+              <DropdownMenuItem onClick={() => onRestore(row.original)}>
+                Restaurar
+              </DropdownMenuItem>
+            ) : (
+              <>
+                <DropdownMenuItem onClick={() => onEdit(row.original)}>Editar</DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => onDelete(row.original)}
+                >
+                  Eliminar
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       ),
