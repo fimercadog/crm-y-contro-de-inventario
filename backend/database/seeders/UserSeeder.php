@@ -12,25 +12,32 @@ class UserSeeder extends Seeder
     {
         $company = Company::firstOrFail();
 
+        $admin = User::factory()->create([
+            'company_id' => $company->id,
+            'name' => 'Administrador',
+            'email' => 'admin@distribuidoraandina.com',
+        ]);
+        $admin->assignRole('administrador');
+
         $comercial = User::factory()->create([
             'company_id' => $company->id,
             'name' => 'Laura Gómez',
-            'email' => 'laura.gomez@distribuidoraandina.com',
+            'email' => 'comercial@distribuidoraandina.com',
         ]);
         $comercial->assignRole('comercial');
-
-        $vendedor = User::factory()->create([
-            'company_id' => $company->id,
-            'name' => 'Julián Torres',
-            'email' => 'julian.torres@distribuidoraandina.com',
-        ]);
-        $vendedor->assignRole('vendedor');
 
         $inventario = User::factory()->create([
             'company_id' => $company->id,
             'name' => 'Marcela Ríos',
-            'email' => 'marcela.rios@distribuidoraandina.com',
+            'email' => 'inventario@distribuidoraandina.com',
         ]);
         $inventario->assignRole('inventario');
+
+        $vendedor = User::factory()->create([
+            'company_id' => $company->id,
+            'name' => 'Julián Torres',
+            'email' => 'vendedor@distribuidoraandina.com',
+        ]);
+        $vendedor->assignRole('vendedor');
     }
 }

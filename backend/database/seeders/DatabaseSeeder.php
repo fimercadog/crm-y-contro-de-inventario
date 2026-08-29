@@ -27,18 +27,18 @@ class DatabaseSeeder extends Seeder
 
         $admin = User::factory()->create([
             'company_id' => $company->id,
-            'name' => 'Camila Restrepo',
-            'email' => 'admin@distribuidoraandina.com',
+            'name' => 'Super Admin',
+            'email' => 'superadmin@distribuidoraandina.com',
         ]);
         $admin->assignRole('super-admin');
 
         $this->call([
             UserSeeder::class,
             CustomerSeeder::class,
-            OpportunitySeeder::class,
-            ActivitySeeder::class,
             CatalogSeeder::class,
             ProductSeeder::class,
+            OpportunitySeeder::class,
+            ActivitySeeder::class,
         ]);
     }
 }

@@ -1,6 +1,6 @@
 # Estado de desarrollo
 
-Última actualización: 2026-08-24.
+Última actualización: 2026-08-28.
 
 Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
@@ -78,7 +78,9 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 8 — InventoryService + movimientos
 
-⬜ Pendiente.
+✅ Backend: `InventoryMovement` con historial auditable por empresa/producto/usuario, migración, modelo, factory, policy, resource, request y controlador (`GET/POST /api/inventory-movements`). `InventoryService` es ahora el punto único para modificar `Product.current_stock`: registra entradas, salidas y ajustes en una transacción, bloquea stock negativo salvo que la empresa tenga `allow_negative_stock`, valida tenant usuario/producto y conserva `previous_stock`/`new_stock`. El seeder de productos ya no escribe stock directo: crea el stock inicial de demo mediante ajustes `STOCK-INICIAL`, dejando movimientos reales.
+✅ Tests: 7 tests nuevos cubren entradas, salidas con/sin stock negativo permitido, ajustes como conteo físico, endpoint de creación, aislamiento multiempresa y permisos. Suite completa: 68 tests verdes. También verificado `php artisan migrate:fresh --seed`.
+🟡 Frontend: todavía no hay pantalla dedicada de movimientos. Se deja para Fase 9 junto con entradas/salidas/ajustes operativos, para no duplicar experiencia antes de definir esos flujos.
 
 ## Fase 9 — Entradas + salidas + ajustes
 
@@ -86,7 +88,9 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 10 — Integración CRM + productos
 
-⬜ Pendiente.
+✅ Backend: oportunidades integradas con productos mediante `OpportunityItem` (empresa, oportunidad, producto, cantidad, precio unitario, descuento y subtotal). `OpportunityProductService` sincroniza las líneas y recalcula `Opportunity.amount` automáticamente cuando se envían productos, manteniendo compatibilidad con oportunidades de monto manual cuando no hay líneas. `GET /api/opportunities/{id}` devuelve `items.product`; `POST/PUT /api/opportunities` aceptan `items` validados por tenant, producto único por oportunidad y descuento no mayor al subtotal bruto. Seeders actualizados: primero catálogos/productos, luego oportunidades con líneas cotizadas reales.
+✅ Frontend: el diálogo de `/crm/oportunidades` ahora carga productos activos, permite agregar/quitar productos cotizados, rellena el precio desde `sale_price`, muestra stock actual, subtotal por línea y total cotizado; si hay productos, el monto queda calculado; si no, conserva el monto manual. Al editar, pide el detalle completo para cargar las líneas.
+✅ Tests/QA: 3 tests backend nuevos cubren creación con productos y monto calculado, actualización/recalculo y bloqueo de productos de otra empresa. Suite completa: 71 tests verdes. Verificado `php artisan migrate:fresh --seed`, `npm run build` y `npm run lint` (sin errores; queda solo la advertencia existente de `window.location.href` en `frontend/src/lib/api.ts`).
 
 ## Fase 11 — Reportes y exportaciones
 
