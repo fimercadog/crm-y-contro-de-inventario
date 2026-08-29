@@ -84,7 +84,10 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 9 — Entradas + salidas + ajustes
 
-⬜ Pendiente.
+✅ Backend: exportación CSV/PDF de movimientos (`/api/inventory-movements/export/{csv,pdf}`) reutilizando `TableExporter` y respetando los filtros activos. El registro de movimientos ya existía desde la Fase 8 (`POST /api/inventory-movements` → `InventoryService`).
+✅ Frontend: `/inventario/movimientos` (DataTable con búsqueda, filtro por tipo, exportar CSV/PDF, diálogo "Registrar movimiento" con selector de tipo entrada/salida/ajuste, picker de producto que muestra el stock actual, y nota explícita de que en "ajuste" la cantidad es el conteo físico final). `/inventario/entradas` y `/inventario/salidas` renderizan la misma vista con el tipo fijado (una sola implementación, `MovimientosView`). `/inventario/stock` es una vista de solo lectura del stock por producto (stock actual + estado, mínimo/máximo, valor en stock, filtros "Stock bajo"/"Agotado"). Todas enlazadas ya estaban en el nav.
+✅ Tests: 1 test nuevo (exportación CSV respeta el filtro de tipo). Suite: 72 verdes.
+🟡 Numeración de documentos: los movimientos usan un campo `reference` libre (factura/orden/remisión). No hay numeración correlativa automática por tipo todavía — se añade si un caso de uso real lo pide (la Fase 3 lo había diferido hasta aquí; se mantiene diferido por YAGNI).
 
 ## Fase 10 — Integración CRM + productos
 

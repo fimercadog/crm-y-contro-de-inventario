@@ -111,6 +111,24 @@ class InventoryMovementTest extends TestCase
             ->assertJsonCount(2, 'data');
     }
 
+    public function test_inventory_movements_can_be_exported_to_csv_respecting_filters(): void
+    {
+        $company = Company::factory()->create();
+        $user = $this->makeUser('inventario', $company);
+        $product = Product::factory()->create(['company_id' => $company->id]);
+
+        InventoryMovement::factory()->create(['company_id' => $company->id, 'product_id' => $product->id, 'type' => 'entrada']);
+        InventoryMovement::factory()->create(['company_id' => $company->id, 'product_id' => $product->id, 'type' => 'salida']);
+
+        $response = $this->actingAs($user)->get('/api/inventory-movements/export/csv?type=entrada');
+
+        $response->assertOk();
+        $this->assertStringContainsString('text/csv', $response->headers->get('content-type'));
+        $lines = array_values(array_filter(explode("\n", trim($response->streamedContent()))));
+        $this->assertCount(2, $lines); // header + 1 filtered row
+        $this->assertStringContainsString('entrada', $lines[1]);
+    }
+
     public function test_comercial_and_vendedor_cannot_create_inventory_movements(): void
     {
         $company = Company::factory()->create();

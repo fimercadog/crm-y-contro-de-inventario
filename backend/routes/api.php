@@ -68,5 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products/export/pdf', [ProductController::class, 'exportPdf']);
     Route::apiResource('products', ProductController::class);
 
+    Route::get('/inventory-movements/export/csv', [InventoryMovementController::class, 'exportCsv']);
+    Route::get('/inventory-movements/export/pdf', [InventoryMovementController::class, 'exportPdf']);
     Route::apiResource('inventory-movements', InventoryMovementController::class)->only(['index', 'store']);
 });

@@ -8,13 +8,28 @@ use App\Http\Resources\InventoryMovementResource;
 use App\Models\InventoryMovement;
 use App\Models\Product;
 use App\Services\InventoryService;
+use App\Support\TableExporter;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class InventoryMovementController extends Controller
 {
+    private const EXPORT_COLUMNS = [
+        'occurred_at' => 'Fecha',
+        'product_sku' => 'SKU',
+        'product_name' => 'Producto',
+        'type' => 'Tipo',
+        'quantity' => 'Cantidad',
+        'previous_stock' => 'Stock anterior',
+        'new_stock' => 'Stock nuevo',
+        'unit_cost' => 'Costo unitario',
+        'reference' => 'Referencia',
+        'user_name' => 'Usuario',
+    ];
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', InventoryMovement::class);
@@ -24,6 +39,36 @@ class InventoryMovementController extends Controller
             ->withQueryString();
 
         return InventoryMovementResource::collection($movements);
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $this->authorize('viewAny', InventoryMovement::class);
+
+        return TableExporter::csv('movimientos', self::EXPORT_COLUMNS, $this->exportRows($request));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $this->authorize('viewAny', InventoryMovement::class);
+
+        return TableExporter::pdf('movimientos', 'Movimientos de inventario', self::EXPORT_COLUMNS, $this->exportRows($request));
+    }
+
+    private function exportRows(Request $request): Collection
+    {
+        return $this->filteredQuery($request)->get()->map(fn (InventoryMovement $movement) => [
+            'occurred_at' => $movement->occurred_at?->format('Y-m-d H:i'),
+            'product_sku' => $movement->product?->sku,
+            'product_name' => $movement->product?->name,
+            'type' => $movement->type,
+            'quantity' => $movement->quantity,
+            'previous_stock' => $movement->previous_stock,
+            'new_stock' => $movement->new_stock,
+            'unit_cost' => $movement->unit_cost === null ? '' : number_format((float) $movement->unit_cost, 2),
+            'reference' => $movement->reference,
+            'user_name' => $movement->user?->name,
+        ]);
     }
 
     public function store(StoreInventoryMovementRequest $request, InventoryService $inventory)
