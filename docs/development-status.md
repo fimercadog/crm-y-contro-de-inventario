@@ -143,7 +143,15 @@ Regla del proyecto: **eliminar nunca borra la fila, hace soft delete**. Clientes
 
 Rate limit de `/api/login` subido a `throttle:30,1` (6/min bloqueaba la suite E2E; 30 fallos/min sigue frenando fuerza bruta).
 
-Suite: 89 tests backend, 7 E2E (Edge).
+## Cierre — más iteraciones de UX (2026-08-29)
+
+- **Dashboard con gráficos** (monocromos, sin librería): pipeline por etapa, valor de inventario por categoría (barras), y movimientos de los últimos 14 días (mini-barras). `/api/dashboard` devuelve los agregados.
+- **RBAC por permisos**: la autorización dejó de ser por nombre de rol. 10 permisos (`crm.view/view_all/manage`, `inventory.view/manage`, `reports.view`, `users.manage`, `audit.view`, `settings.manage`, `ai.use`) sembrados y asignados a los 5 roles base con el mismo comportamiento efectivo. Policies y controladores usan `can()`. Pantalla **Roles**: crear / editar permisos / eliminar por modal; los roles base no se renombran ni borran. El form de usuario carga roles dinámicamente.
+- **Exportar CSV/PDF** añadido a contactos, actividades, usuarios y auditoría (hook `useTableExport`); stock reutiliza el de productos.
+- **Contactos**: el filtro "Ver" se mantiene pero por defecto la tabla muestra todo (activos, inactivos y eliminados).
+- **Entradas/Salidas editables y anulables**: `InventoryService::updateMovement` / `revertMovement` corrigen el stock en transacción; el movimiento nunca se borra (soft delete + `Auditable`), queda como "Anulado" con fecha y usuario. Los ajustes (incluido STOCK-INICIAL) no se pueden tocar. **Movimientos** es ahora solo lectura (sin registrar/editar/anular) — el registro consolidado.
+
+Suite: 99 tests backend, 7 E2E (Edge).
 
 ## Notas técnicas
 

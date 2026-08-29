@@ -2,18 +2,36 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { PaginationState } from "@tanstack/react-table"
-import { Plus } from "lucide-react"
+import { MoreHorizontal, Plus } from "lucide-react"
+import { toast } from "sonner"
+import axios from "axios"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
 import type { AppColumnDef } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
 import { DataTableExport } from "@/components/data-table/data-table-export"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { api } from "@/lib/api"
-import { listMovements } from "@/features/inventory/api"
+import { useTableExport } from "@/lib/export"
+import { deleteMovement, listMovements } from "@/features/inventory/api"
 import type { InventoryMovement, MovementType } from "@/features/inventory/types"
 import { MovementFormDialog } from "@/components/inventory/movement-form-dialog"
 
@@ -37,60 +55,103 @@ const typeOptions = [
   { label: "Ajuste", value: "ajuste" },
 ]
 
-const columns: AppColumnDef<InventoryMovement>[] = [
-  {
-    accessorKey: "occurred_at",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha" />,
-    cell: ({ row }) => dateTime.format(new Date(row.original.occurred_at)),
-  },
-  {
-    accessorKey: "product_name",
-    header: "Producto",
-    cell: ({ row }) => (
-      <div>
-        <span className="font-medium">{row.original.product_name}</span>
-        <span className="block text-xs text-muted-foreground">{row.original.product_sku}</span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "type",
-    header: "Tipo",
-    cell: ({ row }) => (
-      <Badge variant={typeVariant[row.original.type]}>{typeLabel[row.original.type]}</Badge>
-    ),
-  },
-  {
-    accessorKey: "quantity",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Cantidad" />,
-  },
-  {
-    id: "stock",
-    header: "Stock",
-    cell: ({ row }) => (
-      <span className="text-sm text-muted-foreground">
-        {row.original.previous_stock} → <span className="text-foreground">{row.original.new_stock}</span>
-      </span>
-    ),
-  },
-  {
-    accessorKey: "reference",
-    header: "Referencia",
-    cell: ({ row }) => row.original.reference ?? "—",
-  },
-  {
-    accessorKey: "user_name",
-    header: "Usuario",
-    cell: ({ row }) => row.original.user_name ?? "—",
-  },
-]
+interface ColumnOptions {
+  onEdit?: (m: InventoryMovement) => void
+  onVoid?: (m: InventoryMovement) => void
+}
+
+function buildColumns({ onEdit, onVoid }: ColumnOptions): AppColumnDef<InventoryMovement>[] {
+  const columns: AppColumnDef<InventoryMovement>[] = [
+    {
+      accessorKey: "occurred_at",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Fecha" />,
+      cell: ({ row }) => (
+        <span className={row.original.voided ? "text-muted-foreground line-through" : undefined}>
+          {dateTime.format(new Date(row.original.occurred_at))}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "product_name",
+      header: "Producto",
+      cell: ({ row }) => (
+        <div className={row.original.voided ? "text-muted-foreground" : undefined}>
+          <span className="font-medium">{row.original.product_name}</span>
+          <span className="block text-xs text-muted-foreground">{row.original.product_sku}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "type",
+      header: "Tipo",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-1.5">
+          <Badge variant={typeVariant[row.original.type]}>{typeLabel[row.original.type]}</Badge>
+          {row.original.voided && <Badge variant="outline">Anulado</Badge>}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "quantity",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Cantidad" />,
+    },
+    {
+      id: "stock",
+      header: "Stock",
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">
+          {row.original.previous_stock} →{" "}
+          <span className="text-foreground">{row.original.new_stock}</span>
+        </span>
+      ),
+    },
+    {
+      accessorKey: "reference",
+      header: "Referencia",
+      cell: ({ row }) => row.original.reference ?? "—",
+    },
+    {
+      accessorKey: "user_name",
+      header: "Usuario",
+      cell: ({ row }) => row.original.user_name ?? "—",
+    },
+  ]
+
+  if (onEdit && onVoid) {
+    columns.push({
+      id: "actions",
+      cell: ({ row }) =>
+        row.original.voided ? null : (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button variant="ghost" size="icon" className="size-8">
+                  <MoreHorizontal />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onEdit(row.original)}>Corregir</DropdownMenuItem>
+              <DropdownMenuItem variant="destructive" onClick={() => onVoid(row.original)}>
+                Anular
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+    })
+  }
+
+  return columns
+}
 
 interface MovimientosViewProps {
   title: string
   lockedType?: MovementType
+  /** Movimientos screen: read-only consolidated ledger, no create/edit/delete. */
+  readOnly?: boolean
 }
 
-export function MovimientosView({ title, lockedType }: MovimientosViewProps) {
+export function MovimientosView({ title, lockedType, readOnly }: MovimientosViewProps) {
   const [data, setData] = useState<InventoryMovement[]>([])
   const [total, setTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -101,7 +162,10 @@ export function MovimientosView({ title, lockedType }: MovimientosViewProps) {
   const [type, setType] = useState<string[]>([])
 
   const [formOpen, setFormOpen] = useState(false)
-  const [isExporting, setIsExporting] = useState(false)
+  const [editing, setEditing] = useState<InventoryMovement | null>(null)
+  const [voiding, setVoiding] = useState<InventoryMovement | null>(null)
+
+  const { isExporting, exportAs } = useTableExport("inventory-movements", "movimientos")
 
   const effectiveType = (lockedType ?? type[0]) as MovementType | undefined
   const isFiltered = !lockedType && (type.length > 0 || search.length > 0)
@@ -132,25 +196,37 @@ export function MovimientosView({ title, lockedType }: MovimientosViewProps) {
     fetchData()
   }, [fetchData])
 
-  async function handleExport(format: "csv" | "pdf") {
-    setIsExporting(true)
+  async function handleConfirmVoid() {
+    if (!voiding) return
     try {
-      const response = await api.get(`/inventory-movements/export/${format}`, {
-        params: queryParams,
-        responseType: "blob",
-      })
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement("a")
-      link.href = url
-      link.download = `movimientos.${format}`
-      link.click()
-      window.URL.revokeObjectURL(url)
-    } catch {
-      setErrorMessage("No se pudo generar la exportación.")
-    } finally {
-      setIsExporting(false)
+      await deleteMovement(voiding.id)
+      toast.success("Movimiento anulado")
+      setVoiding(null)
+      fetchData()
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? (error.response?.data?.message as string | undefined)
+        : undefined
+      toast.error(message ?? "No se pudo anular el movimiento")
     }
   }
+
+  const editable = !readOnly && !!lockedType
+  const columns = useMemo(
+    () =>
+      buildColumns(
+        editable
+          ? {
+              onEdit: (m) => {
+                setEditing(m)
+                setFormOpen(true)
+              },
+              onVoid: setVoiding,
+            }
+          : {}
+      ),
+    [editable]
+  )
 
   return (
     <div className="flex flex-col gap-4">
@@ -158,13 +234,22 @@ export function MovimientosView({ title, lockedType }: MovimientosViewProps) {
         <div>
           <h2 className="text-lg font-semibold">{title}</h2>
           <p className="text-sm text-muted-foreground">
-            {total} movimiento{total === 1 ? "" : "s"}
+            {readOnly
+              ? `${total} movimiento${total === 1 ? "" : "s"} · registro consolidado, solo lectura`
+              : `${total} movimiento${total === 1 ? "" : "s"}`}
           </p>
         </div>
-        <Button onClick={() => setFormOpen(true)}>
-          <Plus />
-          Registrar movimiento
-        </Button>
+        {!readOnly && (
+          <Button
+            onClick={() => {
+              setEditing(null)
+              setFormOpen(true)
+            }}
+          >
+            <Plus />
+            Registrar movimiento
+          </Button>
+        )}
       </div>
 
       <DataTable
@@ -207,20 +292,42 @@ export function MovimientosView({ title, lockedType }: MovimientosViewProps) {
             actions={
               <DataTableExport
                 isExporting={isExporting}
-                onExportCsv={() => handleExport("csv")}
-                onExportPdf={() => handleExport("pdf")}
+                onExportCsv={() => exportAs("csv", queryParams)}
+                onExportPdf={() => exportAs("pdf", queryParams)}
               />
             }
           />
         )}
       />
 
-      <MovementFormDialog
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        lockedType={lockedType}
-        onSaved={fetchData}
-      />
+      {!readOnly && (
+        <MovementFormDialog
+          open={formOpen}
+          onOpenChange={(open) => {
+            setFormOpen(open)
+            if (!open) setEditing(null)
+          }}
+          lockedType={lockedType}
+          movement={editing}
+          onSaved={fetchData}
+        />
+      )}
+
+      <AlertDialog open={!!voiding} onOpenChange={(open) => !open && setVoiding(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Anular movimiento?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Se revertirá su efecto en el stock. El movimiento no se borra: queda registrado
+              como &quot;Anulado&quot;, con la fecha y el usuario que lo hizo.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmVoid}>Anular</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

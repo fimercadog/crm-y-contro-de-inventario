@@ -41,6 +41,7 @@ const entityOptions = [
   { label: "Contacto", value: "Contact" },
   { label: "Producto", value: "Product" },
   { label: "Oportunidad", value: "Opportunity" },
+  { label: "Movimiento", value: "InventoryMovement" },
   { label: "Usuario", value: "User" },
   { label: "Empresa", value: "Company" },
 ]

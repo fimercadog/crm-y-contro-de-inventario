@@ -146,4 +146,60 @@ class InventoryMovementTest extends TestCase
                 ->assertForbidden();
         }
     }
+
+    public function test_an_entrada_can_be_corrected_and_stock_follows(): void
+    {
+        $company = Company::factory()->create();
+        $user = $this->makeUser('inventario', $company);
+        $product = Product::factory()->create(['company_id' => $company->id, 'current_stock' => 5]);
+
+        $movement = app(InventoryService::class)->move($product, $user, 'entrada', 10, null, 'OC-1');
+        $this->assertSame(15, $product->fresh()->current_stock);
+
+        $this->actingAs($user)
+            ->putJson("/api/inventory-movements/{$movement->id}", ['quantity' => 4, 'reference' => 'OC-1b'])
+            ->assertOk()
+            ->assertJsonPath('data.quantity', 4)
+            ->assertJsonPath('data.new_stock', 9);
+
+        $this->assertSame(9, $product->fresh()->current_stock); // 5 + 4
+    }
+
+    public function test_voiding_a_salida_reverses_the_stock_and_soft_deletes_it(): void
+    {
+        $company = Company::factory()->create();
+        $user = $this->makeUser('inventario', $company);
+        $product = Product::factory()->create(['company_id' => $company->id, 'current_stock' => 20]);
+
+        $movement = app(InventoryService::class)->move($product, $user, 'salida', 8);
+        $this->assertSame(12, $product->fresh()->current_stock);
+
+        $this->actingAs($user)
+            ->deleteJson("/api/inventory-movements/{$movement->id}")
+            ->assertNoContent();
+
+        $this->assertSame(20, $product->fresh()->current_stock);
+        $this->assertSoftDeleted('inventory_movements', ['id' => $movement->id]);
+
+        // Still visible in the ledger, flagged as voided.
+        $this->actingAs($user)
+            ->getJson('/api/inventory-movements')
+            ->assertJsonPath('data.0.voided', true);
+    }
+
+    public function test_an_adjustment_cannot_be_edited_or_voided(): void
+    {
+        $company = Company::factory()->create();
+        $user = $this->makeUser('inventario', $company);
+        $product = Product::factory()->create(['company_id' => $company->id, 'current_stock' => 3]);
+
+        $movement = app(InventoryService::class)->move($product, $user, 'ajuste', 10);
+
+        $this->actingAs($user)
+            ->deleteJson("/api/inventory-movements/{$movement->id}")
+            ->assertStatus(422);
+        $this->actingAs($user)
+            ->putJson("/api/inventory-movements/{$movement->id}", ['quantity' => 5])
+            ->assertStatus(422);
+    }
 }

@@ -28,6 +28,7 @@ class InventoryMovementResource extends JsonResource
             'notes' => $this->notes,
             'occurred_at' => $this->occurred_at,
             'created_at' => $this->created_at,
+            'voided' => $this->deleted_at !== null,
         ];
     }
 }

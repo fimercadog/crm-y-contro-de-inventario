@@ -29,3 +29,16 @@ export interface MovementPayload {
 export function createMovement(payload: MovementPayload) {
   return api.post<{ data: InventoryMovement }>("/inventory-movements", payload)
 }
+
+export type MovementUpdatePayload = Pick<
+  MovementPayload,
+  "quantity" | "unit_cost" | "reference" | "notes" | "occurred_at"
+>
+
+export function updateMovement(id: number, payload: MovementUpdatePayload) {
+  return api.put<{ data: InventoryMovement }>(`/inventory-movements/${id}`, payload)
+}
+
+export function deleteMovement(id: number) {
+  return api.delete(`/inventory-movements/${id}`)
+}

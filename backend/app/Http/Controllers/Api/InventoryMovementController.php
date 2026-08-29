@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInventoryMovementRequest;
+use App\Http\Requests\UpdateInventoryMovementRequest;
 use App\Http\Resources\InventoryMovementResource;
 use App\Models\InventoryMovement;
 use App\Models\Product;
@@ -97,9 +98,42 @@ class InventoryMovementController extends Controller
         return new InventoryMovementResource($movement);
     }
 
+    public function update(UpdateInventoryMovementRequest $request, InventoryMovement $inventoryMovement, InventoryService $inventory)
+    {
+        try {
+            $movement = $inventory->updateMovement(
+                movement: $inventoryMovement,
+                user: $request->user(),
+                quantity: $request->integer('quantity'),
+                unitCost: $request->filled('unit_cost') ? (float) $request->input('unit_cost') : null,
+                reference: $request->string('reference')->value() ?: null,
+                notes: $request->string('notes')->value() ?: null,
+                occurredAt: $request->filled('occurred_at') ? Carbon::parse($request->input('occurred_at')) : null,
+            );
+        } catch (DomainException|\InvalidArgumentException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return new InventoryMovementResource($movement);
+    }
+
+    public function destroy(Request $request, InventoryMovement $inventoryMovement, InventoryService $inventory)
+    {
+        $this->authorize('create', InventoryMovement::class);
+
+        try {
+            $inventory->revertMovement($inventoryMovement, $request->user());
+        } catch (DomainException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json(null, 204);
+    }
+
     private function filteredQuery(Request $request): Builder
     {
-        $query = InventoryMovement::query()
+        // Voided (soft-deleted) movements stay visible in the ledger, flagged.
+        $query = InventoryMovement::withTrashed()
             ->where('company_id', $request->user()->company_id)
             ->with(['product', 'user']);
 

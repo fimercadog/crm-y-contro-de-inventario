@@ -16,4 +16,5 @@ export interface InventoryMovement {
   notes: string | null
   occurred_at: string
   created_at: string
+  voided: boolean
 }

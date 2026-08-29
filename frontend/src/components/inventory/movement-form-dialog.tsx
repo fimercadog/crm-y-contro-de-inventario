@@ -29,8 +29,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { IdSelect } from "@/components/forms/id-select"
 import { listProducts } from "@/features/products/api"
 import type { Product } from "@/features/products/types"
-import { createMovement } from "@/features/inventory/api"
-import type { MovementType } from "@/features/inventory/types"
+import { createMovement, updateMovement } from "@/features/inventory/api"
+import type { InventoryMovement, MovementType } from "@/features/inventory/types"
 
 const schema = z.object({
   product_id: z.string().min(1, "Selecciona un producto"),
@@ -53,6 +53,7 @@ interface MovementFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   lockedType?: MovementType
+  movement?: InventoryMovement | null
   onSaved: () => void
 }
 
@@ -60,10 +61,12 @@ export function MovementFormDialog({
   open,
   onOpenChange,
   lockedType,
+  movement,
   onSaved,
 }: MovementFormDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
+  const isEdit = !!movement
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -79,19 +82,30 @@ export function MovementFormDialog({
 
   useEffect(() => {
     if (!open) return
-    form.reset({
-      product_id: "",
-      type: lockedType ?? "entrada",
-      quantity: 0,
-      unit_cost: "",
-      reference: "",
-      notes: "",
-    })
+    form.reset(
+      movement
+        ? {
+            product_id: String(movement.product_id),
+            type: movement.type,
+            quantity: movement.quantity,
+            unit_cost: movement.unit_cost === null ? "" : String(movement.unit_cost),
+            reference: movement.reference ?? "",
+            notes: movement.notes ?? "",
+          }
+        : {
+            product_id: "",
+            type: lockedType ?? "entrada",
+            quantity: 0,
+            unit_cost: "",
+            reference: "",
+            notes: "",
+          }
+    )
     listProducts({ per_page: 100, status: "activo", sort: "name", direction: "asc" }).then(
       ({ data }) => setProducts(data.data)
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, lockedType])
+  }, [open, lockedType, movement])
 
   const selectedType = useWatch({ control: form.control, name: "type" })
   const selectedProductId = useWatch({ control: form.control, name: "product_id" })
@@ -100,15 +114,23 @@ export function MovementFormDialog({
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true)
     try {
-      await createMovement({
-        product_id: Number(values.product_id),
-        type: values.type,
+      const shared = {
         quantity: values.quantity,
         unit_cost: values.unit_cost === "" ? null : Number(values.unit_cost),
         reference: values.reference?.trim() || null,
         notes: values.notes?.trim() || null,
-      })
-      toast.success("Movimiento registrado")
+      }
+      if (movement) {
+        await updateMovement(movement.id, shared)
+        toast.success("Movimiento corregido")
+      } else {
+        await createMovement({
+          product_id: Number(values.product_id),
+          type: values.type,
+          ...shared,
+        })
+        toast.success("Movimiento registrado")
+      }
       onOpenChange(false)
       onSaved()
     } catch (error) {
@@ -125,11 +147,11 @@ export function MovementFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Registrar movimiento</DialogTitle>
+          <DialogTitle>{isEdit ? "Corregir movimiento" : "Registrar movimiento"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form id="movement-form" onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-            {!lockedType && (
+            {!lockedType && !isEdit && (
               <FormField
                 control={form.control}
                 name="type"
@@ -146,30 +168,40 @@ export function MovementFormDialog({
                 )}
               />
             )}
-            <FormField
-              control={form.control}
-              name="product_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Producto</FormLabel>
-                  <IdSelect
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Selecciona"
-                    options={products.map((p) => ({
-                      value: String(p.id),
-                      label: `${p.name} (${p.sku})`,
-                    }))}
-                  />
-                  {selectedProduct && (
-                    <p className="text-xs text-muted-foreground">
-                      Stock actual: {selectedProduct.current_stock}
-                    </p>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {isEdit ? (
+              <div className="grid gap-1">
+                <FormLabel>Producto</FormLabel>
+                <p className="text-sm">
+                  {movement?.product_name}{" "}
+                  <span className="text-muted-foreground">({movement?.product_sku})</span>
+                </p>
+              </div>
+            ) : (
+              <FormField
+                control={form.control}
+                name="product_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Producto</FormLabel>
+                    <IdSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Selecciona"
+                      options={products.map((p) => ({
+                        value: String(p.id),
+                        label: `${p.name} (${p.sku})`,
+                      }))}
+                    />
+                    {selectedProduct && (
+                      <p className="text-xs text-muted-foreground">
+                        Stock actual: {selectedProduct.current_stock}
+                      </p>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="quantity"
@@ -237,7 +269,7 @@ export function MovementFormDialog({
           </Button>
           <Button type="submit" form="movement-form" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="animate-spin" />}
-            Registrar
+            {isEdit ? "Guardar" : "Registrar"}
           </Button>
         </DialogFooter>
       </DialogContent>
