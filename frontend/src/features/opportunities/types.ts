@@ -18,6 +18,7 @@ export interface Opportunity {
   lost_reason: string | null
   items?: OpportunityItem[]
   created_at: string
+  deleted_at?: string | null
   updated_at: string
 }
 

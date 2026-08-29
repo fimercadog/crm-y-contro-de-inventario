@@ -18,6 +18,7 @@ class UnitResource extends JsonResource
             'abbreviation' => $this->abbreviation,
             'status' => $this->status,
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

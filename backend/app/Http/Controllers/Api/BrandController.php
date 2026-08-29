@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'name' => 'Nombre',
         'description' => 'Descripción',
@@ -55,6 +58,18 @@ class BrandController extends Controller
         return response()->json(null, 204);
     }
 
+    public function restore(Request $request, int $brand)
+    {
+        $model = Brand::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($brand);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new BrandResource($model);
+    }
+
     public function exportCsv(Request $request)
     {
         $this->authorize('viewAny', Brand::class);
@@ -71,7 +86,10 @@ class BrandController extends Controller
 
     private function filteredQuery(Request $request)
     {
-        $query = Brand::query()->where('company_id', $request->user()->company_id);
+        $query = $this->applyTrashed(
+            Brand::withTrashed()->where('company_id', $request->user()->company_id),
+            $request,
+        );
 
         if ($search = $request->string('search')->trim()->value()) {
             $query->where('name', 'like', "%{$search}%");

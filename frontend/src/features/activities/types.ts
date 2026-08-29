@@ -27,4 +27,5 @@ export interface Activity {
   status: ActivityStatus
   priority: ActivityPriority
   created_at: string
+  deleted_at?: string | null
 }

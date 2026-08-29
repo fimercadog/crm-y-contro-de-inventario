@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'name' => 'Nombre',
         'description' => 'Descripción',
@@ -50,9 +53,21 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
 
-        $category->delete();
+        $category->delete(); // soft delete
 
         return response()->json(null, 204);
+    }
+
+    public function restore(Request $request, int $category)
+    {
+        $model = Category::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($category);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new CategoryResource($model);
     }
 
     public function exportCsv(Request $request)
@@ -71,7 +86,10 @@ class CategoryController extends Controller
 
     private function filteredQuery(Request $request)
     {
-        $query = Category::query()->where('company_id', $request->user()->company_id);
+        $query = $this->applyTrashed(
+            Category::withTrashed()->where('company_id', $request->user()->company_id),
+            $request,
+        );
 
         if ($search = $request->string('search')->trim()->value()) {
             $query->where('name', 'like', "%{$search}%");

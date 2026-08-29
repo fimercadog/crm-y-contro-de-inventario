@@ -61,3 +61,7 @@ export function moveOpportunityStage(id: number, stageId: number) {
 export function getPipeline() {
   return api.get<PipelineStage[]>("/pipeline")
 }
+
+export function restoreOpportunity(id: number) {
+  return api.post<{ data: Opportunity }>(`/opportunities/${id}/restore`)
+}

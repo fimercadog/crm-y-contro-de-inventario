@@ -22,7 +22,7 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
 import { DataTableExport } from "@/components/data-table/data-table-export"
 import { api } from "@/lib/api"
-import { deleteCustomer, listCustomers } from "@/features/customers/api"
+import { deleteCustomer, listCustomers, restoreCustomer } from "@/features/customers/api"
 import type { Customer } from "@/features/customers/types"
 import { customerColumns } from "./columns"
 import { CustomerFormDialog } from "@/components/customers/customer-form-dialog"
@@ -52,13 +52,15 @@ export default function ClientesPage() {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string[]>([])
   const [type, setType] = useState<string[]>([])
+  const [view, setView] = useState<string[]>([])
 
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Customer | null>(null)
   const [deleting, setDeleting] = useState<Customer | null>(null)
   const [isExporting, setIsExporting] = useState(false)
 
-  const isFiltered = status.length > 0 || type.length > 0 || search.length > 0
+  const isFiltered =
+    status.length > 0 || type.length > 0 || search.length > 0 || view.length > 0
 
   const queryParams = useMemo(
     () => ({
@@ -67,10 +69,11 @@ export default function ClientesPage() {
       search: search || undefined,
       status: status[0],
       type: type[0],
+      trashed: view[0] as "none" | "only" | undefined,
       sort: sorting[0]?.id,
       direction: sorting[0] ? (sorting[0].desc ? ("desc" as const) : ("asc" as const)) : undefined,
     }),
-    [pagination, search, status, type, sorting]
+    [pagination, search, status, type, view, sorting]
   )
 
   const fetchData = useCallback(() => {
@@ -134,8 +137,20 @@ export default function ClientesPage() {
     }
   }
 
+  async function handleRestore(customer: Customer) {
+    try {
+      await restoreCustomer(customer.id)
+      toast.success(`Cliente "${customer.name}" restaurado`)
+      fetchData()
+    } catch {
+      toast.error("No se pudo restaurar el cliente")
+    }
+  }
+
   const columns = useMemo(
-    () => customerColumns({ onEdit: handleEdit, onDelete: setDeleting }),
+    () =>
+      customerColumns({ onEdit: handleEdit, onDelete: setDeleting, onRestore: handleRestore }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -179,6 +194,7 @@ export default function ClientesPage() {
               setSearch("")
               setStatus([])
               setType([])
+              setView([])
               setPagination((p) => ({ ...p, pageIndex: 0 }))
             }}
             filters={
@@ -198,6 +214,18 @@ export default function ClientesPage() {
                   value={type}
                   onChange={(value) => {
                     setType(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+                <DataTableFacetedFilter
+                  title="Ver"
+                  options={[
+                    { label: "Vigentes", value: "none" },
+                    { label: "Eliminados", value: "only" },
+                  ]}
+                  value={view}
+                  onChange={(value) => {
+                    setView(value)
                     setPagination((p) => ({ ...p, pageIndex: 0 }))
                   }}
                 />

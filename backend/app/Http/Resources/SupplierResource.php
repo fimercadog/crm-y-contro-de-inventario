@@ -26,6 +26,7 @@ class SupplierResource extends JsonResource
             'notes' => $this->notes,
             'status' => $this->status,
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

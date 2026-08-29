@@ -39,6 +39,7 @@ class OpportunityResource extends JsonResource
                 'subtotal' => (float) $item->subtotal,
             ])),
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
             'updated_at' => $this->updated_at,
         ];
     }

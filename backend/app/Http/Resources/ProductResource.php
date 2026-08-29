@@ -39,6 +39,7 @@ class ProductResource extends JsonResource
                 'name' => $s->name,
             ])),
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
             'updated_at' => $this->updated_at,
         ];
     }

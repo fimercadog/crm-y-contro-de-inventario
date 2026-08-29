@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
@@ -14,6 +15,8 @@ use Illuminate\Support\Collection;
 
 class ActivityController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'title' => 'Título',
         'type' => 'Tipo',
@@ -96,11 +99,23 @@ class ActivityController extends Controller
         return response()->json(null, 204);
     }
 
+    public function restore(Request $request, int $activity)
+    {
+        $model = Activity::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($activity);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new ActivityResource($model);
+    }
+
     private function filteredQuery(Request $request): Builder
     {
         $user = $request->user();
 
-        $query = Activity::query()
+        $query = $this->applyTrashed(Activity::withTrashed(), $request)
             ->where('company_id', $user->company_id)
             ->with(['customer', 'opportunity', 'user']);
 

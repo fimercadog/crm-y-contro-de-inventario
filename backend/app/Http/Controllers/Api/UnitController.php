@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUnitRequest;
 use App\Http\Requests\UpdateUnitRequest;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 
 class UnitController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'name' => 'Nombre',
         'abbreviation' => 'Abreviatura',
@@ -55,6 +58,18 @@ class UnitController extends Controller
         return response()->json(null, 204);
     }
 
+    public function restore(Request $request, int $unit)
+    {
+        $model = Unit::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($unit);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new UnitResource($model);
+    }
+
     public function exportCsv(Request $request)
     {
         $this->authorize('viewAny', Unit::class);
@@ -71,7 +86,10 @@ class UnitController extends Controller
 
     private function filteredQuery(Request $request)
     {
-        $query = Unit::query()->where('company_id', $request->user()->company_id);
+        $query = $this->applyTrashed(
+            Unit::withTrashed()->where('company_id', $request->user()->company_id),
+            $request,
+        );
 
         if ($search = $request->string('search')->trim()->value()) {
             $query->where('name', 'like', "%{$search}%");

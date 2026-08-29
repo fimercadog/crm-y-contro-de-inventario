@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -14,6 +15,8 @@ use Illuminate\Support\Collection;
 
 class ProductController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'sku' => 'SKU',
         'name' => 'Nombre',
@@ -81,6 +84,18 @@ class ProductController extends Controller
         return response()->json(null, 204);
     }
 
+    public function restore(Request $request, int $product)
+    {
+        $model = Product::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($product);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new ProductResource($model);
+    }
+
     public function exportCsv(Request $request)
     {
         $this->authorize('viewAny', Product::class);
@@ -112,7 +127,7 @@ class ProductController extends Controller
 
     private function filteredQuery(Request $request): Builder
     {
-        $query = Product::query()
+        $query = $this->applyTrashed(Product::withTrashed(), $request)
             ->where('company_id', $request->user()->company_id)
             ->with(['category', 'brand', 'unit']);
 

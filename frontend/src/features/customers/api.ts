@@ -36,6 +36,10 @@ export function deleteCustomer(id: number) {
   return api.delete(`/customers/${id}`)
 }
 
+export function restoreCustomer(id: number) {
+  return api.post<{ data: Customer }>(`/customers/${id}/restore`)
+}
+
 export function createContact(customerId: number, payload: Partial<Contact>) {
   return api.post<{ data: Contact }>(`/customers/${customerId}/contacts`, payload)
 }

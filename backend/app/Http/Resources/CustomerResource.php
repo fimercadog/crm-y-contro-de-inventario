@@ -32,6 +32,7 @@ class CustomerResource extends JsonResource
             'contacts_count' => $this->whenCounted('contacts'),
             'contacts' => ContactResource::collection($this->whenLoaded('contacts')),
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
             'updated_at' => $this->updated_at,
         ];
     }

@@ -5,6 +5,7 @@ export interface CatalogEntry {
   name: string
   status: CatalogStatus
   created_at: string
+  deleted_at?: string | null
 }
 
 export interface Category extends CatalogEntry {

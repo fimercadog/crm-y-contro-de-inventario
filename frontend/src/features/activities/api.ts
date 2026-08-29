@@ -33,3 +33,7 @@ export function updateActivity(id: number, payload: Partial<ActivityPayload>) {
 export function deleteActivity(id: number) {
   return api.delete(`/activities/${id}`)
 }
+
+export function restoreActivity(id: number) {
+  return api.post<{ data: Activity }>(`/activities/${id}/restore`)
+}

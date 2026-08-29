@@ -1,17 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { MoreHorizontal } from "lucide-react"
-
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+import { RowActions } from "@/components/data-table/row-actions"
 import type { AppColumnDef } from "@/components/data-table/data-table"
 import type { Opportunity } from "@/features/opportunities/types"
 
@@ -32,11 +24,13 @@ const currency = new Intl.NumberFormat("es-CO", { style: "currency", currency: "
 interface ColumnActions {
   onEdit: (opportunity: Opportunity) => void
   onDelete: (opportunity: Opportunity) => void
+  onRestore: (opportunity: Opportunity) => void
 }
 
 export function opportunityColumns({
   onEdit,
   onDelete,
+  onRestore,
 }: ColumnActions): AppColumnDef<Opportunity>[] {
   return [
     {
@@ -74,11 +68,14 @@ export function opportunityColumns({
     {
       accessorKey: "status",
       header: "Estado",
-      cell: ({ row }) => (
-        <Badge variant={statusVariant[row.original.status]}>
-          {statusLabel[row.original.status]}
-        </Badge>
-      ),
+      cell: ({ row }) =>
+        row.original.deleted_at ? (
+          <Badge variant="destructive">Eliminado</Badge>
+        ) : (
+          <Badge variant={statusVariant[row.original.status]}>
+            {statusLabel[row.original.status]}
+          </Badge>
+        ),
     },
     {
       accessorKey: "assigned_user_name",
@@ -88,21 +85,12 @@ export function opportunityColumns({
     {
       id: "actions",
       cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="ghost" size="icon" className="size-8">
-                <MoreHorizontal />
-              </Button>
-            }
-          />
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onEdit(row.original)}>Editar</DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onClick={() => onDelete(row.original)}>
-              Eliminar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <RowActions
+          row={row.original}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onRestore={onRestore}
+        />
       ),
     },
   ]

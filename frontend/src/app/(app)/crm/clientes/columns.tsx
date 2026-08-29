@@ -1,17 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { MoreHorizontal } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+import { RowActions } from "@/components/data-table/row-actions"
 import type { AppColumnDef } from "@/components/data-table/data-table"
 import type { Customer } from "@/features/customers/types"
 
@@ -30,11 +23,13 @@ const statusLabel: Record<Customer["status"], string> = {
 interface ColumnActions {
   onEdit: (customer: Customer) => void
   onDelete: (customer: Customer) => void
+  onRestore: (customer: Customer) => void
 }
 
 export function customerColumns({
   onEdit,
   onDelete,
+  onRestore,
 }: ColumnActions): AppColumnDef<Customer>[] {
   return [
     {
@@ -65,11 +60,14 @@ export function customerColumns({
     {
       accessorKey: "status",
       header: "Estado",
-      cell: ({ row }) => (
-        <Badge variant={statusVariant[row.original.status]}>
-          {statusLabel[row.original.status]}
-        </Badge>
-      ),
+      cell: ({ row }) =>
+        row.original.deleted_at ? (
+          <Badge variant="destructive">Eliminado</Badge>
+        ) : (
+          <Badge variant={statusVariant[row.original.status]}>
+            {statusLabel[row.original.status]}
+          </Badge>
+        ),
     },
     {
       accessorKey: "assigned_user_name",
@@ -84,24 +82,12 @@ export function customerColumns({
     {
       id: "actions",
       cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="ghost" size="icon" className="size-8">
-                <MoreHorizontal />
-              </Button>
-            }
-          />
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onEdit(row.original)}>Editar</DropdownMenuItem>
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => onDelete(row.original)}
-            >
-              Eliminar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <RowActions
+          row={row.original}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onRestore={onRestore}
+        />
       ),
     },
   ]

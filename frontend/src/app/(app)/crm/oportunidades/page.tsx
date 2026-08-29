@@ -26,6 +26,7 @@ import {
   deleteOpportunity,
   getPipeline,
   listOpportunities,
+  restoreOpportunity,
 } from "@/features/opportunities/api"
 import type { Opportunity, PipelineStage } from "@/features/opportunities/types"
 import { opportunityColumns } from "./columns"
@@ -50,13 +51,14 @@ export default function OportunidadesPage() {
   })
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string[]>([])
+  const [view, setView] = useState<string[]>([])
 
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Opportunity | null>(null)
   const [deleting, setDeleting] = useState<Opportunity | null>(null)
   const [isExporting, setIsExporting] = useState(false)
 
-  const isFiltered = status.length > 0 || search.length > 0
+  const isFiltered = status.length > 0 || search.length > 0 || view.length > 0
 
   const queryParams = useMemo(
     () => ({
@@ -64,8 +66,9 @@ export default function OportunidadesPage() {
       per_page: pagination.pageSize,
       search: search || undefined,
       status: status[0],
+      trashed: view[0] as "none" | "only" | undefined,
     }),
-    [pagination, search, status]
+    [pagination, search, status, view]
   )
 
   const fetchData = useCallback(() => {
@@ -133,8 +136,24 @@ export default function OportunidadesPage() {
     }
   }
 
+  async function handleRestore(opportunity: Opportunity) {
+    try {
+      await restoreOpportunity(opportunity.id)
+      toast.success(`Oportunidad "${opportunity.title}" restaurada`)
+      fetchData()
+    } catch {
+      toast.error("No se pudo restaurar la oportunidad")
+    }
+  }
+
   const columns = useMemo(
-    () => opportunityColumns({ onEdit: handleEdit, onDelete: setDeleting }),
+    () =>
+      opportunityColumns({
+        onEdit: handleEdit,
+        onDelete: setDeleting,
+        onRestore: handleRestore,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -175,18 +194,33 @@ export default function OportunidadesPage() {
             onReset={() => {
               setSearch("")
               setStatus([])
+              setView([])
               setPagination((p) => ({ ...p, pageIndex: 0 }))
             }}
             filters={
-              <DataTableFacetedFilter
-                title="Estado"
-                options={statusOptions}
-                value={status}
-                onChange={(value) => {
-                  setStatus(value)
-                  setPagination((p) => ({ ...p, pageIndex: 0 }))
-                }}
-              />
+              <>
+                <DataTableFacetedFilter
+                  title="Estado"
+                  options={statusOptions}
+                  value={status}
+                  onChange={(value) => {
+                    setStatus(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+                <DataTableFacetedFilter
+                  title="Ver"
+                  options={[
+                    { label: "Vigentes", value: "none" },
+                    { label: "Eliminados", value: "only" },
+                  ]}
+                  value={view}
+                  onChange={(value) => {
+                    setView(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+              </>
             }
             actions={
               <DataTableExport

@@ -30,5 +30,6 @@ export interface Product {
   supplier_ids?: number[]
   suppliers?: ProductSupplier[]
   created_at: string
+  deleted_at?: string | null
   updated_at: string
 }

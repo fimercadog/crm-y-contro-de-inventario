@@ -28,6 +28,7 @@ class ActivityResource extends JsonResource
             'status' => $this->status,
             'priority' => $this->priority,
             'created_at' => $this->created_at,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

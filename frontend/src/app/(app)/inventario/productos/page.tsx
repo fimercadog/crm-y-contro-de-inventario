@@ -22,9 +22,14 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
 import { DataTableExport } from "@/components/data-table/data-table-export"
 import { api } from "@/lib/api"
-import { deleteProduct, listProducts } from "@/features/products/api"
+import { deleteProduct, listProducts, restoreProduct } from "@/features/products/api"
 import type { Product } from "@/features/products/types"
 import { productColumns } from "./columns"
+
+const viewOptions = [
+  { label: "Vigentes", value: "none" },
+  { label: "Eliminados", value: "only" },
+]
 import { ProductFormDialog } from "@/components/products/product-form-dialog"
 
 const statusOptions = [
@@ -44,6 +49,7 @@ export default function ProductosPage() {
   })
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string[]>([])
+  const [view, setView] = useState<string[]>([])
   const [lowStock, setLowStock] = useState(false)
 
   const [formOpen, setFormOpen] = useState(false)
@@ -51,7 +57,7 @@ export default function ProductosPage() {
   const [deleting, setDeleting] = useState<Product | null>(null)
   const [isExporting, setIsExporting] = useState(false)
 
-  const isFiltered = status.length > 0 || search.length > 0 || lowStock
+  const isFiltered = status.length > 0 || search.length > 0 || lowStock || view.length > 0
 
   const queryParams = useMemo(
     () => ({
@@ -59,9 +65,10 @@ export default function ProductosPage() {
       per_page: pagination.pageSize,
       search: search || undefined,
       status: status[0],
+      trashed: view[0] as "none" | "only" | undefined,
       low_stock: lowStock ? ("1" as const) : undefined,
     }),
-    [pagination, search, status, lowStock]
+    [pagination, search, status, view, lowStock]
   )
 
   const fetchData = useCallback(() => {
@@ -115,8 +122,27 @@ export default function ProductosPage() {
     }
   }
 
+  async function handleRestore(product: Product) {
+    try {
+      await restoreProduct(product.id)
+      toast.success(`Producto "${product.name}" restaurado`)
+      fetchData()
+    } catch {
+      toast.error("No se pudo restaurar el producto")
+    }
+  }
+
   const columns = useMemo(
-    () => productColumns({ onEdit: (p) => { setEditing(p); setFormOpen(true) }, onDelete: setDeleting }),
+    () =>
+      productColumns({
+        onEdit: (p) => {
+          setEditing(p)
+          setFormOpen(true)
+        },
+        onDelete: setDeleting,
+        onRestore: handleRestore,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -162,6 +188,7 @@ export default function ProductosPage() {
             onReset={() => {
               setSearch("")
               setStatus([])
+              setView([])
               setLowStock(false)
               setPagination((p) => ({ ...p, pageIndex: 0 }))
             }}
@@ -173,6 +200,15 @@ export default function ProductosPage() {
                   value={status}
                   onChange={(value) => {
                     setStatus(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+                <DataTableFacetedFilter
+                  title="Ver"
+                  options={viewOptions}
+                  value={view}
+                  onChange={(value) => {
+                    setView(value)
                     setPagination((p) => ({ ...p, pageIndex: 0 }))
                   }}
                 />

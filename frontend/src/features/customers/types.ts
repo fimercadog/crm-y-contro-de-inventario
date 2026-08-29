@@ -40,6 +40,7 @@ export interface Customer {
   contacts?: Contact[]
   created_at: string
   updated_at: string
+  deleted_at?: string | null
 }
 
 export interface PaginatedResponse<T> {

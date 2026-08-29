@@ -22,7 +22,7 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
 import { DataTableExport } from "@/components/data-table/data-table-export"
 import { useTableExport } from "@/lib/export"
-import { deleteActivity, listActivities } from "@/features/activities/api"
+import { deleteActivity, listActivities, restoreActivity } from "@/features/activities/api"
 import type { Activity } from "@/features/activities/types"
 import { activityColumns } from "./columns"
 import { ActivityFormDialog } from "@/components/activities/activity-form-dialog"
@@ -52,6 +52,7 @@ export default function ActividadesPage() {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string[]>([])
   const [priority, setPriority] = useState<string[]>([])
+  const [view, setView] = useState<string[]>([])
 
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Activity | null>(null)
@@ -59,7 +60,8 @@ export default function ActividadesPage() {
 
   const { isExporting, exportAs } = useTableExport("activities", "actividades")
 
-  const isFiltered = status.length > 0 || priority.length > 0 || search.length > 0
+  const isFiltered =
+    status.length > 0 || priority.length > 0 || search.length > 0 || view.length > 0
 
   const queryParams = useMemo(
     () => ({
@@ -68,8 +70,9 @@ export default function ActividadesPage() {
       search: search || undefined,
       status: status[0],
       priority: priority[0],
+      trashed: view[0] as "none" | "only" | undefined,
     }),
-    [pagination, search, status, priority]
+    [pagination, search, status, priority, view]
   )
 
   const fetchData = useCallback(() => {
@@ -103,6 +106,16 @@ export default function ActividadesPage() {
     }
   }
 
+  async function handleRestore(activity: Activity) {
+    try {
+      await restoreActivity(activity.id)
+      toast.success(`Actividad "${activity.title}" restaurada`)
+      fetchData()
+    } catch {
+      toast.error("No se pudo restaurar la actividad")
+    }
+  }
+
   const columns = useMemo(
     () =>
       activityColumns({
@@ -111,7 +124,9 @@ export default function ActividadesPage() {
           setFormOpen(true)
         },
         onDelete: setDeleting,
+        onRestore: handleRestore,
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -158,6 +173,7 @@ export default function ActividadesPage() {
               setSearch("")
               setStatus([])
               setPriority([])
+              setView([])
               setPagination((p) => ({ ...p, pageIndex: 0 }))
             }}
             filters={
@@ -177,6 +193,18 @@ export default function ActividadesPage() {
                   value={priority}
                   onChange={(value) => {
                     setPriority(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+                <DataTableFacetedFilter
+                  title="Ver"
+                  options={[
+                    { label: "Vigentes", value: "none" },
+                    { label: "Eliminados", value: "only" },
+                  ]}
+                  value={view}
+                  onChange={(value) => {
+                    setView(value)
                     setPagination((p) => ({ ...p, pageIndex: 0 }))
                   }}
                 />

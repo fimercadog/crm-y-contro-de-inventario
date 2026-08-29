@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
@@ -14,6 +15,8 @@ use Illuminate\Support\Collection;
 
 class CustomerController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'name' => 'Nombre',
         'type' => 'Tipo',
@@ -69,6 +72,18 @@ class CustomerController extends Controller
         return response()->json(null, 204);
     }
 
+    public function restore(Request $request, int $customer)
+    {
+        $model = Customer::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($customer);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new CustomerResource($model);
+    }
+
     public function exportCsv(Request $request)
     {
         $this->authorize('viewAny', Customer::class);
@@ -101,7 +116,7 @@ class CustomerController extends Controller
     {
         $user = $request->user();
 
-        $query = Customer::query()
+        $query = $this->applyTrashed(Customer::withTrashed(), $request)
             ->where('company_id', $user->company_id)
             ->withCount('contacts')
             ->with('assignedUser');

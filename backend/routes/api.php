@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/customers/export/csv', [CustomerController::class, 'exportCsv']);
     Route::get('/customers/export/pdf', [CustomerController::class, 'exportPdf']);
+    Route::post('/customers/{id}/restore', [CustomerController::class, 'restore']);
     Route::apiResource('customers', CustomerController::class);
     Route::post('/customers/{customer}/contacts', [ContactController::class, 'store']);
 
@@ -62,10 +63,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/opportunities/export/csv', [OpportunityController::class, 'exportCsv']);
     Route::get('/opportunities/export/pdf', [OpportunityController::class, 'exportPdf']);
     Route::patch('/opportunities/{opportunity}/stage', [OpportunityController::class, 'updateStage']);
+    Route::post('/opportunities/{id}/restore', [OpportunityController::class, 'restore']);
     Route::apiResource('opportunities', OpportunityController::class);
 
     Route::get('/activities/export/csv', [ActivityController::class, 'exportCsv']);
     Route::get('/activities/export/pdf', [ActivityController::class, 'exportPdf']);
+    Route::post('/activities/{id}/restore', [ActivityController::class, 'restore']);
     Route::apiResource('activities', ActivityController::class);
 
     foreach ([
@@ -76,11 +79,13 @@ Route::middleware('auth:sanctum')->group(function () {
     ] as $uri => $controller) {
         Route::get("/{$uri}/export/csv", [$controller, 'exportCsv']);
         Route::get("/{$uri}/export/pdf", [$controller, 'exportPdf']);
+        Route::post("/{$uri}/{id}/restore", [$controller, 'restore']);
         Route::apiResource($uri, $controller)->except('show');
     }
 
     Route::get('/products/export/csv', [ProductController::class, 'exportCsv']);
     Route::get('/products/export/pdf', [ProductController::class, 'exportPdf']);
+    Route::post('/products/{id}/restore', [ProductController::class, 'restore']);
     Route::apiResource('products', ProductController::class);
 
     Route::get('/inventory-movements/export/csv', [InventoryMovementController::class, 'exportCsv']);

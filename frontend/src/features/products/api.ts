@@ -48,3 +48,7 @@ export function updateProduct(id: number, payload: Partial<ProductPayload>) {
 export function deleteProduct(id: number) {
   return api.delete(`/products/${id}`)
 }
+
+export function restoreProduct(id: number) {
+  return api.post<{ data: Product }>(`/products/${id}/restore`)
+}

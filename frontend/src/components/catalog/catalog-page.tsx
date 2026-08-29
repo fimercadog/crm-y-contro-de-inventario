@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { PaginationState } from "@tanstack/react-table"
-import { Plus } from "lucide-react"
+import { MoreHorizontal, Plus } from "lucide-react"
 import { toast } from "sonner"
 import axios from "axios"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
@@ -17,6 +18,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
@@ -31,18 +38,22 @@ const statusOptions = [
   { label: "Inactivo", value: "inactivo" },
 ]
 
-interface CatalogPageProps<T extends RowData & { id: number; name: string }> {
+const viewOptions = [
+  { label: "Vigentes", value: "none" },
+  { label: "Eliminados", value: "only" },
+]
+
+type CatalogRow = RowData & { id: number; name: string; status: string; deleted_at?: string | null }
+
+interface CatalogPageProps<T extends CatalogRow> {
   title: string
   itemLabel: string
-  /** Grammatical gender of itemLabel in Spanish, for participle agreement
-   * ("creada"/"creado", "Nueva"/"Nuevo"). */
+  /** Grammatical gender of itemLabel in Spanish ("creada"/"creado"). */
   gender: "m" | "f"
   resourceApi: ReturnType<typeof createCatalogApi<T>>
   exportFileBase: string
-  columns: (actions: {
-    onEdit: (item: T) => void
-    onDelete: (item: T) => void
-  }) => AppColumnDef<T>[]
+  /** Just the data columns — status and row actions are added here. */
+  dataColumns: AppColumnDef<T>[]
   renderDialog: (props: {
     open: boolean
     onOpenChange: (open: boolean) => void
@@ -51,35 +62,35 @@ interface CatalogPageProps<T extends RowData & { id: number; name: string }> {
   }) => React.ReactNode
 }
 
-export function CatalogPage<T extends RowData & { id: number; name: string }>({
+export function CatalogPage<T extends CatalogRow>({
   title,
   itemLabel,
   gender,
   resourceApi,
   exportFileBase,
-  columns,
+  dataColumns,
   renderDialog,
 }: CatalogPageProps<T>) {
   const newLabel = gender === "f" ? "Nueva" : "Nuevo"
   const deletedLabel = gender === "f" ? "eliminada" : "eliminado"
+  const restoredLabel = gender === "f" ? "restaurada" : "restaurado"
+
   const [data, setData] = useState<T[]>([])
   const [total, setTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string>()
 
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 20,
-  })
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 20 })
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string[]>([])
+  const [view, setView] = useState<string[]>([])
 
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<T | null>(null)
   const [deleting, setDeleting] = useState<T | null>(null)
   const [isExporting, setIsExporting] = useState(false)
 
-  const isFiltered = status.length > 0 || search.length > 0
+  const isFiltered = status.length > 0 || search.length > 0 || view.length > 0
 
   const queryParams = useMemo(
     () => ({
@@ -87,8 +98,9 @@ export function CatalogPage<T extends RowData & { id: number; name: string }>({
       per_page: pagination.pageSize,
       search: search || undefined,
       status: status[0],
+      trashed: view[0] as "none" | "only" | undefined,
     }),
-    [pagination, search, status]
+    [pagination, search, status, view]
   )
 
   const fetchData = useCallback(() => {
@@ -113,7 +125,7 @@ export function CatalogPage<T extends RowData & { id: number; name: string }>({
     if (!deleting) return
     try {
       await resourceApi.remove(deleting.id)
-      toast.success(`${itemLabel} ${deletedLabel}`)
+      toast.success(`${itemLabel} "${deleting.name}" ${deletedLabel}`)
       setDeleting(null)
       fetchData()
     } catch (error) {
@@ -121,6 +133,16 @@ export function CatalogPage<T extends RowData & { id: number; name: string }>({
         ? (error.response?.data?.message as string | undefined)
         : undefined
       toast.error(message ?? `No se pudo eliminar: ${itemLabel.toLowerCase()}`)
+    }
+  }
+
+  async function handleRestore(item: T) {
+    try {
+      await resourceApi.restore(item.id)
+      toast.success(`${itemLabel} "${item.name}" ${restoredLabel}`)
+      fetchData()
+    } catch {
+      toast.error(`No se pudo restaurar: ${itemLabel.toLowerCase()}`)
     }
   }
 
@@ -144,16 +166,62 @@ export function CatalogPage<T extends RowData & { id: number; name: string }>({
     }
   }
 
-  const tableColumns = useMemo(
-    () =>
-      columns({
-        onEdit: (item) => {
-          setEditing(item)
-          setFormOpen(true)
-        },
-        onDelete: setDeleting,
-      }),
-    [columns]
+  const tableColumns = useMemo<AppColumnDef<T>[]>(
+    () => [
+      ...dataColumns,
+      {
+        accessorKey: "status",
+        header: "Estado",
+        cell: ({ row }) =>
+          row.original.deleted_at ? (
+            <Badge variant="destructive">Eliminado</Badge>
+          ) : (
+            <Badge variant={row.original.status === "activo" ? "success" : "outline"}>
+              {row.original.status === "activo" ? "Activo" : "Inactivo"}
+            </Badge>
+          ),
+      },
+      {
+        id: "actions",
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button variant="ghost" size="icon" className="size-8">
+                  <MoreHorizontal />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end">
+              {row.original.deleted_at ? (
+                <DropdownMenuItem onClick={() => handleRestore(row.original)}>
+                  Restaurar
+                </DropdownMenuItem>
+              ) : (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setEditing(row.original)
+                      setFormOpen(true)
+                    }}
+                  >
+                    Editar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => setDeleting(row.original)}
+                  >
+                    Eliminar
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dataColumns]
   )
 
   return (
@@ -198,18 +266,30 @@ export function CatalogPage<T extends RowData & { id: number; name: string }>({
             onReset={() => {
               setSearch("")
               setStatus([])
+              setView([])
               setPagination((p) => ({ ...p, pageIndex: 0 }))
             }}
             filters={
-              <DataTableFacetedFilter
-                title="Estado"
-                options={statusOptions}
-                value={status}
-                onChange={(value) => {
-                  setStatus(value)
-                  setPagination((p) => ({ ...p, pageIndex: 0 }))
-                }}
-              />
+              <>
+                <DataTableFacetedFilter
+                  title="Estado"
+                  options={statusOptions}
+                  value={status}
+                  onChange={(value) => {
+                    setStatus(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+                <DataTableFacetedFilter
+                  title="Ver"
+                  options={viewOptions}
+                  value={view}
+                  onChange={(value) => {
+                    setView(value)
+                    setPagination((p) => ({ ...p, pageIndex: 0 }))
+                  }}
+                />
+              </>
             }
             actions={
               <DataTableExport
@@ -234,7 +314,8 @@ export function CatalogPage<T extends RowData & { id: number; name: string }>({
           <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar {itemLabel.toLowerCase()}?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción eliminará &quot;{deleting?.name}&quot; permanentemente.
+              &quot;{deleting?.name}&quot; se marcará como {deletedLabel}. Seguirá en la lista con
+              la etiqueta &quot;Eliminado&quot; y podrás restaurarlo desde ahí.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -55,6 +55,19 @@ class CatalogTest extends TestCase
             ->assertNoContent();
 
         $this->assertSoftDeleted((new $model)->getTable(), ['id' => $id]);
+
+        // Still listed by default (flagged deleted), and restorable.
+        $this->actingAs($inventario)
+            ->getJson("/api/{$uri}")
+            ->assertJsonPath('data.0.id', $id)
+            ->assertJsonPath('data.0.deleted_at', fn ($v) => $v !== null);
+
+        $this->actingAs($inventario)
+            ->postJson("/api/{$uri}/{$id}/restore")
+            ->assertOk()
+            ->assertJsonPath('data.deleted_at', null);
+
+        $this->assertNotSoftDeleted((new $model)->getTable(), ['id' => $id]);
     }
 
     #[DataProvider('catalogs')]

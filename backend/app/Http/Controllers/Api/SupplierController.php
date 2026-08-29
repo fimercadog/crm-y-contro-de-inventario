@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'name' => 'Nombre',
         'document_number' => 'Documento',
@@ -59,6 +62,18 @@ class SupplierController extends Controller
         return response()->json(null, 204);
     }
 
+    public function restore(Request $request, int $supplier)
+    {
+        $model = Supplier::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($supplier);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new SupplierResource($model);
+    }
+
     public function exportCsv(Request $request)
     {
         $this->authorize('viewAny', Supplier::class);
@@ -75,7 +90,10 @@ class SupplierController extends Controller
 
     private function filteredQuery(Request $request)
     {
-        $query = Supplier::query()->where('company_id', $request->user()->company_id);
+        $query = $this->applyTrashed(
+            Supplier::withTrashed()->where('company_id', $request->user()->company_id),
+            $request,
+        );
 
         if ($search = $request->string('search')->trim()->value()) {
             $query->where(function ($q) use ($search) {

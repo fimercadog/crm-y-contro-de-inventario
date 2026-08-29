@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Concerns\SoftDeleteListing;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOpportunityRequest;
 use App\Http\Requests\UpdateOpportunityRequest;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\DB;
 
 class OpportunityController extends Controller
 {
+    use SoftDeleteListing;
+
     private const EXPORT_COLUMNS = [
         'title' => 'Título',
         'customer_name' => 'Cliente',
@@ -116,6 +119,18 @@ class OpportunityController extends Controller
         return response()->json(null, 204);
     }
 
+    public function restore(Request $request, int $opportunity)
+    {
+        $model = Opportunity::onlyTrashed()
+            ->where('company_id', $request->user()->company_id)
+            ->findOrFail($opportunity);
+
+        $this->authorize('delete', $model);
+        $model->restore();
+
+        return new OpportunityResource($model);
+    }
+
     public function exportCsv(Request $request)
     {
         $this->authorize('viewAny', Opportunity::class);
@@ -147,7 +162,7 @@ class OpportunityController extends Controller
     {
         $user = $request->user();
 
-        $query = Opportunity::query()
+        $query = $this->applyTrashed(Opportunity::withTrashed(), $request)
             ->where('company_id', $user->company_id)
             ->with(['customer', 'stage', 'assignedUser']);
 
