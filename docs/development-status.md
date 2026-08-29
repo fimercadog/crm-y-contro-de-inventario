@@ -1,6 +1,6 @@
 # Estado de desarrollo
 
-Última actualización: 2026-08-28.
+Última actualización: 2026-08-29.
 
 Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
@@ -102,7 +102,8 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 12 — Auditoría
 
-⬜ Pendiente.
+✅ Backend: trait `Concerns\Auditable` (boot hooks `created`/`updated`/`deleted`) que escribe en `audit_logs` (empresa, usuario actor vía `Auth::id()`, evento, tipo/id polimórfico, diff campo-a-campo `{from,to}`, IP). Campos sensibles (`password`, `remember_token`, timestamps) nunca se guardan; un `updated` sin cambios efectivos no escribe fila. Aplicado a `Customer`, `Contact`, `Product`, `Opportunity`, `User`, `Company`. Los seeders corren con `WithoutModelEvents`, así que no generan ruido de auditoría. `GET /api/audit-logs` solo super-admin/administrador, con alcance por empresa, filtros por evento/entidad/usuario y búsqueda por nombre de usuario o IP; paginado. 3 tests nuevos, 79 en total.
+✅ Frontend: `/admin/auditoria` (DataTable de solo lectura con filtros por evento y entidad, búsqueda por usuario/IP, resumen de campos cambiados, IP y fecha localizada). Link ya presente en el nav de Administración. `npm run build` y `npm run lint` verdes (solo la advertencia preexistente de `window.location.href`).
 
 ## Fase 13 — Arquitectura IA
 

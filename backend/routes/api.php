@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\CustomerController;
@@ -72,6 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/inventory-movements/export/csv', [InventoryMovementController::class, 'exportCsv']);
     Route::get('/inventory-movements/export/pdf', [InventoryMovementController::class, 'exportPdf']);
     Route::apiResource('inventory-movements', InventoryMovementController::class)->only(['index', 'store']);
+
+    Route::get('/audit-logs', [AuditLogController::class, 'index']);
 
     Route::get('/reports/inventory-valuation', [ReportController::class, 'inventoryValuation']);
     Route::get('/reports/movements-summary', [ReportController::class, 'movementsSummary']);
