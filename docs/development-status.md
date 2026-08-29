@@ -107,12 +107,18 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 13 — Arquitectura IA
 
-✅ Backend: asistente de preguntas en lenguaje natural con proveedor intercambiable. `Services\Ai\AiProvider` (interfaz) + 3 implementaciones: `StubProvider` (offline, por defecto — devuelve el snapshot + la pregunta, sin API key), `OpenAiProvider` y `AnthropicProvider` (vía `Http`, timeout 30s, `AiUnavailableException` → 503). El binding se elige con `config('services.ai.provider')` en `AppServiceProvider::register()`. `Services\Ai\BusinessContext` arma un resumen compacto (conteos, productos con stock bajo, últimos 10 movimientos) **siempre filtrado por `company_id`** — el modelo nunca ve otro tenant y no hay tool-calling. `Assistant` concatena `history` + `message`. `POST /api/ai/ask` (cualquier usuario autenticado, sobre su propia empresa), valida `message` (≤2000) e `history` (≤20 turnos). 5 tests nuevos (stub scoped a empresa, auth requerida, validación, fallo → 503, `Http::fake` de OpenAI), 84 en total. Doc: [ai-architecture.md](ai-architecture.md).
+✅ Backend: asistente de preguntas en lenguaje natural con proveedor intercambiable. `Services\Ai\AiProvider` (interfaz) + 3 implementaciones: `StubProvider` (offline, por defecto — devuelve el snapshot + la pregunta, sin API key), `OpenAiProvider` y `AnthropicProvider` (vía `Http`, timeout 30s, `AiUnavailableException` → 503). El binding se elige con `config('services.ai.provider')` en `AppServiceProvider::register()`. `Services\Ai\BusinessContext` arma un resumen compacto (conteos, productos con stock bajo, últimos 10 movimientos) **siempre filtrado por `company_id`** — el modelo nunca ve otro tenant y no hay tool-calling. `Assistant` concatena `history` + `message`. `POST /api/ai/ask` solo para super-admin/administrador (misma puerta que los reportes agregados: el snapshot es de toda la empresa, no filtrado por visibilidad de fila), valida `message` (≤2000) e `history` (≤20 turnos). 6 tests nuevos (stub scoped a empresa, auth requerida, 403 para roles no admin, validación, fallo → 503, `Http::fake` de OpenAI), 85 en total. Doc: [ai-architecture.md](ai-architecture.md).
 ✅ Frontend: `/ia` (chat de una sola vista: historial, sugerencias iniciales, textarea con Enter-para-enviar, badge del rol, manejo de 503 con toast y restauración del mensaje). Link "IA" ya presente en el nav de Análisis. `npm run build` y `npm run lint` verdes.
 
 ## Fase 14 — QA completo
 
-⬜ Pendiente.
+✅ Suite backend: 85 tests / 232 aserciones, todos verdes. `php artisan migrate:fresh --seed` sin errores.
+✅ Frontend: `npm run build` (24 rutas, `/ia` y `/admin/auditoria` incluidas) y `npm run lint` verdes — solo la advertencia preexistente de `window.location.href` en `lib/api.ts`.
+✅ E2E (nuevo): Playwright en `frontend/e2e/` con `webServer` que arranca/reutiliza backend (:8000) y frontend (:3000). 5 tests sobre los flujos críticos: login demo + persistencia tras recarga, logout + protección de rutas, credenciales inválidas, alta de cliente visible en la tabla, y respuesta del asistente IA (stub). `npm run test:e2e`. Los 5 pasan.
+✅ Hallazgo corregido en esta fase: `POST /api/ai/ask` estaba abierto a cualquier usuario autenticado, exponiendo agregados de toda la empresa a roles con visibilidad por fila (vendedor/inventario). Ahora exige super-admin/administrador, igual que los reportes.
+Reporte completo: [qa-report.md](qa-report.md).
+
+Con esto se cierra el alcance original (Fases 0–14). Numeración de documentos y fuentes/estados configurables siguen diferidos por YAGNI (ver Fases 3 y 9).
 
 ## Notas técnicas
 

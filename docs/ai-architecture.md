@@ -23,6 +23,9 @@ AiController ──► Assistant
 - **`Assistant`** concatena `history` + `message` en un prompt plano y delega.
 - **`AiProvider`** es la interfaz intercambiable. El binding vive en
   `AppServiceProvider::register()` y se elige con `config('services.ai.provider')`.
+- **Autorización**: `POST /api/ai/ask` es solo para `super-admin`/`administrador`,
+  la misma puerta que los reportes agregados — el snapshot es de toda la empresa,
+  no está filtrado por la visibilidad por fila del rol.
 
 ## Proveedores
 

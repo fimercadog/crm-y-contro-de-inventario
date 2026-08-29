@@ -14,9 +14,27 @@ class AiAssistantTest extends TestCase
 {
     use RefreshDatabase;
 
+    private function admin(?Company $company = null): User
+    {
+        $user = User::factory()->create(['company_id' => ($company ?? Company::factory()->create())->id]);
+        $user->assignRole('administrador');
+
+        return $user;
+    }
+
     public function test_ask_requires_authentication(): void
     {
         $this->postJson('/api/ai/ask', ['message' => 'hola'])->assertUnauthorized();
+    }
+
+    public function test_ask_is_forbidden_for_non_admin_roles(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('vendedor');
+
+        $this->actingAs($user)
+            ->postJson('/api/ai/ask', ['message' => 'hola'])
+            ->assertForbidden();
     }
 
     public function test_stub_provider_answers_with_company_scoped_context(): void
@@ -25,9 +43,7 @@ class AiAssistantTest extends TestCase
         Customer::factory()->count(3)->create(['company_id' => $company->id]);
         Customer::factory()->count(9)->create(); // another company, must not leak
 
-        $user = User::factory()->create(['company_id' => $company->id]);
-
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->admin($company))
             ->postJson('/api/ai/ask', ['message' => '¿Cuántos clientes tengo?'])
             ->assertOk()
             ->assertJsonPath('provider', 'stub');
@@ -39,9 +55,7 @@ class AiAssistantTest extends TestCase
 
     public function test_message_is_required(): void
     {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
+        $this->actingAs($this->admin())
             ->postJson('/api/ai/ask', [])
             ->assertJsonValidationErrors('message');
     }
@@ -61,9 +75,7 @@ class AiAssistantTest extends TestCase
             }
         });
 
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
+        $this->actingAs($this->admin())
             ->postJson('/api/ai/ask', ['message' => 'hola'])
             ->assertStatus(503)
             ->assertJsonPath('message', 'proveedor caído');
@@ -80,9 +92,7 @@ class AiAssistantTest extends TestCase
             ]),
         ]);
 
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
+        $this->actingAs($this->admin())
             ->postJson('/api/ai/ask', ['message' => '¿clientes?'])
             ->assertOk()
             ->assertJsonPath('answer', 'Tienes 3 clientes.')

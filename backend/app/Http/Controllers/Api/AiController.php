@@ -10,8 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AiController extends Controller
 {
+    /** Same gate as the aggregate reports: the snapshot is company-wide, not row-scoped. */
+    private const ROLES = ['super-admin', 'administrador'];
+
     public function ask(Request $request, Assistant $assistant)
     {
+        abort_unless($request->user()->hasAnyRole(self::ROLES), Response::HTTP_FORBIDDEN);
+
         $validated = $request->validate([
             'message' => ['required', 'string', 'max:2000'],
             'history' => ['sometimes', 'array', 'max:20'],
