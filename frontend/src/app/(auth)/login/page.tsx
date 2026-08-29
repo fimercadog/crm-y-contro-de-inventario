@@ -78,10 +78,10 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-svh bg-[#151219] text-white lg:grid-cols-2">
-      <section className="flex min-h-[42svh] flex-col justify-center bg-[#f4cfe0] px-6 py-10 text-[#241926] sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
+    <main className="grid min-h-svh bg-background text-foreground lg:grid-cols-2">
+      <section className="flex min-h-[40svh] flex-col justify-center bg-primary px-6 py-10 text-primary-foreground sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
         <div className="max-w-md">
-          <div className="mb-16 inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 text-xs font-medium text-[#e14791] shadow-sm">
+          <div className="mb-14 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium">
             <Boxes className="size-4" />
             CRM + Inventario
           </div>
@@ -89,8 +89,9 @@ export default function LoginPage() {
           <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
             Gestiona clientes, ventas e inventario desde un solo lugar
           </h1>
-          <p className="mt-5 max-w-sm text-sm leading-6 text-[#7c6270]">
-            Contactos, oportunidades, productos, stock y movimientos conectados en una sola plataforma.
+          <p className="mt-5 max-w-sm text-sm leading-6 text-primary-foreground/80">
+            Contactos, oportunidades, productos, stock y movimientos conectados en una sola
+            plataforma.
           </p>
 
           <div className="mt-9 flex max-w-sm flex-col gap-3">
@@ -100,9 +101,9 @@ export default function LoginPage() {
               return (
                 <div
                   key={item.label}
-                  className="flex h-11 items-center gap-3 rounded-md bg-white/65 px-4 text-xs font-medium shadow-sm"
+                  className="flex h-11 items-center gap-3 rounded-lg bg-white/10 px-4 text-xs font-medium"
                 >
-                  <Icon className="size-4 text-[#e14791]" />
+                  <Icon className="size-4" />
                   {item.label}
                 </div>
               )
@@ -112,13 +113,13 @@ export default function LoginPage() {
       </section>
 
       <section className="flex items-center justify-center px-6 py-10 sm:px-10">
-        <div className="w-full max-w-[360px]">
+        <div className="w-full max-w-90">
           <div className="mb-7 flex justify-center">
-            <div className="flex h-11 items-center gap-2 rounded-lg bg-white px-4 text-[#201821] shadow-sm">
-              <Boxes className="size-5 text-[#e14791]" />
+            <div className="flex h-11 items-center gap-2 rounded-lg border bg-card px-4 shadow-elevation-1">
+              <Boxes className="size-5 text-primary" />
               <div className="leading-none">
                 <div className="text-sm font-bold">CRM</div>
-                <div className="text-[10px] font-medium uppercase tracking-wide text-[#e14791]">
+                <div className="text-[10px] font-medium uppercase tracking-wide text-primary">
                   Inventario
                 </div>
               </div>
@@ -127,13 +128,16 @@ export default function LoginPage() {
 
           <div className="mb-5">
             <h2 className="text-xl font-semibold">Iniciar sesión</h2>
-            <p className="mt-1 text-xs text-[#a69da9]">
+            <p className="mt-1 text-xs text-muted-foreground">
               Usa un usuario demo para entrar al panel y probar roles.
             </p>
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((values) => submitLogin(values))} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit((values) => submitLogin(values))}
+              className="space-y-4"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -141,12 +145,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel className="sr-only">Correo</FormLabel>
                     <FormControl>
-                      <Input
-                        type="email"
-                        autoComplete="email"
-                        className="h-9 border-[#342d3b] bg-[#1f1b25] text-sm text-white placeholder:text-[#8f8594]"
-                        {...field}
-                      />
+                      <Input type="email" autoComplete="email" placeholder="Correo" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,7 +161,7 @@ export default function LoginPage() {
                       <Input
                         type="password"
                         autoComplete="current-password"
-                        className="h-9 border-[#342d3b] bg-[#1f1b25] text-sm text-white placeholder:text-[#8f8594]"
+                        placeholder="Contraseña"
                         {...field}
                       />
                     </FormControl>
@@ -173,26 +172,24 @@ export default function LoginPage() {
 
               <button
                 type="button"
-                className="ml-auto block text-[11px] font-medium text-[#e94a97] hover:underline"
+                className="ml-auto block text-[11px] font-medium text-primary hover:underline"
               >
                 ¿Olvidaste tu contraseña?
               </button>
 
-              <Button
-                type="submit"
-                className="h-10 w-full bg-[#e24b98] text-sm text-white hover:bg-[#d83f8c]"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="h-10 w-full" disabled={isSubmitting}>
                 {isSubmitting && !activeDemoEmail && <Loader2 className="animate-spin" />}
                 Entrar al panel
               </Button>
             </form>
           </Form>
 
-          <div className="mt-6 rounded-lg bg-[#2a2632] p-3">
+          <div className="mt-6 rounded-xl border bg-card p-3 shadow-elevation-1">
             <div className="mb-3 px-1">
               <h3 className="text-xs font-semibold">Usuarios demo</h3>
-              <p className="mt-1 text-[11px] text-[#b7aebd]">Password para todos: password</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Password para todos: password
+              </p>
             </div>
             <div className="flex flex-col gap-1.5">
               {demoUsers.map((user) => (
@@ -201,14 +198,18 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => handleDemoLogin(user.email)}
                   disabled={isSubmitting}
-                  className="rounded-md bg-[#211e28] px-3 py-2 text-left transition hover:bg-[#342d3b] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="rounded-lg border px-3 py-2 text-left transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <span className="flex items-center justify-between gap-3">
                     <span>
-                      <span className="block text-xs font-semibold text-white">{user.label}</span>
-                      <span className="block text-[11px] text-[#c8becb]">{user.email}</span>
+                      <span className="block text-xs font-semibold">{user.label}</span>
+                      <span className="block text-[11px] text-muted-foreground">
+                        {user.email}
+                      </span>
                     </span>
-                    {activeDemoEmail === user.email && <Loader2 className="size-4 animate-spin" />}
+                    {activeDemoEmail === user.email && (
+                      <Loader2 className="size-4 animate-spin text-primary" />
+                    )}
                   </span>
                 </button>
               ))}
