@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import {
   ArrowRight,
   BarChart3,
@@ -18,6 +17,7 @@ import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
 import { PremiumBadge } from "@/components/marketing/premium-badge"
 import { Reveal } from "@/components/marketing/reveal"
+import { RippleLink } from "@/components/marketing/ripple"
 import { DemoCta, FeatureRow, Section } from "@/components/marketing/marketing-ui"
 
 export const metadata: Metadata = {
@@ -111,9 +111,9 @@ export default function FuncionesPage() {
 
       <Section>
         <Reveal>
-          <Link
+          <RippleLink
             href="/asistente-ia"
-            className="group flex flex-col gap-4 rounded-2xl border border-amber-400/40 bg-amber-400/10 p-6 sm:flex-row sm:items-center sm:justify-between"
+            className="group flex flex-col gap-4 rounded-2xl border border-amber-400/40 bg-amber-400/10 p-6 shadow-elevation-1 transition-shadow duration-200 hover:shadow-elevation-3 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex flex-col gap-3">
               <PremiumBadge className="w-fit" />
@@ -127,7 +127,7 @@ export default function FuncionesPage() {
               Ver el asistente
               <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
             </span>
-          </Link>
+          </RippleLink>
         </Reveal>
       </Section>
 

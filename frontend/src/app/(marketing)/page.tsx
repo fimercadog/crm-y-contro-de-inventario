@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { ArrowRight, BarChart3, Boxes, ShieldCheck } from "lucide-react"
 
 import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
 import { Reveal } from "@/components/marketing/reveal"
+import { RippleLink } from "@/components/marketing/ripple"
 import {
   DemoCta,
   PlataformaGrid,
@@ -83,9 +83,9 @@ export default function HomePage() {
         <div className="mt-12 grid gap-4 md:grid-cols-3">
           {explore.map((item, i) => (
             <Reveal key={item.href} delay={i * 0.06}>
-              <Link
+              <RippleLink
                 href={item.href}
-                className={`group flex h-full flex-col rounded-xl border bg-background p-5 shadow-elevation-1 ${cardHover}`}
+                className={`group flex h-full flex-col rounded-xl bg-background p-5 ${cardHover}`}
               >
                 <item.icon className="size-5 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
                 <h3 className="mt-4 text-base font-semibold">{item.title}</h3>
@@ -94,7 +94,7 @@ export default function HomePage() {
                   Ver más
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
                 </span>
-              </Link>
+              </RippleLink>
             </Reveal>
           ))}
         </div>

@@ -52,8 +52,9 @@ aurora,orbit,sheen}`. `<Reveal>` hace la entrada (subida + desenfoque + fade,
 0.7s). **Todo** se congela bajo `prefers-reduced-motion`; `Reveal` degrada a un
 fundido de opacidad (sin transform), seguro para sensibilidad vestibular.
 
-**Elevación:** `--elevation-1` y `--elevation-2` (sombras suaves tipo Material),
-expuestas como `shadow-elevation-1` / `shadow-elevation-2`.
+**Elevación:** escala Material Design 3 `--elevation-1..5` (sombra doble
+umbra + penumbra, tintada navy), expuesta como `shadow-elevation-1..5`. Las
+tarjetas descansan en nivel 1 y suben a nivel 3 en hover (no hacen `translate`).
 
 ## Tipografía
 
@@ -94,9 +95,18 @@ expuestas como `shadow-elevation-1` / `shadow-elevation-2`.
 
 ## Sombras
 
-- `shadow-elevation-1` — tarjetas (`Card`), en vez de borde.
-- `shadow-elevation-2` — menús flotantes / popovers si necesitan más énfasis.
-- Sin sombras de color en botones (los botones filled de Material son planos).
+- `shadow-elevation-1` — tarjetas (`Card`) y botones filled en reposo.
+- `shadow-elevation-2` — botón filled en hover; menús / popovers.
+- `shadow-elevation-3` — tarjeta en hover.
+- `shadow-elevation-4/5` — reservadas (diálogos, FAB elevado).
+
+## Sitio web — Material
+
+El sitio de marketing lleva un pase Material Design 3: escala de elevación,
+tarjetas que suben de nivel en hover, y **ripple** táctil en botones (`CtaLink`)
+y tarjetas clicables (`RippleLink`) — `useRipple` en
+`components/marketing/ripple.tsx`, keyframe `mat-ripple` en `globals.css`,
+desactivado bajo `prefers-reduced-motion`.
 
 ## Botones (`components/ui/button.tsx`)
 

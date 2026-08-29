@@ -15,9 +15,9 @@ import { site } from "@/lib/site"
 
 export const container = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
 
-/** Card lift on hover — same micro-interaction as the FidelOS landing. */
+/** Material elevated-card behaviour: rest at level 1, raise to level 3 on hover. */
 export const cardHover =
-  "transition duration-300 hover:-translate-y-1.5 hover:shadow-(--marketing-shadow) motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+  "shadow-elevation-1 transition-shadow duration-200 hover:shadow-elevation-3"
 
 export function Section({
   children,

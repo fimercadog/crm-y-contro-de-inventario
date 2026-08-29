@@ -46,6 +46,9 @@
   --color-card: var(--card);
   --shadow-elevation-1: var(--elevation-1);
   --shadow-elevation-2: var(--elevation-2);
+  --shadow-elevation-3: var(--elevation-3);
+  --shadow-elevation-4: var(--elevation-4);
+  --shadow-elevation-5: var(--elevation-5);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -95,8 +98,12 @@
   --sidebar-accent-foreground: #166534;
   --sidebar-border: #e2e7eb;
   --sidebar-ring: #15803d;
-  --elevation-1: 0 1px 2px 0 rgb(11 37 69 / 0.06), 0 1px 3px 0 rgb(11 37 69 / 0.05);
-  --elevation-2: 0 4px 6px -1px rgb(11 37 69 / 0.08), 0 2px 4px -2px rgb(11 37 69 / 0.06);
+  /* Material Design 3 elevation — umbra + penumbra, tinted navy */
+  --elevation-1: 0 1px 2px 0 rgb(11 37 69 / 0.12), 0 1px 3px 1px rgb(11 37 69 / 0.06);
+  --elevation-2: 0 1px 2px 0 rgb(11 37 69 / 0.12), 0 2px 6px 2px rgb(11 37 69 / 0.08);
+  --elevation-3: 0 1px 3px 0 rgb(11 37 69 / 0.12), 0 4px 8px 3px rgb(11 37 69 / 0.09);
+  --elevation-4: 0 2px 3px 0 rgb(11 37 69 / 0.12), 0 6px 10px 4px rgb(11 37 69 / 0.10);
+  --elevation-5: 0 4px 4px 0 rgb(11 37 69 / 0.12), 0 8px 12px 6px rgb(11 37 69 / 0.11);
   --marketing-shadow: 0 24px 70px rgb(11 37 69 / 0.15);
 }
 
@@ -137,8 +144,11 @@
   --sidebar-accent-foreground: #a7f0c7;
   --sidebar-border: #24384a;
   --sidebar-ring: #2fd07a;
-  --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 3px 0 rgb(0 0 0 / 0.3);
-  --elevation-2: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.5), 0 1px 3px 1px rgb(0 0 0 / 0.35);
+  --elevation-2: 0 1px 2px 0 rgb(0 0 0 / 0.5), 0 2px 6px 2px rgb(0 0 0 / 0.4);
+  --elevation-3: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 4px 8px 3px rgb(0 0 0 / 0.42);
+  --elevation-4: 0 2px 3px 0 rgb(0 0 0 / 0.5), 0 6px 10px 4px rgb(0 0 0 / 0.44);
+  --elevation-5: 0 4px 4px 0 rgb(0 0 0 / 0.5), 0 8px 12px 6px rgb(0 0 0 / 0.46);
   --marketing-shadow: 0 24px 70px rgb(0 0 0 / 0.45);
 }
 
@@ -152,6 +162,7 @@
   --animate-marketing-aurora: marketing-aurora 14s ease-in-out infinite;
   --animate-marketing-orbit: marketing-orbit 20s linear infinite;
   --animate-marketing-sheen: marketing-sheen 6s ease-in-out 1.2s infinite;
+  --animate-mat-ripple: mat-ripple 0.55s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
 @keyframes marketing-float {
@@ -191,6 +202,11 @@
   8% { opacity: 0.75; }
   22% { opacity: 0; }
   100% { transform: translateX(320%) skewX(-18deg); opacity: 0; }
+}
+/* Material touch ripple */
+@keyframes mat-ripple {
+  from { transform: scale(0); opacity: 0.3; }
+  to { transform: scale(1); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,15 +1,18 @@
+"use client"
+
 import Link from "next/link"
 import type { VariantProps } from "class-variance-authority"
 
 import { buttonVariants } from "@/components/ui/button"
+import { useRipple } from "@/components/marketing/ripple"
 import { cn } from "@/lib/utils"
 
 type Variants = VariantProps<typeof buttonVariants>
 
 /**
- * A link styled as a button. Used for marketing CTAs — avoids Base UI's
- * `Button render={<a>}` warning (button semantics on a non-button element).
- * External `href` (http, mailto) renders a plain <a>; internal uses <Link>.
+ * A link styled as a Material button — pill shape, elevation on filled
+ * variants, and a touch ripple. Avoids Base UI's `Button render={<a>}`
+ * warning. External `href` (http, mailto) renders a plain <a>; internal <Link>.
  */
 export function CtaLink({
   href,
@@ -24,9 +27,13 @@ export function CtaLink({
   className?: string
   children: React.ReactNode
 } & Pick<Variants, "variant" | "size">) {
+  const { rippleProps, ripple } = useRipple()
+
+  const filled = !variant || variant === "default" || variant === "secondary"
   const classes = cn(
     buttonVariants({ variant, size }),
-    "transition-transform duration-200 hover:scale-105 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100",
+    "relative overflow-hidden transition-[box-shadow,transform] duration-200 active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100",
+    filled && "shadow-elevation-1 hover:shadow-elevation-2",
     className
   )
   const isExternal =
@@ -37,16 +44,19 @@ export function CtaLink({
       <a
         href={href}
         className={classes}
+        {...rippleProps}
         {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {children}
+        {ripple}
       </a>
     )
   }
 
   return (
-    <Link href={href} className={classes}>
+    <Link href={href} className={classes} {...rippleProps}>
       {children}
+      {ripple}
     </Link>
   )
 }
