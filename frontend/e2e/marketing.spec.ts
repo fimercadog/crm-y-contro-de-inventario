@@ -30,16 +30,22 @@ test.describe("landing page", () => {
     }
   })
 
-  test("anchor navigation reaches every section", async ({ page }) => {
+  test("anchor navigation reaches every section and keeps the URL clean", async ({ page }) => {
     await page.goto("/")
-    for (const label of ["Producto", "Funciones", "IA", "Seguridad", "Beneficios", "Demo"]) {
-      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: label }).click()
-      await page.waitForTimeout(400)
-      expect(page.url()).toContain("#")
+    const sections: Record<string, string> = {
+      Producto: "producto",
+      Funciones: "funciones",
+      IA: "ia",
+      Seguridad: "seguridad",
+      Beneficios: "beneficios",
+      Demo: "demo",
     }
-    await expect(
-      page.getByRole("heading", { name: /Conoce cómo CRM \+ Inventario/ })
-    ).toBeInViewport()
+    for (const [label, id] of Object.entries(sections)) {
+      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: label }).click()
+      await page.waitForTimeout(700)
+      await expect(page.locator(`#${id}`)).toBeInViewport()
+      expect(new URL(page.url()).hash, `no #hash after clicking ${label}`).toBe("")
+    }
   })
 
   test("hero screenshot loads", async ({ page }) => {
@@ -115,7 +121,8 @@ test.describe("mobile", () => {
     await expect(menu).toBeVisible()
     await menu.getByRole("link", { name: "Funciones" }).click()
     await expect(menu).toBeHidden()
-    expect(page.url()).toContain("#funciones")
+    await expect(page.locator("#funciones")).toBeInViewport()
+    expect(new URL(page.url()).hash).toBe("")
   })
 
   test("hero heading and a CTA are visible on a phone", async ({ page }) => {

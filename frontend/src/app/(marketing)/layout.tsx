@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import { MarketingHeader } from "@/components/marketing/marketing-header"
 import { MarketingFooter } from "@/components/marketing/marketing-footer"
+import { SmoothAnchors } from "@/components/marketing/smooth-anchors"
 import { WhatsappFab } from "@/components/marketing/whatsapp-fab"
 import { site } from "@/lib/site"
 
@@ -39,6 +40,7 @@ export const metadata: Metadata = {
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-svh flex-col scroll-smooth bg-background text-foreground">
+      <SmoothAnchors />
       <MarketingHeader />
       <main className="flex-1">{children}</main>
       <MarketingFooter />
