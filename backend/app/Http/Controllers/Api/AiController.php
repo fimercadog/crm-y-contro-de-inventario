@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\Ai\Assistant;
 use App\Services\Ai\AiUnavailableException;
+use App\Services\Ai\Assistant;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Customer;
 use App\Models\User;
 use App\Services\Ai\AiProvider;
+use App\Services\Ai\AiUnavailableException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -66,7 +67,7 @@ class AiAssistantTest extends TestCase
         {
             public function complete(string $system, string $prompt): string
             {
-                throw new \App\Services\Ai\AiUnavailableException('proveedor caído');
+                throw new AiUnavailableException('proveedor caído');
             }
 
             public function name(): string

@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * exports always respect whatever filters produced $rows (section 38 of
  * the product spec: never export just the visible page).
  *
- * @param array<string, string> $columns column key => header label
- * @param iterable<array<string, mixed>> $rows
+ * @param  array<string, string>  $columns  column key => header label
+ * @param  iterable<array<string, mixed>>  $rows
  */
 class TableExporter
 {

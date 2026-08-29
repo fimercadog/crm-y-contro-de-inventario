@@ -166,7 +166,7 @@ class ReportController extends Controller
     }
 
     /**
-     * @param array<string, string> $columns
+     * @param  array<string, string>  $columns
      */
     private function render(Request $request, string $filename, string $title, array $columns, Collection $rows, array $meta = [])
     {

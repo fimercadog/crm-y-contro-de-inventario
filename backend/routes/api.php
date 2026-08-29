@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\AiController;
+use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\CustomerController;

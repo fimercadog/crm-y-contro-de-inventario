@@ -54,7 +54,7 @@ class CatalogTest extends TestCase
             ->deleteJson("/api/{$uri}/{$id}")
             ->assertNoContent();
 
-        $this->assertDatabaseMissing((new $model())->getTable(), ['id' => $id]);
+        $this->assertDatabaseMissing((new $model)->getTable(), ['id' => $id]);
     }
 
     #[DataProvider('catalogs')]

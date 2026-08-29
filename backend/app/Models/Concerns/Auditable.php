@@ -3,6 +3,7 @@
 namespace App\Models\Concerns;
 
 use App\Models\AuditLog;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,6 +58,6 @@ trait Auditable
             return $this->getAttribute('company_id');
         }
 
-        return $this->getMorphClass() === \App\Models\Company::class ? $this->getKey() : null;
+        return $this->getMorphClass() === Company::class ? $this->getKey() : null;
     }
 }
