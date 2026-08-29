@@ -41,12 +41,17 @@ paleta **verde esmeralda + azul marino** (según "Guía visual SaaS para CRM e
 inventario"), Roboto, botones pill, sombras de elevación, badges semánticos.
 Theme-aware (claro/oscuro).
 
-**Movimiento** (replica el lenguaje de dfctalentohumano.fidelmercadotech.com):
-scroll-reveal fade + subida de 24px (`Reveal`, IntersectionObserver +
-transiciones CSS, seguro para SSR y `prefers-reduced-motion`); cascada de
-entrada del hero; fondo ambiental animado en el hero (blobs float/drift/
-pulse-glow + grid a la deriva); hover: elevación de tarjeta + `--marketing-shadow`,
-escala de íconos, escala de botones CTA, subrayado creciente en la nav.
+**Movimiento**: `Reveal` (IntersectionObserver + transiciones CSS, seguro para
+SSR) hace la entrada — subida + desenfoque + fade, 0.7s — en cascada en el hero
+y por sección al hacer scroll. `HeroBackdrop` arma el fondo del hero de `/` y del
+panel de login: aurora que respira, halo cónico giratorio, grid en fuga y barrido
+de luz. Hover: elevación de tarjeta + `--marketing-shadow`, escala de íconos,
+escala de botones CTA, subrayado creciente en la nav.
+
+Bajo **`prefers-reduced-motion`** todos los bucles se congelan (queda el degradado
+rico estático) y `Reveal` degrada a un fundido de opacidad. Para ver el efecto
+completo hay que desactivar "reducir movimiento" en el SO (Windows: Configuración
+→ Accesibilidad → Efectos visuales → Efectos de animación).
 
 ## Argumentos comerciales — solo funciones verificadas
 

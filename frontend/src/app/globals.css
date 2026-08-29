@@ -142,13 +142,16 @@
   --marketing-shadow: 0 24px 70px rgb(0 0 0 / 0.45);
 }
 
-/* ---- Marketing motion (mirrors the FidelOS landing) ---- */
+/* ---- Marketing motion ---- */
 @theme {
   --animate-marketing-float: marketing-float 6s ease-in-out infinite;
   --animate-marketing-drift: marketing-drift 10s ease-in-out infinite;
   --animate-marketing-pulse-glow: marketing-pulse-glow 4.5s ease-in-out infinite;
   --animate-marketing-grid: marketing-grid 14s linear infinite;
   --animate-marketing-gradient-text: marketing-gradient-text 5s ease infinite;
+  --animate-marketing-aurora: marketing-aurora 22s ease-in-out infinite;
+  --animate-marketing-orbit: marketing-orbit 30s linear infinite;
+  --animate-marketing-sheen: marketing-sheen 7s ease-in-out 1s infinite;
 }
 
 @keyframes marketing-float {
@@ -171,13 +174,34 @@
   0%, 100% { background-position: 0% center; }
   50% { background-position: 100% center; }
 }
+/* Aurora mesh: slow breathing + drift of a layered gradient blob field */
+@keyframes marketing-aurora {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.9; }
+  33% { transform: translate3d(3%, -4%, 0) scale(1.12); opacity: 1; }
+  66% { transform: translate3d(-4%, 3%, 0) scale(1.05); opacity: 0.8; }
+}
+/* Slow rotating conic glow behind the hero */
+@keyframes marketing-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+/* Diagonal light sweep across a surface */
+@keyframes marketing-sheen {
+  0% { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  8% { opacity: 0.75; }
+  22% { opacity: 0; }
+  100% { transform: translateX(320%) skewX(-18deg); opacity: 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marketing-float,
   .animate-marketing-drift,
   .animate-marketing-pulse-glow,
   .animate-marketing-grid,
-  .animate-marketing-gradient-text {
+  .animate-marketing-gradient-text,
+  .animate-marketing-aurora,
+  .animate-marketing-orbit,
+  .animate-marketing-sheen {
     animation: none !important;
   }
 }

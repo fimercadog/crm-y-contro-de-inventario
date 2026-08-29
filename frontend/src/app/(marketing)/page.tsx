@@ -20,6 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CtaLink } from "@/components/marketing/cta-link"
+import { HeroBackdrop } from "@/components/marketing/hero-backdrop"
 import { Reveal } from "@/components/marketing/reveal"
 import { ScreenshotFrame } from "@/components/marketing/screenshot-frame"
 import { site } from "@/lib/site"
@@ -102,14 +103,8 @@ export default function LandingPage() {
   return (
     <>
       {/* ---------- Hero ---------- */}
-      <section className="relative overflow-hidden border-b">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,var(--accent),transparent)]" />
-          <div className="absolute -left-24 top-8 size-72 rounded-full bg-primary/10 blur-3xl animate-marketing-float" />
-          <div className="absolute -right-16 top-44 size-80 rounded-full bg-chart-2/10 blur-3xl animate-marketing-drift" />
-          <div className="absolute bottom-0 left-1/3 size-64 rounded-full bg-primary/10 blur-3xl animate-marketing-pulse-glow" />
-          <div className="absolute inset-0 animate-marketing-grid text-foreground opacity-[0.035] bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-size-[44px_44px]" />
-        </div>
+      <section className="relative isolate overflow-hidden border-b">
+        <HeroBackdrop />
         <div className={`${container} grid items-center gap-14 py-16 lg:grid-cols-[1fr_1.05fr] lg:py-24`}>
           <div>
             <Reveal mount>
@@ -117,7 +112,7 @@ export default function LandingPage() {
                 CRM + Control de Inventario
               </Badge>
             </Reveal>
-            <Reveal mount delay={0.08}>
+            <Reveal mount delay={0.1}>
               <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
                 CRM + Inventario{" "}
                 <span className="animate-marketing-gradient-text bg-[linear-gradient(90deg,var(--primary),#22c55e,var(--primary))] bg-size-[200%_auto] bg-clip-text text-transparent">
@@ -125,12 +120,12 @@ export default function LandingPage() {
                 </span>
               </h1>
             </Reveal>
-            <Reveal mount delay={0.16}>
+            <Reveal mount delay={0.2}>
               <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
                 {site.description}
               </p>
             </Reveal>
-            <Reveal mount delay={0.24}>
+            <Reveal mount delay={0.3}>
               <div className="mt-8 flex flex-wrap gap-3">
                 <CtaLink href="#demo">Solicitar demostración</CtaLink>
                 <CtaLink href="#producto" variant="outline">
@@ -138,18 +133,26 @@ export default function LandingPage() {
                 </CtaLink>
               </div>
             </Reveal>
-            <Reveal mount delay={0.32}>
+            <Reveal mount delay={0.4}>
               <p className="mt-6 text-xs text-muted-foreground">
                 Multiempresa · roles y permisos · auditoría de cada cambio
               </p>
             </Reveal>
           </div>
-          <Reveal mount zoom delay={0.2}>
-            <ScreenshotFrame
-              src="/product/dashboard.png"
-              alt="Panel de CRM + Inventario con indicadores de clientes, pipeline y stock"
-              priority
-            />
+          <Reveal mount zoom delay={0.25}>
+            <div className="relative">
+              <div
+                aria-hidden
+                className="absolute -inset-6 -z-10 animate-marketing-pulse-glow rounded-[2rem] bg-primary/20 blur-3xl"
+              />
+              <div className="animate-marketing-float">
+                <ScreenshotFrame
+                  src="/product/dashboard.png"
+                  alt="Panel de CRM + Inventario con indicadores de clientes, pipeline y stock"
+                  priority
+                />
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>

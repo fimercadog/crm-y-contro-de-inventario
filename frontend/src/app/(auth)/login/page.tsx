@@ -19,6 +19,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { HeroBackdrop } from "@/components/marketing/hero-backdrop"
+import { Reveal } from "@/components/marketing/reveal"
 import { useAppDispatch } from "@/lib/hooks"
 import { login } from "@/features/auth/authSlice"
 
@@ -79,37 +81,39 @@ export default function LoginPage() {
 
   return (
     <main className="grid min-h-svh bg-background text-foreground lg:grid-cols-2">
-      <section className="relative flex min-h-[40svh] flex-col justify-center overflow-hidden bg-navy px-6 py-10 text-navy-foreground sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-24 top-1/4 size-80 rounded-full bg-primary/20 blur-3xl"
-        />
+      <section className="relative isolate flex min-h-[40svh] flex-col justify-center overflow-hidden bg-navy px-6 py-10 text-navy-foreground sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
+        <HeroBackdrop variant="navy" />
         <div className="relative max-w-md">
-          <div className="mb-14 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium">
-            <Boxes className="size-4" />
-            CRM + Inventario
-          </div>
+          <Reveal mount>
+            <div className="mb-14 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium">
+              <Boxes className="size-4" />
+              CRM + Inventario
+            </div>
+          </Reveal>
 
-          <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
-            Gestiona clientes, ventas e inventario desde un solo lugar
-          </h1>
-          <p className="mt-5 max-w-sm text-sm leading-6 text-navy-foreground/75">
-            Contactos, oportunidades, productos, stock y movimientos conectados en una sola
-            plataforma.
-          </p>
+          <Reveal mount delay={0.1}>
+            <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
+              Gestiona clientes, ventas e inventario desde un solo lugar
+            </h1>
+          </Reveal>
+          <Reveal mount delay={0.2}>
+            <p className="mt-5 max-w-sm text-sm leading-6 text-navy-foreground/75">
+              Contactos, oportunidades, productos, stock y movimientos conectados en una sola
+              plataforma.
+            </p>
+          </Reveal>
 
           <div className="mt-9 flex max-w-sm flex-col gap-3">
-            {featureItems.map((item) => {
+            {featureItems.map((item, i) => {
               const Icon = item.icon
 
               return (
-                <div
-                  key={item.label}
-                  className="flex h-11 items-center gap-3 rounded-lg bg-white/10 px-4 text-xs font-medium"
-                >
-                  <Icon className="size-4" />
-                  {item.label}
-                </div>
+                <Reveal mount delay={0.3 + i * 0.08} key={item.label}>
+                  <div className="flex h-11 items-center gap-3 rounded-lg bg-white/10 px-4 text-xs font-medium backdrop-blur-sm transition-colors hover:bg-white/15">
+                    <Icon className="size-4" />
+                    {item.label}
+                  </div>
+                </Reveal>
               )
             })}
           </div>

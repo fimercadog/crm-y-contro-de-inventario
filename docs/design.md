@@ -43,9 +43,14 @@ vía `@theme inline`. Hay toggle Claro/Oscuro/Sistema en el menú de usuario.
 | `--destructive` | `#dc2626` | `#f2555a` | error, perdida, salida, crítico/agotado, eliminado |
 | `--chart-1..5` | esmeralda / navy / ámbar / cielo / rosa | versiones claras | series de gráfico |
 
-**Marketing:** `--marketing-shadow` (sombra grande tintada navy) para el hover
-de tarjetas del sitio web, y utilidades `animate-marketing-{float,drift,pulse-glow,grid,gradient-text}`
-para el fondo ambiental del hero (todas desactivadas bajo `prefers-reduced-motion`).
+**Marketing / heros:** `--marketing-shadow` (sombra grande tintada navy) para
+el hover de tarjetas del sitio web. `<HeroBackdrop>` (`components/marketing/`)
+arma el fondo ambiental — aurora, halo cónico giratorio, grid en fuga y barrido
+de luz — con `variant="light" | "navy"`; lo usan el hero de `/` y el panel del
+login. Utilidades: `animate-marketing-{float,drift,pulse-glow,grid,gradient-text,
+aurora,orbit,sheen}`. `<Reveal>` hace la entrada (subida + desenfoque + fade,
+0.7s). **Todo** se congela bajo `prefers-reduced-motion`; `Reveal` degrada a un
+fundido de opacidad (sin transform), seguro para sensibilidad vestibular.
 
 **Elevación:** `--elevation-1` y `--elevation-2` (sombras suaves tipo Material),
 expuestas como `shadow-elevation-1` / `shadow-elevation-2`.

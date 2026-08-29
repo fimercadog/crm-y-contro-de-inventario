@@ -5,12 +5,12 @@ import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 /**
- * Fade + rise on scroll — same motion as the FidelOS landing:
- * opacity 0→1, y 24→0, 0.55s ease-out, fires once, 80px before the edge.
+ * Reveal on scroll (or on mount): rise + blur-in + fade, 0.7s spring-out.
  * `mount` fires on load instead of on scroll (above-the-fold content).
- * `zoom` swaps the rise for a subtle scale-down (hero screenshot).
- * CSS transitions + IntersectionObserver: SSR-safe, and static under
- * prefers-reduced-motion via the motion-reduce variant.
+ * `zoom` swaps the rise for a scale-down (hero screenshot).
+ * Under prefers-reduced-motion it degrades to an opacity-only cross-fade —
+ * no transform, no blur — which is safe for vestibular sensitivity.
+ * CSS transitions + IntersectionObserver: SSR-safe, no hydration divergence.
  */
 export function Reveal({
   children,
@@ -52,13 +52,13 @@ export function Reveal({
     <div
       ref={ref}
       className={cn(
-        "transition-all duration-550 ease-out will-change-[opacity,transform]",
-        "motion-reduce:translate-y-0! motion-reduce:scale-100! motion-reduce:opacity-100! motion-reduce:transition-none",
+        "transition-[opacity,transform,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform]",
+        "motion-reduce:transition-opacity motion-reduce:duration-500 motion-reduce:translate-y-0! motion-reduce:scale-100! motion-reduce:blur-0!",
         shown
-          ? "translate-y-0 scale-100 opacity-100"
+          ? "translate-y-0 scale-100 blur-0 opacity-100"
           : zoom
-            ? "scale-[1.06] opacity-0"
-            : "translate-y-6 opacity-0",
+            ? "scale-[1.08] opacity-0 blur-[8px]"
+            : "translate-y-8 opacity-0 blur-[6px]",
         className
       )}
       style={delay ? { transitionDelay: `${delay}s` } : undefined}
