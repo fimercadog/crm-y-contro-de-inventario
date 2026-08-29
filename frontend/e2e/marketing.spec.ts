@@ -1,7 +1,16 @@
 import { test, expect } from "@playwright/test"
 
-test.describe("landing page", () => {
-  test("loads with title, single H1 and hero CTAs", async ({ page }) => {
+const PAGES: Array<{ nav: string; path: string; h1: RegExp }> = [
+  { nav: "Producto", path: "/producto", h1: /Toda tu operación/ },
+  { nav: "Funciones", path: "/funciones", h1: /Lo que hace el sistema/ },
+  { nav: "Beneficios", path: "/beneficios", h1: /Cada beneficio/ },
+  { nav: "IA", path: "/asistente-ia", h1: /Pregúntale a tus datos/ },
+  { nav: "Seguridad", path: "/seguridad", h1: /Cada persona ve lo que le corresponde/ },
+  { nav: "Demo", path: "/demo", h1: /Solicita una demostración/ },
+]
+
+test.describe("marketing site", () => {
+  test("home loads with title, single H1 and hero CTAs", async ({ page }) => {
     const errors: string[] = []
     page.on("console", (m) => m.type() === "error" && errors.push(m.text()))
     page.on("pageerror", (e) => errors.push(String(e)))
@@ -30,31 +39,33 @@ test.describe("landing page", () => {
     }
   })
 
-  test("nav scrolls to every section and sets a clean path (no #)", async ({ page }) => {
+  test("every nav item is its own page (real path, no #)", async ({ page }) => {
     await page.goto("/")
-    const sections: Array<[label: string, id: string, path: string]> = [
-      ["Producto", "producto", "/producto"],
-      ["Funciones", "funciones", "/funciones"],
-      ["IA", "ia", "/asistente-ia"],
-      ["Seguridad", "seguridad", "/seguridad"],
-      ["Beneficios", "beneficios", "/beneficios"],
-      ["Demo", "demo", "/demo"],
-    ]
-    for (const [label, id, path] of sections) {
-      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: label }).click()
-      await page.waitForTimeout(700)
-      await expect(page.locator(`#${id}`)).toBeInViewport()
-      const url = new URL(page.url())
-      expect(url.hash, `no #hash after clicking ${label}`).toBe("")
-      expect(url.pathname, `clean path after clicking ${label}`).toBe(path)
+    for (const { nav, path, h1 } of PAGES) {
+      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: nav }).click()
+      await expect(page).toHaveURL(new RegExp(`${path}$`))
+      expect(new URL(page.url()).hash).toBe("")
+      await expect(page.locator("h1")).toHaveCount(1)
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(h1)
     }
   })
 
-  test("a section path deep-links straight to that section", async ({ page }) => {
-    await page.goto("/beneficios")
-    await expect(page).toHaveURL(/\/beneficios$/)
-    await expect(page.locator("h1")).toHaveCount(1) // still the one-page landing
-    await expect(page.locator("#beneficios")).toBeInViewport()
+  test("each page opens directly and has its own title + canonical", async ({ page }) => {
+    for (const { path, h1 } of PAGES) {
+      await page.goto(path)
+      await expect(page).toHaveURL(new RegExp(`${path}$`))
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(h1)
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute("href")
+      expect(canonical).toContain(path)
+    }
+  })
+
+  test("active nav item is marked on its page", async ({ page }) => {
+    await page.goto("/funciones")
+    const active = page
+      .getByRole("navigation", { name: "Principal" })
+      .getByRole("link", { name: "Funciones" })
+    await expect(active).toHaveAttribute("aria-current", "page")
   })
 
   test("hero screenshot loads", async ({ page }) => {
@@ -64,14 +75,14 @@ test.describe("landing page", () => {
     expect(await hero.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true)
   })
 
-  test("WhatsApp and email CTAs point to real channels", async ({ page }) => {
-    await page.goto("/#demo")
-    const demo = page.locator("#contacto")
-    const wa = demo.getByRole("link", { name: "Escríbenos por WhatsApp" })
+  test("demo page exposes real contact channels", async ({ page }) => {
+    await page.goto("/demo")
+    const main = page.locator("main")
+    const wa = main.getByRole("link", { name: "Escríbenos por WhatsApp" })
     if (await wa.count()) {
       await expect(wa).toHaveAttribute("href", /^https:\/\/wa\.me\/\d+/)
     }
-    await expect(demo.getByRole("link", { name: "Solicitar una demostración" })).toHaveAttribute(
+    await expect(main.getByRole("link", { name: "Escríbenos por correo" })).toHaveAttribute(
       "href",
       /^mailto:/
     )
@@ -82,17 +93,15 @@ test.describe("landing page", () => {
     const fab = page.getByRole("link", { name: "Escríbenos por WhatsApp" }).last()
     await expect(fab).toBeVisible()
     await expect(fab).toHaveAttribute("href", /^https:\/\/wa\.me\/573027029498/)
-    // the button lives in a viewport-pinned container with a pulsing halo
     const pinned = await fab.evaluate((el) => {
       const box = el.closest("div")
       return box ? getComputedStyle(box).position : null
     })
     expect(pinned).toBe("fixed")
-    const pulsing = await fab.evaluate(
-      (el) =>
-        [...(el.closest("div")?.querySelectorAll("span") ?? [])].some((s) =>
-          getComputedStyle(s).animationName.includes("ping")
-        )
+    const pulsing = await fab.evaluate((el) =>
+      [...(el.closest("div")?.querySelectorAll("span") ?? [])].some((s) =>
+        getComputedStyle(s).animationName.includes("ping")
+      )
     )
     expect(pulsing).toBe(true)
   })
@@ -103,11 +112,13 @@ test.describe("landing page", () => {
     await expect(page).toHaveURL(/\/login/)
   })
 
-  test("robots and sitemap are served", async ({ request }) => {
+  test("robots and sitemap list the marketing pages", async ({ request }) => {
     expect((await request.get("/robots.txt")).status()).toBe(200)
     const sitemap = await request.get("/sitemap.xml")
     expect(sitemap.status()).toBe(200)
-    expect(await sitemap.text()).toContain("<loc>")
+    const xml = await sitemap.text()
+    expect(xml).toContain("<loc>")
+    expect(xml).toContain("/funciones")
   })
 
   test("unknown route renders a 404", async ({ page }) => {
@@ -120,7 +131,7 @@ test.describe("landing page", () => {
 test.describe("mobile", () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
 
-  test("hamburger menu opens, navigates and closes", async ({ page }) => {
+  test("hamburger menu opens, navigates to a page and closes", async ({ page }) => {
     await page.goto("/")
     await expect(
       page.locator("header").getByRole("link", { name: "Solicitar demostración" })
@@ -129,16 +140,13 @@ test.describe("mobile", () => {
     const menu = page.getByRole("navigation", { name: "Móvil" })
     await expect(menu).toBeVisible()
     await menu.getByRole("link", { name: "Funciones" }).click()
-    await expect(menu).toBeHidden()
-    await expect(page.locator("#funciones")).toBeInViewport()
-    const url = new URL(page.url())
-    expect(url.hash).toBe("")
-    expect(url.pathname).toBe("/funciones")
+    await expect(page).toHaveURL(/\/funciones$/)
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Lo que hace el sistema/)
   })
 
   test("hero heading and a CTA are visible on a phone", async ({ page }) => {
     await page.goto("/")
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-    await expect(page.getByRole("link", { name: "Solicitar demostración" })).toBeVisible()
+    await expect(page.getByRole("link", { name: "Solicitar demostración" }).first()).toBeVisible()
   })
 })

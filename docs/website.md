@@ -1,40 +1,35 @@
 # Sitio web comercial
 
-Landing pública de **CRM + Inventario**, construida con el stack existente
-(Next.js 16 App Router, Base UI, Tailwind v4). No se instaló WordPress/Divi ni
-se añadió ninguna librería nueva.
+Sitio público **multipágina** de **CRM + Inventario**, construido con el stack
+existente (Next.js 16 App Router, Base UI, Tailwind v4). No se instaló
+WordPress/Divi ni se añadió ninguna librería nueva.
 
 ## Rutas
 
-| Ruta | Qué es |
+Todas en el grupo `(marketing)` con layout propio (header/footer/FAB). Cada
+página es real, estática, con su `<h1>`, su `metadata` (title + description +
+`alternates.canonical` a su propia ruta) y su cierre con la banda CTA.
+
+| Ruta | Contenido |
 | --- | --- |
-| `/` | Landing pública (grupo `(marketing)`, layout con header/footer propios) |
-| `/producto`, `/funciones`, `/beneficios`, `/asistente-ia`, `/seguridad`, `/demo`, `/contacto` | Secciones de la landing con ruta propia (sin `#`). `rewrites` en `next.config.ts` las sirven desde `/`; `SmoothAnchors` hace scroll a la sección al hacer clic y al abrir la URL directa. Mapa slug→id en `lib/site.ts` (`landingSections`) |
+| `/` | Home — hero + "Una sola plataforma" + "Explora" (3 accesos) + galería del producto + CTA |
+| `/producto` | El problema (6 dolores) + "Una sola plataforma" + galería del producto |
+| `/funciones` | 3 `FeatureRow`: CRM (Pipeline), Control de inventario (Movimientos), Reportes |
+| `/beneficios` | 6 tarjetas función → beneficio |
+| `/asistente-ia` | **Complemento premium**: hero con badge, `FeatureRow` de uso, tabla de proveedores (local / OpenAI / Anthropic) |
+| `/seguridad` | 6 tarjetas de control de acceso y trazabilidad |
+| `/demo` | Canales de contacto (WhatsApp / correo / login) + "qué incluye la demo". Sin formulario. |
 | `/login` | App (sin cambios) |
 | `/dashboard`, `/crm/**`, `/inventario/**`, `/admin/**`, … | App detrás de `AuthGuard` (sin cambios) |
-| `/sitemap.xml`, `/robots.txt`, `/opengraph-image` | Generados por convención de Next |
+| `/sitemap.xml`, `/robots.txt`, `/opengraph-image` | Generados por convención de Next; el sitemap lista todas las páginas de marketing |
 
-El antiguo `/` que redirigía a `/dashboard` se eliminó. Un visitante nuevo cae
-en la landing; desde ahí va a `/login`. Las rutas de sección canonizan a `/`
-(`alternates.canonical`), así que no generan contenido duplicado en buscadores.
+El antiguo `/` que redirigía a `/dashboard` se eliminó. El menú del header hace
+navegación real (`<Link>`) con estado activo (`usePathname` + `aria-current`).
 
-## Estructura (basada en la guía visual del proyecto)
+### Componentes compartidos
 
-`docs/Guía visual SaaS para CRM e inventario.png` — layout tipo *SaaS Business
-Landing Page* de Elegant Themes.
-
-1. **Hero** — "CRM + Inventario en un solo lugar" + captura real del dashboard, CTA "Solicitar demostración" / "Ver cómo funciona".
-2. **Problema** — 6 dolores reconocibles (Excel/WhatsApp disperso, clientes sin seguimiento, oportunidades olvidadas, stock a ciegas, movimientos sin rastro, información sin trazabilidad). Sin estadísticas inventadas.
-3. **Una sola plataforma** — CRM · Inventario · Reportes · IA · Control de acceso · Auditoría.
-4. **CRM** — captura de Pipeline + funciones verificadas.
-5. **Control de inventario** — captura de Movimientos + funciones verificadas.
-6. **Reportes** — captura de Reportes + los 4 reportes reales + exportación.
-7. **Asistente IA** — marcado como **complemento premium** (badge + nota "se contrata aparte"); captura del chat + capacidades reales (conecta con OpenAI/Anthropic).
-8. **Seguridad y control** — 6 tarjetas característica → beneficio.
-9. **Así se ve por dentro** — galería de 4 capturas reales (Clientes, Productos, Stock, Auditoría).
-10. **Beneficios** — cada uno ligado a una función real.
-11. **Demo / CTA final** — banda azul marino con WhatsApp + correo + "Ya tengo cuenta".
-12. **Footer** azul marino.
+- `components/marketing/marketing-ui.tsx` — `Section`, `SectionHeading`, `FeatureRow`, `PlataformaGrid`, `TourGrid`, `DemoCta`, `ContactChannels`, y las constantes `container` / `cardHover`.
+- `components/marketing/page-hero.tsx` — `PageHero`: banda de hero con `HeroBackdrop`; con `screenshot` es el hero de dos columnas (home), sin él es el hero compacto de página interior.
 
 ## Diseño
 
@@ -44,11 +39,13 @@ inventario"), Roboto, botones pill, sombras de elevación, badges semánticos.
 Theme-aware (claro/oscuro).
 
 **Movimiento**: `Reveal` (IntersectionObserver + transiciones CSS, seguro para
-SSR) hace la entrada — subida + desenfoque + fade, 0.7s — en cascada en el hero
-y por sección al hacer scroll. `HeroBackdrop` arma el fondo del hero de `/` y del
-panel de login: aurora que respira, halo cónico giratorio, grid en fuga y barrido
-de luz. Hover: elevación de tarjeta + `--marketing-shadow`, escala de íconos,
-escala de botones CTA, subrayado creciente en la nav.
+SSR) hace la entrada — subida + desenfoque + fade — en cascada en cada hero y
+por bloque al hacer scroll. `PageTransition` re-monta el contenido de cada
+página de la app en cada navegación. `HeroBackdrop` arma el fondo de cada hero
+de marketing y del panel de login: aurora que respira, halo cónico giratorio,
+grid en fuga y barrido de luz. Hover: elevación de tarjeta +
+`--marketing-shadow`, escala de íconos, escala de botones CTA, subrayado activo
+en la nav.
 
 Bajo **`prefers-reduced-motion`** todos los bucles se congelan (queda el degradado
 rico estático) y `Reveal` degrada a un fundido de opacidad. Para ver el efecto
@@ -62,7 +59,7 @@ Verificadas contra el código y la app en ejecución:
 - CRM: clientes, contactos, oportunidades con **cotización de productos** y monto calculado, pipeline Kanban con drag-and-drop, actividades.
 - Inventario: productos, catálogos (categorías/marcas/unidades/proveedores), registro de entradas/salidas/ajustes con `InventoryService` (transaccional, sin stock negativo), corrección/anulación de movimientos con huella de fecha y usuario, vista de stock con valorización.
 - Reportes: inventario valorizado, resumen de movimientos, oportunidades por etapa, ventas por producto. Exportación **CSV/PDF** en toda la app.
-- IA (**complemento premium**, se contrata aparte del plan base): asistente que responde sobre un resumen de los datos de la empresa; aislamiento multiempresa; proveedor OpenAI/Anthropic configurable (modo local de demo sin proveedor); solo administradores. Aviso visible en la landing (`#ia` + pill "Una sola plataforma"), en el sidebar de la app (badge "Premium") y en `/ia` (banner "Consultar precio").
+- IA (**complemento premium**, se contrata aparte del plan base): asistente que responde sobre un resumen de los datos de la empresa; aislamiento multiempresa; proveedor OpenAI/Anthropic configurable (modo local de demo sin proveedor); solo administradores. Aviso visible en `/asistente-ia` (badge + nota), en la pill de `/` y `/producto`, en el sidebar de la app (badge "Premium") y en `/ia` (banner "Consultar precio").
 - Seguridad: usuarios, roles y **permisos por módulo** (roles a medida), auditoría con diff + IP, aislamiento por empresa, soft-delete con restaurar, token + rate-limit en login.
 
 ## Funciones NO promocionadas (incompletas o inexistentes)
@@ -86,12 +83,15 @@ Verificadas contra el código y la app en ejecución:
 
 | Componente | Por qué |
 | --- | --- |
-| `components/marketing/marketing-header.tsx` | Header público (nav a rutas de sección + menú móvil). El header de la app tiene sidebar/breadcrumbs; no aplica. |
-| `components/marketing/smooth-anchors.tsx` | Intercepta clics a rutas de sección (fase de captura, antes del `<Link>` de Next): scroll suave + `history.replaceState` a la ruta limpia. Sin `#` en la URL. |
+| `components/marketing/marketing-header.tsx` | Header público (nav real con `<Link>` + estado activo + menú móvil). El header de la app tiene sidebar/breadcrumbs; no aplica. |
 | `components/marketing/marketing-footer.tsx` | No existía footer en la app. |
+| `components/marketing/marketing-ui.tsx` | Primitivas y bloques compartidos entre las 7 páginas (`Section`, `FeatureRow`, `PlataformaGrid`, `TourGrid`, `DemoCta`, …). |
+| `components/marketing/page-hero.tsx` | Hero reutilizable (home de dos columnas / interior compacto). |
 | `components/marketing/cta-link.tsx` | `<a>`/`<Link>` con estilo de botón. `Button render={<a>}` de Base UI emite warning (semántica de botón en un ancla). |
-| `components/marketing/reveal.tsx` | Entrada CSS (fade/rise) sin librería; contenido siempre visible (SSR/no-JS safe). |
-| `components/marketing/screenshot-frame.tsx` | Marco de navegador para las capturas del producto. |
+| `components/marketing/reveal.tsx` | Entrada con IntersectionObserver + transiciones CSS, sin librería; SSR-safe. |
+| `components/marketing/hero-backdrop.tsx` | Fondo ambiental animado del hero (aurora / grid / halo / barrido). |
+| `components/marketing/screenshot-frame.tsx` | Marco de navegador para las capturas del producto, con zoom en hover. |
+| `components/layout/page-transition.tsx` | Entrada por ruta en las páginas de la app. |
 | `app/not-found.tsx` | El 404 por defecto de Next es una línea en inglés sin marca. |
 | `lib/site.ts` | Config de la landing (canales de contacto desde env). |
 
@@ -127,8 +127,9 @@ es peor que no tenerlo).
 1. **Paleta**: se aplicó **verde esmeralda + azul marino** de la guía visual a
    todo el design system (app + web), y se recapturaron las 11 capturas del
    producto con los colores nuevos.
-2. **`/` es la landing pública** (antes redirigía a `/dashboard`). Los usuarios
-   logueados entran por `/login` → `/dashboard`.
+2. **Sitio multipágina** (a pedido): `/` es la home resumen y cada ítem del menú
+   es su propia página real. El antiguo `/` que redirigía a `/dashboard` se
+   eliminó; los usuarios logueados entran por `/login` → `/dashboard`.
 3. **Sin testimonios ni logos de clientes** (los de la guía son ficticios).
 4. **Sin sección de contingencia/offline** (no existe el módulo).
 5. **CTA de demo = `mailto:` + WhatsApp**, sin formulario. Si quieres captura

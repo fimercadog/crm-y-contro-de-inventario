@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Boxes, Menu } from "lucide-react"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -36,6 +37,7 @@ function Wordmark() {
 export function MarketingHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -55,16 +57,28 @@ export function MarketingHeader() {
         <Wordmark />
 
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Principal">
-          {site.nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="group relative text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {item.label}
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full motion-reduce:transition-none" />
-            </a>
-          ))}
+          {site.nav.map((item) => {
+            const active = pathname === item.href
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "group relative text-sm transition-colors hover:text-foreground",
+                  active ? "text-foreground" : "text-muted-foreground"
+                )}
+              >
+                {item.label}
+                <span
+                  className={cn(
+                    "absolute -bottom-1 left-0 h-px bg-primary transition-all duration-300 group-hover:w-full motion-reduce:transition-none",
+                    active ? "w-full" : "w-0"
+                  )}
+                />
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
@@ -93,9 +107,13 @@ export function MarketingHeader() {
                 <SheetClose
                   key={item.href}
                   render={
-                    <a
+                    <Link
                       href={item.href}
-                      className="rounded-lg px-3 py-2 text-sm hover:bg-accent"
+                      aria-current={pathname === item.href ? "page" : undefined}
+                      className={cn(
+                        "rounded-lg px-3 py-2 text-sm hover:bg-accent",
+                        pathname === item.href && "bg-accent font-medium text-accent-foreground"
+                      )}
                     />
                   }
                 >
@@ -113,9 +131,9 @@ export function MarketingHeader() {
               />
               <SheetClose
                 render={
-                  <a href="/demo" className={buttonVariants()}>
+                  <Link href="/demo" className={buttonVariants()}>
                     Solicitar demostración
-                  </a>
+                  </Link>
                 }
               />
             </div>
