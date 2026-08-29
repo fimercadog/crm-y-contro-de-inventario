@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
+import { DataTableExport } from "@/components/data-table/data-table-export"
+import { useTableExport } from "@/lib/export"
 import { deleteContact, listContacts, restoreContact } from "@/features/customers/api"
 import type { Contact } from "@/features/customers/types"
 import { contactColumns } from "./columns"
@@ -53,6 +55,8 @@ export default function ContactosPage() {
   const [creating, setCreating] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
   const [deleting, setDeleting] = useState<Contact | null>(null)
+
+  const { isExporting, exportAs } = useTableExport("contacts", "contactos")
 
   const isFiltered = status.length > 0 || search.length > 0 || view.length > 0
 
@@ -189,6 +193,13 @@ export default function ContactosPage() {
                   }}
                 />
               </>
+            }
+            actions={
+              <DataTableExport
+                isExporting={isExporting}
+                onExportCsv={() => exportAs("csv", queryParams)}
+                onExportPdf={() => exportAs("pdf", queryParams)}
+              />
             }
           />
         )}

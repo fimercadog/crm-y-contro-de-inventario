@@ -40,6 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/company', [CompanyController::class, 'update']);
 
     Route::get('/users', [UserController::class, 'index']);
+    Route::get('/admin/users/export/csv', [UserManagementController::class, 'exportCsv']);
+    Route::get('/admin/users/export/pdf', [UserManagementController::class, 'exportPdf']);
     Route::apiResource('admin/users', UserManagementController::class)->except('show');
     Route::apiResource('admin/roles', RoleController::class)->parameters(['roles' => 'role'])->except('show');
 
@@ -48,6 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('customers', CustomerController::class);
     Route::post('/customers/{customer}/contacts', [ContactController::class, 'store']);
 
+    Route::get('/contacts/export/csv', [ContactController::class, 'exportCsv']);
+    Route::get('/contacts/export/pdf', [ContactController::class, 'exportPdf']);
     Route::get('/contacts', [ContactController::class, 'index']);
     Route::put('/contacts/{contact}', [ContactController::class, 'update']);
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy']);
@@ -60,6 +64,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/opportunities/{opportunity}/stage', [OpportunityController::class, 'updateStage']);
     Route::apiResource('opportunities', OpportunityController::class);
 
+    Route::get('/activities/export/csv', [ActivityController::class, 'exportCsv']);
+    Route::get('/activities/export/pdf', [ActivityController::class, 'exportPdf']);
     Route::apiResource('activities', ActivityController::class);
 
     foreach ([
@@ -81,6 +87,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/inventory-movements/export/pdf', [InventoryMovementController::class, 'exportPdf']);
     Route::apiResource('inventory-movements', InventoryMovementController::class)->only(['index', 'store']);
 
+    Route::get('/audit-logs/export/csv', [AuditLogController::class, 'exportCsv']);
+    Route::get('/audit-logs/export/pdf', [AuditLogController::class, 'exportPdf']);
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
 
     Route::post('/ai/ask', [AiController::class, 'ask'])->middleware('throttle:20,1');

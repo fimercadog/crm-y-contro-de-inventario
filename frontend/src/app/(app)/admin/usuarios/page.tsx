@@ -20,7 +20,9 @@ import {
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
-import { deactivateManagedUser, listManagedUsers } from "@/features/admin/api"
+import { DataTableExport } from "@/components/data-table/data-table-export"
+import { useTableExport } from "@/lib/export"
+import { deactivateManagedUser, listManagedUsers, listRoles } from "@/features/admin/api"
 import type { ManagedUser } from "@/features/admin/types"
 import { useAppSelector } from "@/lib/hooks"
 import { userColumns } from "./columns"
@@ -31,13 +33,7 @@ const statusOptions = [
   { label: "Inactivo", value: "inactive" },
 ]
 
-const roleOptions = [
-  { label: "Super Admin", value: "super-admin" },
-  { label: "Administrador", value: "administrador" },
-  { label: "Comercial", value: "comercial" },
-  { label: "Inventario", value: "inventario" },
-  { label: "Vendedor", value: "vendedor" },
-]
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 export default function UsuariosPage() {
   const currentUserId = useAppSelector((state) => state.auth.user?.id)
@@ -54,12 +50,23 @@ export default function UsuariosPage() {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string[]>([])
   const [role, setRole] = useState<string[]>([])
+  const [roleOptions, setRoleOptions] = useState<{ label: string; value: string }[]>([])
 
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<ManagedUser | null>(null)
   const [deactivating, setDeactivating] = useState<ManagedUser | null>(null)
 
+  const { isExporting, exportAs } = useTableExport("admin/users", "usuarios")
+
   const isFiltered = status.length > 0 || role.length > 0 || search.length > 0
+
+  useEffect(() => {
+    listRoles()
+      .then(({ data }) =>
+        setRoleOptions(data.data.map((r) => ({ label: cap(r.name), value: r.name })))
+      )
+      .catch(() => setRoleOptions([]))
+  }, [])
 
   const queryParams = useMemo(
     () => ({
@@ -182,6 +189,13 @@ export default function UsuariosPage() {
                   }}
                 />
               </>
+            }
+            actions={
+              <DataTableExport
+                isExporting={isExporting}
+                onExportCsv={() => exportAs("csv", queryParams)}
+                onExportPdf={() => exportAs("pdf", queryParams)}
+              />
             }
           />
         )}

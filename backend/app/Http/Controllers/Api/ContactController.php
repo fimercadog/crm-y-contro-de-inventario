@@ -8,16 +8,60 @@ use App\Http\Requests\UpdateContactRequest;
 use App\Http\Resources\ContactResource;
 use App\Models\Contact;
 use App\Models\Customer;
+use App\Support\TableExporter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ContactController extends Controller
 {
+    private const EXPORT_COLUMNS = [
+        'full_name' => 'Nombre',
+        'customer_name' => 'Cliente',
+        'job_title' => 'Cargo',
+        'email' => 'Correo',
+        'phone' => 'Teléfono',
+        'status' => 'Estado',
+    ];
+
     /**
      * All contacts across the company's customers (backs the standalone
      * /crm/contactos screen). Creating/editing a contact still happens
      * scoped to its customer.
      */
     public function index(Request $request)
+    {
+        $contacts = $this->filteredQuery($request)
+            ->orderByDesc('created_at')
+            ->paginate($request->integer('per_page', 20))
+            ->withQueryString();
+
+        return ContactResource::collection($contacts);
+    }
+
+    public function exportCsv(Request $request)
+    {
+        return TableExporter::csv('contactos', self::EXPORT_COLUMNS, $this->exportRows($request));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        return TableExporter::pdf('contactos', 'Contactos', self::EXPORT_COLUMNS, $this->exportRows($request));
+    }
+
+    private function exportRows(Request $request): Collection
+    {
+        return $this->filteredQuery($request)->orderBy('first_name')->get()->map(fn (Contact $c) => [
+            'full_name' => trim("{$c->first_name} {$c->last_name}"),
+            'customer_name' => $c->customer?->name,
+            'job_title' => $c->job_title,
+            'email' => $c->email,
+            'phone' => $c->phone,
+            'status' => $c->trashed() ? 'eliminado' : $c->status,
+        ]);
+    }
+
+    private function filteredQuery(Request $request): Builder
     {
         $user = $request->user();
 
@@ -53,11 +97,7 @@ class ContactController extends Controller
             $query->where('status', $status);
         }
 
-        $contacts = $query->orderByDesc('created_at')
-            ->paginate($request->integer('per_page', 20))
-            ->withQueryString();
-
-        return ContactResource::collection($contacts);
+        return $query;
     }
 
     public function store(StoreContactRequest $request, Customer $customer)

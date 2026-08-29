@@ -8,6 +8,8 @@ import { DataTable } from "@/components/data-table/data-table"
 import type { AppColumnDef } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
+import { DataTableExport } from "@/components/data-table/data-table-export"
+import { useTableExport } from "@/lib/export"
 import { listAuditLogs } from "@/features/audit/api"
 import type { AuditEvent, AuditLog } from "@/features/audit/api"
 
@@ -106,6 +108,8 @@ export default function AuditoriaPage() {
   const [event, setEvent] = useState<string[]>([])
   const [entity, setEntity] = useState<string[]>([])
 
+  const { isExporting, exportAs } = useTableExport("audit-logs", "auditoria")
+
   const isFiltered = search.length > 0 || event.length > 0 || entity.length > 0
 
   const queryParams = useMemo(
@@ -190,6 +194,13 @@ export default function AuditoriaPage() {
                   }}
                 />
               </>
+            }
+            actions={
+              <DataTableExport
+                isExporting={isExporting}
+                onExportCsv={() => exportAs("csv", queryParams)}
+                onExportPdf={() => exportAs("pdf", queryParams)}
+              />
             }
           />
         )}

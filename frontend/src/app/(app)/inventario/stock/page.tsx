@@ -9,6 +9,8 @@ import { DataTable } from "@/components/data-table/data-table"
 import type { AppColumnDef } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+import { DataTableExport } from "@/components/data-table/data-table-export"
+import { useTableExport } from "@/lib/export"
 import { listProducts } from "@/features/products/api"
 import type { Product, StockStatus } from "@/features/products/types"
 
@@ -76,6 +78,8 @@ export default function StockPage() {
   const [search, setSearch] = useState("")
   const [lowStock, setLowStock] = useState(false)
   const [outOfStock, setOutOfStock] = useState(false)
+
+  const { isExporting, exportAs } = useTableExport("products", "stock")
 
   const isFiltered = search.length > 0 || lowStock || outOfStock
 
@@ -169,6 +173,13 @@ export default function StockPage() {
                   Agotado
                 </Button>
               </>
+            }
+            actions={
+              <DataTableExport
+                isExporting={isExporting}
+                onExportCsv={() => exportAs("csv", queryParams)}
+                onExportPdf={() => exportAs("pdf", queryParams)}
+              />
             }
           />
         )}

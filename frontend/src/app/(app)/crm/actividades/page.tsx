@@ -20,6 +20,8 @@ import {
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
+import { DataTableExport } from "@/components/data-table/data-table-export"
+import { useTableExport } from "@/lib/export"
 import { deleteActivity, listActivities } from "@/features/activities/api"
 import type { Activity } from "@/features/activities/types"
 import { activityColumns } from "./columns"
@@ -54,6 +56,8 @@ export default function ActividadesPage() {
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Activity | null>(null)
   const [deleting, setDeleting] = useState<Activity | null>(null)
+
+  const { isExporting, exportAs } = useTableExport("activities", "actividades")
 
   const isFiltered = status.length > 0 || priority.length > 0 || search.length > 0
 
@@ -177,6 +181,13 @@ export default function ActividadesPage() {
                   }}
                 />
               </>
+            }
+            actions={
+              <DataTableExport
+                isExporting={isExporting}
+                onExportCsv={() => exportAs("csv", queryParams)}
+                onExportPdf={() => exportAs("pdf", queryParams)}
+              />
             }
           />
         )}

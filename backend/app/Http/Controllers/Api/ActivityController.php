@@ -7,11 +7,23 @@ use App\Http\Requests\StoreActivityRequest;
 use App\Http\Requests\UpdateActivityRequest;
 use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
+use App\Support\TableExporter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ActivityController extends Controller
 {
+    private const EXPORT_COLUMNS = [
+        'title' => 'Título',
+        'type' => 'Tipo',
+        'customer_name' => 'Cliente',
+        'scheduled_at' => 'Programada',
+        'status' => 'Estado',
+        'priority' => 'Prioridad',
+        'user_name' => 'Responsable',
+    ];
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', Activity::class);
@@ -21,6 +33,33 @@ class ActivityController extends Controller
             ->withQueryString();
 
         return ActivityResource::collection($activities);
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $this->authorize('viewAny', Activity::class);
+
+        return TableExporter::csv('actividades', self::EXPORT_COLUMNS, $this->exportRows($request));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $this->authorize('viewAny', Activity::class);
+
+        return TableExporter::pdf('actividades', 'Actividades', self::EXPORT_COLUMNS, $this->exportRows($request));
+    }
+
+    private function exportRows(Request $request): Collection
+    {
+        return $this->filteredQuery($request)->get()->map(fn (Activity $a) => [
+            'title' => $a->title,
+            'type' => $a->type,
+            'customer_name' => $a->customer?->name,
+            'scheduled_at' => $a->scheduled_at?->toDateTimeString(),
+            'status' => $a->status,
+            'priority' => $a->priority,
+            'user_name' => $a->user?->name,
+        ]);
     }
 
     public function store(StoreActivityRequest $request)
