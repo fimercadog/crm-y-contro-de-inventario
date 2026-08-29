@@ -16,9 +16,12 @@ import type { Product, StockStatus } from "@/features/products/types"
 
 const currency = new Intl.NumberFormat("es-CO", { style: "currency", currency: "USD" })
 
-const stockStatusVariant: Record<StockStatus, "default" | "secondary" | "outline" | "destructive"> = {
-  normal: "default",
-  bajo: "secondary",
+const stockStatusVariant: Record<
+  StockStatus,
+  "success" | "warning" | "destructive" | "outline"
+> = {
+  normal: "success",
+  bajo: "warning",
   critico: "destructive",
   agotado: "destructive",
 }
@@ -76,7 +79,7 @@ export function productColumns({ onEdit, onDelete }: ColumnActions): AppColumnDe
       accessorKey: "status",
       header: "Estado",
       cell: ({ row }) => (
-        <Badge variant={row.original.status === "activo" ? "default" : "outline"}>
+        <Badge variant={row.original.status === "activo" ? "success" : "outline"}>
           {row.original.status === "activo" ? "Activo" : "Inactivo"}
         </Badge>
       ),

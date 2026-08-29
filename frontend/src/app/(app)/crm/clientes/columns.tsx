@@ -15,9 +15,9 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 import type { AppColumnDef } from "@/components/data-table/data-table"
 import type { Customer } from "@/features/customers/types"
 
-const statusVariant: Record<Customer["status"], "default" | "secondary" | "outline"> = {
-  activo: "default",
-  prospecto: "secondary",
+const statusVariant: Record<Customer["status"], "success" | "warning" | "outline"> = {
+  activo: "success",
+  prospecto: "warning",
   inactivo: "outline",
 }
 

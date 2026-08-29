@@ -15,11 +15,11 @@ import type { AuditEvent, AuditLog } from "@/features/audit/api"
 
 const dateTime = new Intl.DateTimeFormat("es-CO", { dateStyle: "medium", timeStyle: "short" })
 
-const eventVariant: Record<AuditEvent, "default" | "secondary" | "destructive" | "outline"> = {
-  created: "default",
-  updated: "secondary",
+const eventVariant: Record<AuditEvent, "success" | "default" | "destructive" | "warning"> = {
+  created: "success",
+  updated: "default",
   deleted: "destructive",
-  restored: "outline",
+  restored: "warning",
 }
 
 const eventLabel: Record<AuditEvent, string> = {

@@ -131,14 +131,18 @@ export default function RolesPage() {
                         >
                           Editar permisos
                         </DropdownMenuItem>
-                        {!role.is_system && (
-                          <DropdownMenuItem
-                            variant="destructive"
-                            onClick={() => setDeleting(role)}
-                          >
-                            Eliminar
-                          </DropdownMenuItem>
-                        )}
+                        <DropdownMenuItem
+                          variant="destructive"
+                          disabled={role.is_system || role.users_count > 0}
+                          onClick={() => setDeleting(role)}
+                        >
+                          Eliminar
+                          {role.is_system
+                            ? " (rol base)"
+                            : role.users_count > 0
+                              ? " (tiene usuarios)"
+                              : ""}
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

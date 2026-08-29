@@ -36,7 +36,7 @@ function columns({
       accessorKey: "status",
       header: "Estado",
       cell: ({ row }) => (
-        <Badge variant={row.original.status === "activo" ? "default" : "outline"}>
+        <Badge variant={row.original.status === "activo" ? "success" : "outline"}>
           {row.original.status === "activo" ? "Activo" : "Inactivo"}
         </Badge>
       ),

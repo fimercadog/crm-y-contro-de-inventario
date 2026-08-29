@@ -16,9 +16,9 @@ import type { Product, StockStatus } from "@/features/products/types"
 
 const currency = new Intl.NumberFormat("es-CO", { style: "currency", currency: "USD" })
 
-const statusVariant: Record<StockStatus, "default" | "secondary" | "outline" | "destructive"> = {
-  normal: "default",
-  bajo: "secondary",
+const statusVariant: Record<StockStatus, "success" | "warning" | "destructive" | "outline"> = {
+  normal: "success",
+  bajo: "warning",
   critico: "destructive",
   agotado: "destructive",
 }

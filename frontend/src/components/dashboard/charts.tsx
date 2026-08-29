@@ -38,9 +38,9 @@ export function BarList({
               {d.hint && <span className="ml-1 text-xs text-muted-foreground">{d.hint}</span>}
             </span>
           </div>
-          <div className="mt-1 h-2 w-full overflow-hidden rounded-[4px] bg-muted">
+          <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-secondary">
             <div
-              className="h-full rounded-[4px] bg-foreground"
+              className="h-full rounded-full bg-primary"
               style={{ width: `${Math.max((d.value / max) * 100, d.value > 0 ? 2 : 0)}%` }}
             />
           </div>
@@ -62,7 +62,7 @@ export function Sparkbars({ data }: { data: Array<{ day: string; count: number }
         {data.map((d) => (
           <div
             key={d.day}
-            className="flex-1 rounded-[3px] bg-foreground/80 transition-colors hover:bg-foreground"
+            className="flex-1 rounded-t-sm bg-primary/80 transition-colors hover:bg-primary"
             style={{ height: `${Math.max((d.count / max) * 100, d.count > 0 ? 4 : 1)}%` }}
             title={`${dayFmt.format(new Date(d.day))}: ${d.count} movimiento${d.count === 1 ? "" : "s"}`}
           />

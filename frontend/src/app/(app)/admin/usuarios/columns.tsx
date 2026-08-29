@@ -47,7 +47,7 @@ export function userColumns({
       accessorKey: "status",
       header: "Estado",
       cell: ({ row }) => (
-        <Badge variant={row.original.status === "active" ? "default" : "outline"}>
+        <Badge variant={row.original.status === "active" ? "success" : "outline"}>
           {row.original.status === "active" ? "Activo" : "Inactivo"}
         </Badge>
       ),

@@ -37,8 +37,8 @@ import { MovementFormDialog } from "@/components/inventory/movement-form-dialog"
 
 const dateTime = new Intl.DateTimeFormat("es-CO", { dateStyle: "medium", timeStyle: "short" })
 
-const typeVariant: Record<MovementType, "default" | "secondary" | "outline" | "destructive"> = {
-  entrada: "default",
+const typeVariant: Record<MovementType, "success" | "destructive" | "outline"> = {
+  entrada: "success",
   salida: "destructive",
   ajuste: "outline",
 }
@@ -87,7 +87,7 @@ function buildColumns({ onEdit, onVoid }: ColumnOptions): AppColumnDef<Inventory
       cell: ({ row }) => (
         <div className="flex items-center gap-1.5">
           <Badge variant={typeVariant[row.original.type]}>{typeLabel[row.original.type]}</Badge>
-          {row.original.voided && <Badge variant="outline">Anulado</Badge>}
+          {row.original.voided && <Badge variant="destructive">Anulado</Badge>}
         </div>
       ),
     },

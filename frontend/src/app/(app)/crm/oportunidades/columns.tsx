@@ -15,9 +15,9 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 import type { AppColumnDef } from "@/components/data-table/data-table"
 import type { Opportunity } from "@/features/opportunities/types"
 
-const statusVariant: Record<Opportunity["status"], "default" | "secondary" | "destructive"> = {
+const statusVariant: Record<Opportunity["status"], "default" | "success" | "destructive"> = {
   abierta: "default",
-  ganada: "secondary",
+  ganada: "success",
   perdida: "destructive",
 }
 

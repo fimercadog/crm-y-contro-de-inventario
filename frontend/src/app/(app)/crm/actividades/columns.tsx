@@ -24,15 +24,15 @@ const typeLabels: Record<Activity["type"], string> = {
   otro: "Otro",
 }
 
-const statusVariant: Record<Activity["status"], "default" | "secondary" | "outline"> = {
-  pendiente: "secondary",
-  completada: "default",
+const statusVariant: Record<Activity["status"], "warning" | "success" | "outline"> = {
+  pendiente: "warning",
+  completada: "success",
   cancelada: "outline",
 }
 
-const priorityVariant: Record<Activity["priority"], "outline" | "secondary" | "destructive"> = {
+const priorityVariant: Record<Activity["priority"], "outline" | "warning" | "destructive"> = {
   baja: "outline",
-  media: "secondary",
+  media: "warning",
   alta: "destructive",
 }
 
