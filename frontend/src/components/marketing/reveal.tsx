@@ -57,8 +57,8 @@ export function Reveal({
         shown
           ? "translate-y-0 scale-100 blur-0 opacity-100"
           : zoom
-            ? "scale-[1.08] opacity-0 blur-[8px]"
-            : "translate-y-8 opacity-0 blur-[6px]",
+            ? "scale-[1.08] opacity-0 blur-sm"
+            : "translate-y-8 opacity-0 blur-xs",
         className
       )}
       style={delay ? { transitionDelay: `${delay}s` } : undefined}

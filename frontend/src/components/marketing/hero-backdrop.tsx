@@ -38,7 +38,7 @@ export function HeroBackdrop({
       <div
         className={cn(
           "absolute left-1/2 top-0 aspect-square w-[130%] max-w-none -translate-x-1/2 -translate-y-1/2 animate-marketing-orbit rounded-full",
-          navy ? "opacity-25" : "opacity-[0.14]"
+          navy ? "opacity-25" : "opacity-15"
         )}
         style={{
           background:
@@ -51,7 +51,7 @@ export function HeroBackdrop({
       {/* aurora blobs — same animation, offset phase */}
       <div
         className={cn(
-          "absolute left-[-12%] top-[-30%] h-[42rem] w-[42rem] animate-marketing-aurora rounded-full blur-[70px]",
+          "absolute left-[-12%] top-[-30%] size-168 animate-marketing-aurora rounded-full blur-[70px]",
           navy ? "opacity-70" : "opacity-55"
         )}
         style={{
@@ -61,7 +61,7 @@ export function HeroBackdrop({
       />
       <div
         className={cn(
-          "absolute right-[-12%] top-[8%] h-[38rem] w-[38rem] animate-marketing-aurora rounded-full blur-[80px] [animation-delay:-9s]",
+          "absolute right-[-12%] top-[8%] size-152 animate-marketing-aurora rounded-full blur-[80px] [animation-delay:-9s]",
           navy ? "opacity-60" : "opacity-45"
         )}
         style={{
@@ -71,16 +71,16 @@ export function HeroBackdrop({
       />
       <div
         className={cn(
-          "absolute bottom-[-25%] left-[28%] h-[32rem] w-[32rem] animate-marketing-pulse-glow rounded-full blur-[80px]",
+          "absolute bottom-[-25%] left-[28%] size-128 animate-marketing-pulse-glow rounded-full blur-[80px]",
           navy ? "bg-[#2fd07a]/40" : "bg-primary/25"
         )}
       />
 
       {/* receding blueprint grid */}
-      <div className="absolute inset-x-0 bottom-0 h-[62%] [perspective:800px]">
+      <div className="perspective-midrange absolute inset-x-0 bottom-0 h-[62%]">
         <div
           className={cn(
-            "absolute inset-0 origin-bottom animate-marketing-grid [transform:rotateX(70deg)] bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-size-[46px_46px] [mask-image:linear-gradient(to_top,black_5%,transparent_75%)]",
+            "absolute inset-0 origin-bottom animate-marketing-grid transform-[rotateX(70deg)] bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-size-[46px_46px] mask-[linear-gradient(to_top,black_5%,transparent_75%)]",
             navy ? "text-white/25" : "text-primary/15"
           )}
         />
