@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-svh flex-col scroll-smooth bg-background text-foreground">
+    <div className="marketing-theme flex min-h-svh flex-col scroll-smooth bg-background text-foreground">
       <MarketingHeader />
       <main className="flex-1">{children}</main>
       <MarketingFooter />

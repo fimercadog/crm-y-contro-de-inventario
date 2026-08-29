@@ -152,6 +152,55 @@
   --marketing-shadow: 0 24px 70px rgb(0 0 0 / 0.45);
 }
 
+/* ---- Marketing site theme: Divi "SaaS Product" — white / near-black / green,
+   black UI-widget cards, green→lime gradient blobs. Scoped so the app keeps
+   its emerald palette. ---- */
+.marketing-theme {
+  --background: #ffffff;
+  --foreground: #0f1012;
+  --card: #ffffff;
+  --card-foreground: #0f1012;
+  --popover: #ffffff;
+  --popover-foreground: #0f1012;
+  --primary: #16a34a; /* friendly medium green — pills, accents */
+  --primary-hover: #15803d;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f0;
+  --secondary-foreground: #14532d;
+  --muted: #f5f5f6;
+  --muted-foreground: #6b7280;
+  --accent: #ecfdf3;
+  --accent-foreground: #15803d;
+  --destructive: #dc2626;
+  --success: #16a34a;
+  --warning: #d97706;
+  --border: #e6e7ea;
+  --input: #d9dade;
+  --ring: #16a34a;
+  --chart-1: #16a34a;
+  --chart-2: #0f0f10;
+  --chart-3: #f59e0b;
+  --chart-4: #3b82f6;
+  --chart-5: #ec4899;
+  --radius: 0.875rem;
+  --navy: #101012; /* dark contrast sections (kept name for shared components) */
+  --navy-foreground: #f5f5f6;
+  /* Divi extras */
+  --ink: #0f1012; /* near-black cards / headlines */
+  --ink-foreground: #f4f4f5;
+  --blob: linear-gradient(140deg, #16a34a 0%, #4ade80 35%, #a3e635 70%, #e3f0a0 100%);
+  --blob-warm: linear-gradient(140deg, #f59e0b 0%, #fb923c 45%, #fda4af 100%);
+  --elevation-1: 0 1px 2px 0 rgb(15 16 18 / 0.06), 0 1px 3px 1px rgb(15 16 18 / 0.04);
+  --elevation-2: 0 2px 4px 0 rgb(15 16 18 / 0.06), 0 4px 12px 2px rgb(15 16 18 / 0.06);
+  --elevation-3: 0 4px 8px 0 rgb(15 16 18 / 0.07), 0 12px 28px 4px rgb(15 16 18 / 0.08);
+  --marketing-shadow: 0 30px 60px -12px rgb(15 16 18 / 0.22);
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+}
+
 /* ---- Marketing motion ---- */
 @theme {
   --animate-marketing-float: marketing-float 5s ease-in-out infinite;

@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
 import { Reveal } from "@/components/marketing/reveal"
@@ -10,7 +9,6 @@ import {
   Section,
   SectionHeading,
   TourGrid,
-  cardHover,
 } from "@/components/marketing/marketing-ui"
 
 export const metadata: Metadata = {
@@ -44,9 +42,14 @@ export default function ProductoPage() {
             </CtaLink>
           </>
         }
+        visual="screenshot"
+        screenshot={{
+          src: "/product/dashboard.png",
+          alt: "Panel de CRM + Inventario con indicadores de clientes, pipeline y stock",
+        }}
       />
 
-      <Section muted>
+      <Section className="border-t border-border">
         <Reveal>
           <SectionHeading
             eyebrow="El problema"
@@ -54,22 +57,22 @@ export default function ProductoPage() {
             lead="La información del día a día vive en hojas de cálculo, chats y sistemas que no se hablan entre sí. Nadie tiene la foto completa."
           />
         </Reveal>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto mt-14 grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {problems.map((text, i) => (
             <Reveal key={text} delay={i * 0.05}>
-              <Card className={`h-full ${cardHover}`}>
-                <CardContent className="text-sm leading-6 text-muted-foreground">{text}</CardContent>
-              </Card>
+              <div className="h-full rounded-2xl border border-border bg-card p-6 text-sm leading-6 text-muted-foreground">
+                {text}
+              </div>
             </Reveal>
           ))}
         </div>
       </Section>
 
-      <Section>
+      <Section className="border-t border-border">
         <PlataformaGrid />
       </Section>
 
-      <Section muted>
+      <Section className="border-t border-border">
         <TourGrid />
       </Section>
 

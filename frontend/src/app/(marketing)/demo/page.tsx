@@ -35,20 +35,22 @@ export default function DemoPage() {
         }
       />
 
-      <Section muted>
-        <Reveal>
-          <h2 className="text-2xl font-semibold tracking-tight">Qué incluye la demo</h2>
-        </Reveal>
-        <ul className="mt-8 grid gap-3 sm:max-w-2xl">
-          {includes.map((text, i) => (
-            <Reveal key={text} delay={i * 0.05}>
-              <li className="flex gap-3 text-sm leading-6">
-                <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                <span>{text}</span>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
+      <Section className="border-t border-border">
+        <div className="mx-auto max-w-2xl">
+          <Reveal>
+            <h2 className="text-2xl font-black tracking-tight">Qué incluye la demo</h2>
+          </Reveal>
+          <ul className="mt-8 grid gap-3">
+            {includes.map((text, i) => (
+              <Reveal key={text} delay={i * 0.05}>
+                <li className="flex gap-3 text-sm leading-6">
+                  <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                  <span>{text}</span>
+                </li>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
       </Section>
     </>
   )

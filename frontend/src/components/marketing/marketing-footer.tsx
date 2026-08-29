@@ -3,48 +3,66 @@ import { Boxes } from "lucide-react"
 
 import { site } from "@/lib/site"
 
+const columns = [
+  {
+    title: "Producto",
+    links: [
+      { label: "Producto", href: "/producto" },
+      { label: "Funciones", href: "/funciones" },
+      { label: "Beneficios", href: "/beneficios" },
+      { label: "Asistente IA", href: "/asistente-ia" },
+    ],
+  },
+  {
+    title: "Empresa",
+    links: [
+      { label: "Seguridad", href: "/seguridad" },
+      { label: "Solicitar demo", href: "/demo" },
+      { label: "Iniciar sesión", href: "/login" },
+    ],
+  },
+]
+
 export function MarketingFooter() {
   return (
-    <footer className="bg-navy text-navy-foreground">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="flex flex-col justify-between gap-8 md:flex-row">
-          <div className="max-w-sm">
-            <div className="flex items-center gap-2">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Boxes className="size-4" />
-              </span>
-              <span className="text-sm font-bold">CRM + Inventario</span>
-            </div>
-            <p className="mt-3 text-sm text-navy-foreground/70">{site.description}</p>
+    <footer className="border-t border-border bg-background">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr] lg:px-8">
+        <div className="max-w-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="flex size-9 items-center justify-center rounded-xl bg-ink text-primary">
+              <Boxes className="size-5" />
+            </span>
+            <span className="text-base font-black tracking-tight">
+              CRM<span className="text-primary">+</span>Inventario
+            </span>
           </div>
-
-          <nav className="flex flex-wrap gap-x-10 gap-y-2" aria-label="Pie de página">
-            {site.nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm text-navy-foreground/70 transition-colors hover:text-navy-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-            <Link
-              href="/login"
-              className="text-sm text-navy-foreground/70 transition-colors hover:text-navy-foreground"
-            >
-              Iniciar sesión
-            </Link>
-          </nav>
+          <p className="mt-4 text-sm leading-6 text-muted-foreground">{site.description}</p>
         </div>
 
-        <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 text-xs text-navy-foreground/70 sm:flex-row sm:items-center">
-          <p>© {new Date().getFullYear()} CRM + Inventario. Todos los derechos reservados.</p>
-          <Link
-            href="/demo"
-            className="font-medium underline underline-offset-4 hover:text-navy-foreground"
-          >
-            Solicitar una demostración
-          </Link>
+        {columns.map((col) => (
+          <nav key={col.title} aria-label={col.title}>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
+              {col.title}
+            </p>
+            <ul className="mt-4 space-y-2.5">
+              {col.links.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="text-sm text-foreground/80 transition-colors hover:text-primary"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
+
+      <div className="bg-ink text-ink-foreground">
+        <div className="mx-auto max-w-7xl px-4 py-5 text-xs text-white/60 sm:px-6 lg:px-8">
+          © {new Date().getFullYear()} CRM + Inventario. Todos los derechos reservados.
         </div>
       </div>
     </footer>

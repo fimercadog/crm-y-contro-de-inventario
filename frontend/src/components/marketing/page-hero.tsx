@@ -1,12 +1,13 @@
-import { HeroBackdrop } from "@/components/marketing/hero-backdrop"
+import { DeviceMockup } from "@/components/marketing/device-mockup"
+import { GradientBlob } from "@/components/marketing/gradient-blob"
 import { Reveal } from "@/components/marketing/reveal"
-import { ScreenshotFrame } from "@/components/marketing/screenshot-frame"
+import { WidgetCluster } from "@/components/marketing/widget-card"
 import { container } from "@/components/marketing/marketing-ui"
 
 /**
- * Hero band for every marketing page. With `screenshot` it's the two-column
- * home hero (text + floating product shot); without it, a compact centred
- * intro for an interior page.
+ * Divi "SaaS Product" hero: tiny eyebrow, a huge black headline, grey body,
+ * small green pill actions, and — on the right — either a floating widget
+ * cluster (home) or a product screenshot tilted in perspective.
  */
 export function PageHero({
   eyebrow,
@@ -15,6 +16,7 @@ export function PageHero({
   badge,
   actions,
   note,
+  visual = "none",
   screenshot,
 }: {
   eyebrow?: string
@@ -23,74 +25,73 @@ export function PageHero({
   badge?: React.ReactNode
   actions?: React.ReactNode
   note?: string
+  visual?: "cluster" | "screenshot" | "none"
   screenshot?: { src: string; alt: string }
 }) {
-  const text = (
-    <div className={screenshot ? undefined : "mx-auto max-w-3xl text-center"}>
-      {badge && (
-        <Reveal mount>
-          <div className={screenshot ? "mb-5" : "mb-5 flex justify-center"}>{badge}</div>
-        </Reveal>
-      )}
-      {eyebrow && (
-        <Reveal mount delay={0.05}>
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">{eyebrow}</p>
-        </Reveal>
-      )}
-      <Reveal mount delay={0.1}>
-        <h1 className="mt-3 text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
-          {title}
-        </h1>
-      </Reveal>
-      {lead && (
-        <Reveal mount delay={0.2}>
-          <p
-            className={`mt-5 text-lg leading-8 text-muted-foreground ${
-              screenshot ? "max-w-xl" : "mx-auto max-w-2xl"
-            }`}
-          >
-            {lead}
-          </p>
-        </Reveal>
-      )}
-      {actions && (
-        <Reveal mount delay={0.3}>
-          <div className={`mt-8 flex flex-wrap gap-3 ${screenshot ? "" : "justify-center"}`}>
-            {actions}
-          </div>
-        </Reveal>
-      )}
-      {note && (
-        <Reveal mount delay={0.4}>
-          <p className="mt-6 text-xs text-muted-foreground">{note}</p>
-        </Reveal>
-      )}
-    </div>
-  )
+  const hasVisual = visual !== "none"
 
   return (
-    <section className="relative isolate overflow-hidden border-b">
-      <HeroBackdrop />
-      {screenshot ? (
-        <div
-          className={`${container} grid items-center gap-14 py-16 lg:grid-cols-[1fr_1.05fr] lg:py-24`}
-        >
-          {text}
-          <Reveal mount zoom delay={0.25}>
-            <div className="relative">
-              <div
-                aria-hidden
-                className="absolute -inset-6 -z-10 animate-marketing-pulse-glow rounded-[2rem] bg-primary/20 blur-3xl"
-              />
-              <div className="animate-marketing-float">
-                <ScreenshotFrame src={screenshot.src} alt={screenshot.alt} priority />
+    <section className="relative isolate overflow-hidden">
+      <div
+        className={`${container} grid items-center gap-12 py-16 lg:py-24 ${
+          hasVisual ? "lg:grid-cols-[1fr_1.1fr]" : ""
+        }`}
+      >
+        <div className={hasVisual ? undefined : "mx-auto max-w-3xl text-center"}>
+          {badge && (
+            <Reveal mount>
+              <div className={hasVisual ? "mb-6" : "mb-6 flex justify-center"}>{badge}</div>
+            </Reveal>
+          )}
+          {eyebrow && (
+            <Reveal mount delay={0.05}>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">{eyebrow}</p>
+            </Reveal>
+          )}
+          <Reveal mount delay={0.1}>
+            <h1 className="mt-3 text-5xl font-black leading-[1.02] tracking-tight sm:text-6xl">
+              {title}
+            </h1>
+          </Reveal>
+          {lead && (
+            <Reveal mount delay={0.18}>
+              <p
+                className={`mt-6 text-lg leading-8 text-muted-foreground ${
+                  hasVisual ? "max-w-lg" : "mx-auto max-w-2xl"
+                }`}
+              >
+                {lead}
+              </p>
+            </Reveal>
+          )}
+          {actions && (
+            <Reveal mount delay={0.26}>
+              <div className={`mt-8 flex flex-wrap gap-3 ${hasVisual ? "" : "justify-center"}`}>
+                {actions}
               </div>
+            </Reveal>
+          )}
+          {note && (
+            <Reveal mount delay={0.34}>
+              <p className="mt-6 text-xs text-muted-foreground">{note}</p>
+            </Reveal>
+          )}
+        </div>
+
+        {visual === "cluster" && (
+          <Reveal mount delay={0.2}>
+            <WidgetCluster />
+          </Reveal>
+        )}
+        {visual === "screenshot" && screenshot && (
+          <Reveal mount zoom delay={0.2}>
+            <div className="relative">
+              <GradientBlob className="right-[-8%] top-[-10%] size-[70%]" float />
+              <DeviceMockup src={screenshot.src} alt={screenshot.alt} priority tilt="right" />
             </div>
           </Reveal>
-        </div>
-      ) : (
-        <div className={`${container} py-20 lg:py-28`}>{text}</div>
-      )}
+        )}
+      </div>
     </section>
   )
 }

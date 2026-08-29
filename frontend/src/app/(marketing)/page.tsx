@@ -44,12 +44,12 @@ export default function HomePage() {
   return (
     <>
       <PageHero
+        eyebrow="CRM + Control de inventario"
         title={
           <>
-            CRM + Inventario{" "}
-            <span className="animate-marketing-gradient-text bg-[linear-gradient(90deg,var(--primary),#22c55e,var(--primary))] bg-size-[200%_auto] bg-clip-text text-transparent">
-              en un solo lugar
-            </span>
+            Tu operación
+            <br />
+            en un solo lugar
           </>
         }
         lead={site.description}
@@ -62,17 +62,14 @@ export default function HomePage() {
           </>
         }
         note="Multiempresa · roles y permisos · auditoría de cada cambio"
-        screenshot={{
-          src: "/product/dashboard.png",
-          alt: "Panel de CRM + Inventario con indicadores de clientes, pipeline y stock",
-        }}
+        visual="cluster"
       />
 
       <Section>
         <PlataformaGrid />
       </Section>
 
-      <Section muted>
+      <Section className="border-t border-border">
         <Reveal>
           <SectionHeading
             eyebrow="Explora"
@@ -80,17 +77,19 @@ export default function HomePage() {
             lead="Cada página entra en detalle sobre una parte de la plataforma."
           />
         </Reveal>
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
+        <div className="mx-auto mt-14 grid max-w-5xl gap-5 md:grid-cols-3">
           {explore.map((item, i) => (
             <Reveal key={item.href} delay={i * 0.06}>
               <RippleLink
                 href={item.href}
-                className={`group flex h-full flex-col rounded-xl bg-background p-5 ${cardHover}`}
+                className={`group flex h-full flex-col rounded-2xl border border-border bg-card p-6 ${cardHover}`}
               >
-                <item.icon className="size-5 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
-                <h3 className="mt-4 text-base font-semibold">{item.title}</h3>
+                <span className="grid size-11 place-items-center rounded-xl border border-border text-primary transition-colors group-hover:border-primary/50">
+                  <item.icon className="size-5" />
+                </span>
+                <h3 className="mt-5 text-base font-bold">{item.title}</h3>
                 <p className="mt-2 flex-1 text-sm leading-6 text-muted-foreground">{item.text}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">
                   Ver más
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
                 </span>
@@ -100,7 +99,7 @@ export default function HomePage() {
         </div>
       </Section>
 
-      <Section>
+      <Section className="border-t border-border">
         <TourGrid />
       </Section>
 

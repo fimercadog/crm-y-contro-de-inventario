@@ -20,15 +20,14 @@ import { site } from "@/lib/site"
 
 function Wordmark() {
   return (
-    <Link href="/" className="flex items-center gap-2" aria-label={site.name}>
-      <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <Boxes className="size-4" />
+    <Link href="/" className="flex items-center gap-2.5" aria-label={site.name}>
+      <span className="flex size-9 items-center justify-center rounded-xl bg-ink text-primary">
+        <Boxes className="size-5" />
       </span>
-      <span className="text-sm font-bold leading-none">
+      <span className="text-base font-black leading-none tracking-tight">
         CRM
-        <span className="block text-[10px] font-medium uppercase tracking-wide text-primary">
-          Inventario
-        </span>
+        <span className="text-primary">+</span>
+        Inventario
       </span>
     </Link>
   )
@@ -81,11 +80,14 @@ export function MarketingHeader() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
-          <CtaLink href="/login" variant="ghost" size="default">
+        <div className="hidden items-center gap-3 lg:flex">
+          <Link
+            href="/login"
+            className="text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
             Iniciar sesión
-          </CtaLink>
-          <CtaLink href="/demo" size="default">
+          </Link>
+          <CtaLink href="/demo" size="sm">
             Solicitar demostración
           </CtaLink>
         </div>

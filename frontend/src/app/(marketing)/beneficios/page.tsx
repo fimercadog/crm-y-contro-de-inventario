@@ -1,11 +1,9 @@
 import type { Metadata } from "next"
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
 import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
 import { Reveal } from "@/components/marketing/reveal"
-import { DemoCta, Section, cardHover } from "@/components/marketing/marketing-ui"
+import { DemoCta, Section } from "@/components/marketing/marketing-ui"
 
 export const metadata: Metadata = {
   title: "Beneficios",
@@ -46,21 +44,21 @@ export default function BeneficiosPage() {
     <>
       <PageHero
         eyebrow="Beneficios"
-        title="Cada beneficio sale de una función que ya existe"
+        title="Cada beneficio sale de una función real"
         lead="Nada de promesas genéricas: esto es lo que cambia en tu operación cuando todo vive en un mismo sistema."
         actions={<CtaLink href="/demo">Solicitar demostración</CtaLink>}
       />
 
-      <Section muted>
-        <div className="grid gap-4 md:grid-cols-2">
+      <Section className="border-t border-border">
+        <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
           {benefits.map((b, i) => (
             <Reveal key={b.fn} delay={i * 0.04}>
-              <Card className={`h-full ${cardHover}`}>
-                <CardContent>
-                  <Badge variant="secondary">{b.fn}</Badge>
-                  <p className="mt-3 text-sm leading-6">{b.benefit}</p>
-                </CardContent>
-              </Card>
+              <div className="h-full rounded-2xl border border-border bg-card p-6">
+                <span className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                  {b.fn}
+                </span>
+                <p className="mt-3 text-sm leading-6">{b.benefit}</p>
+              </div>
             </Reveal>
           ))}
         </div>

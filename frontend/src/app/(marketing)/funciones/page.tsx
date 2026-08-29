@@ -35,15 +35,18 @@ export default function FuncionesPage() {
         title="Lo que hace el sistema"
         lead="Tres bloques que trabajan juntos: CRM, control de inventario y reportes. Todo lo de abajo está verificado contra el producto real."
         actions={<CtaLink href="/demo">Solicitar demostración</CtaLink>}
+        visual="screenshot"
+        screenshot={{ src: "/product/pipeline.png", alt: "Tablero Kanban del pipeline de ventas" }}
       />
 
-      <div className="border-b bg-card">
+      <div className="border-t border-border">
         <FeatureRow
           eyebrow="CRM"
-          title="Convierte contactos y oportunidades en un proceso comercial ordenado"
+          title="Un proceso comercial ordenado"
           lead="Cada cliente, cada conversación y cada oportunidad en un mismo lugar, con un responsable claro."
           screenshot="/product/pipeline.png"
           alt="Tablero Kanban del pipeline de ventas con oportunidades por etapa"
+          cta={{ href: "/demo", label: "Ver una demo del CRM" }}
           points={[
             { icon: UsersRound, text: "Clientes y contactos centralizados, con responsable asignado." },
             { icon: Handshake, text: "Oportunidades con etapa, monto y probabilidad." },
@@ -64,40 +67,44 @@ export default function FuncionesPage() {
         />
       </div>
 
-      <FeatureRow
-        eyebrow="Control de inventario"
-        title="Saber qué hay disponible y de dónde salió cada unidad"
-        lead="El stock deja de ser un número que alguien recuerda: se mueve solo cuando registras una entrada, una salida o un ajuste."
-        reverse
-        screenshot="/product/movimientos.png"
-        alt="Registro consolidado de movimientos de inventario con entradas, salidas y ajustes"
-        points={[
-          { icon: PackageSearch, text: "Productos con SKU, costo, precio y stock mínimo / máximo." },
-          { icon: Boxes, text: "Catálogos de categorías, marcas, unidades y proveedores." },
-          {
-            icon: ClipboardList,
-            text: "Registra entradas, salidas y ajustes por conteo físico. El stock se actualiza en el momento.",
-          },
-          {
-            icon: ShieldCheck,
-            text: "No deja el stock en negativo, salvo que tú lo autorices para la empresa.",
-          },
-          {
-            icon: Undo2,
-            text: "Corrige o anula un movimiento sin borrarlo: el efecto se revierte y queda con fecha y usuario.",
-          },
-          { icon: BarChart3, text: "Vista de stock con valor en existencias y alertas de stock bajo." },
-        ]}
-        note="Movimientos es un registro consolidado de solo lectura. Los ajustes de stock inicial no se modifican."
-      />
+      <div className="border-t border-border">
+        <FeatureRow
+          eyebrow="Control de inventario"
+          title="Qué hay y de dónde salió cada unidad"
+          lead="El stock deja de ser un número que alguien recuerda: se mueve solo cuando registras una entrada, una salida o un ajuste."
+          reverse
+          screenshot="/product/movimientos.png"
+          alt="Registro consolidado de movimientos de inventario"
+          cta={{ href: "/demo", label: "Ver el control de inventario" }}
+          points={[
+            { icon: PackageSearch, text: "Productos con SKU, costo, precio y stock mínimo / máximo." },
+            { icon: Boxes, text: "Catálogos de categorías, marcas, unidades y proveedores." },
+            {
+              icon: ClipboardList,
+              text: "Registra entradas, salidas y ajustes por conteo físico. El stock se actualiza en el momento.",
+            },
+            {
+              icon: ShieldCheck,
+              text: "No deja el stock en negativo, salvo que tú lo autorices para la empresa.",
+            },
+            {
+              icon: Undo2,
+              text: "Corrige o anula un movimiento sin borrarlo: el efecto se revierte y queda con fecha y usuario.",
+            },
+            { icon: BarChart3, text: "Vista de stock con valor en existencias y alertas de stock bajo." },
+          ]}
+          note="Movimientos es un registro consolidado de solo lectura."
+        />
+      </div>
 
-      <div className="border-y bg-card">
+      <div className="border-t border-border">
         <FeatureRow
           eyebrow="Reportes"
           title="Información preparada para decidir"
           lead="Cuatro reportes agregados sobre tus datos, listos para consultar y exportar."
           screenshot="/product/reportes.png"
           alt="Pantalla de reportes con inventario valorizado y oportunidades por etapa"
+          cta={{ href: "/demo", label: "Ver los reportes" }}
           points={[
             { icon: BarChart3, text: "Inventario valorizado por categoría." },
             { icon: BarChart3, text: "Resumen de movimientos por tipo y período." },
@@ -105,25 +112,25 @@ export default function FuncionesPage() {
             { icon: BarChart3, text: "Ventas por producto sobre oportunidades ganadas." },
             { icon: FileDown, text: "Cada reporte se exporta a CSV o PDF." },
           ]}
-          note="Los reportes se consultan cuando los necesitas; todavía no hay envíos programados por correo."
+          note="Todavía no hay envíos programados por correo."
         />
       </div>
 
-      <Section>
+      <Section className="border-t border-border">
         <Reveal>
           <RippleLink
             href="/asistente-ia"
-            className="group flex flex-col gap-4 rounded-2xl border border-amber-400/40 bg-amber-400/10 p-6 shadow-elevation-1 transition-shadow duration-200 hover:shadow-elevation-3 sm:flex-row sm:items-center sm:justify-between"
+            className="group mx-auto flex max-w-3xl flex-col gap-4 rounded-2xl border border-amber-400/50 bg-amber-400/10 p-6 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex flex-col gap-3">
               <PremiumBadge className="w-fit" />
               <p className="text-sm leading-6 text-muted-foreground">
-                El <span className="font-medium text-foreground">Asistente IA</span> responde
+                El <span className="font-semibold text-foreground">Asistente IA</span> responde
                 preguntas sobre tus datos en lenguaje natural. Es un complemento de pago aparte
                 del plan base.
               </p>
             </div>
-            <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary">
+            <span className="inline-flex shrink-0 items-center gap-1 text-sm font-bold text-primary">
               Ver el asistente
               <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
             </span>

@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
 import { BadgeCheck, Boxes, History, RotateCcw, ShieldCheck, UsersRound } from "lucide-react"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
 import { Reveal } from "@/components/marketing/reveal"
-import { DemoCta, Section, cardHover } from "@/components/marketing/marketing-ui"
+import { DemoCta, FeatureCard, Section } from "@/components/marketing/marketing-ui"
 
 export const metadata: Metadata = {
   title: "Seguridad y control",
@@ -52,24 +51,18 @@ export default function SeguridadPage() {
     <>
       <PageHero
         eyebrow="Seguridad y control"
-        title="Cada persona ve lo que le corresponde — y todo queda registrado"
-        lead="El control de acceso y la trazabilidad no son un módulo aparte: están en toda la plataforma."
+        title="Cada persona ve lo que le corresponde"
+        lead="El control de acceso y la trazabilidad no son un módulo aparte: están en toda la plataforma, y todo queda registrado."
         actions={<CtaLink href="/demo">Solicitar demostración</CtaLink>}
+        visual="screenshot"
+        screenshot={{ src: "/product/auditoria.png", alt: "Bitácora de auditoría con el detalle de cada cambio" }}
       />
 
-      <Section muted>
-        <div className="grid gap-4 md:grid-cols-2">
+      <Section className="border-t border-border">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item, i) => (
             <Reveal key={item.title} delay={i * 0.04}>
-              <Card className={`group h-full ${cardHover}`}>
-                <CardContent className="flex gap-4">
-                  <item.icon className="mt-0.5 size-5 shrink-0 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
-                  <div>
-                    <h3 className="text-sm font-semibold">{item.title}</h3>
-                    <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.text}</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <FeatureCard icon={item.icon} title={item.title} text={item.text} />
             </Reveal>
           ))}
         </div>

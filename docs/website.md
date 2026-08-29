@@ -4,6 +4,16 @@ Sitio público **multipágina** de **CRM + Inventario**, construido con el stack
 existente (Next.js 16 App Router, Base UI, Tailwind v4). No se instaló
 WordPress/Divi ni se añadió ninguna librería nueva.
 
+**Estilo visual**: réplica del layout pack **"SaaS Product" de Divi/Elegant
+Themes** ("Track With Divi X") — fondo blanco, titulares negros peso 900,
+verde medio como acento, **tarjetas oscuras tipo widget** (gauge/barras/stat/
+avatar) flotando sobre **blobs de degradado verde→lima**, y capturas del
+producto **inclinadas en perspectiva 3D**. La paleta va scopeada a
+`.marketing-theme` (en `globals.css`) para que la app conserve su emerald.
+Componentes: `page-hero`, `widget-card` (`WidgetCard` / `WidgetCluster`),
+`gradient-blob`, `device-mockup`, `marketing-ui` (`FeatureCard`, `FeatureRow`,
+`Section`, `DemoCta`).
+
 ## Rutas
 
 Todas en el grupo `(marketing)` con layout propio (header/footer/FAB). Cada
