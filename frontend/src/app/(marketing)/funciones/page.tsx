@@ -16,6 +16,7 @@ import {
 
 import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
+import { PremiumBadge } from "@/components/marketing/premium-badge"
 import { Reveal } from "@/components/marketing/reveal"
 import { DemoCta, FeatureRow, Section } from "@/components/marketing/marketing-ui"
 
@@ -112,10 +113,20 @@ export default function FuncionesPage() {
         <Reveal>
           <Link
             href="/asistente-ia"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            className="group flex flex-col gap-4 rounded-2xl border border-amber-400/40 bg-amber-400/10 p-6 sm:flex-row sm:items-center sm:justify-between"
           >
-            ¿Y el asistente de IA? Es un complemento premium — velo aquí
-            <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
+            <div className="flex flex-col gap-3">
+              <PremiumBadge className="w-fit" />
+              <p className="text-sm leading-6 text-muted-foreground">
+                El <span className="font-medium text-foreground">Asistente IA</span> responde
+                preguntas sobre tus datos en lenguaje natural. Es un complemento de pago aparte
+                del plan base.
+              </p>
+            </div>
+            <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary">
+              Ver el asistente
+              <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
+            </span>
           </Link>
         </Reveal>
       </Section>

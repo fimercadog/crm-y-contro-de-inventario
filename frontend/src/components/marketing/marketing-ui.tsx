@@ -64,7 +64,6 @@ export function FeatureRow({
   alt,
   reverse = false,
   note,
-  premium = false,
 }: {
   eyebrow: string
   title: string
@@ -74,17 +73,10 @@ export function FeatureRow({
   alt: string
   reverse?: boolean
   note?: string
-  premium?: boolean
 }) {
   return (
     <div className={`${container} grid items-center gap-12 py-16 lg:grid-cols-2`}>
       <Reveal className={reverse ? "lg:order-2" : undefined}>
-        {premium && (
-          <Badge variant="secondary" className="mb-4 gap-1">
-            <Sparkles className="size-3" />
-            Complemento premium · se contrata aparte
-          </Badge>
-        )}
         <SectionHeading eyebrow={eyebrow} title={title} lead={lead} />
         <ul className="mt-8 space-y-3">
           {points.map((p) => (
@@ -132,7 +124,7 @@ export function PlataformaGrid() {
               <item.icon className="size-4 shrink-0 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
               {item.label}
               {"tag" in item && item.tag && (
-                <Badge variant="secondary" className="ml-auto h-4 px-1.5 text-[10px] font-semibold">
+                <Badge variant="warning" className="ml-auto h-4 px-1.5 text-[10px] font-bold uppercase">
                   {item.tag}
                 </Badge>
               )}

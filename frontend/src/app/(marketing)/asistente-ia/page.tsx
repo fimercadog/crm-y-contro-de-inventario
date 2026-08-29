@@ -1,12 +1,18 @@
 import type { Metadata } from "next"
-import { MessageSquareText, ShieldCheck, Sparkles, UsersRound } from "lucide-react"
+import { MessageSquareText, ShieldCheck, Tag, UsersRound } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
+import { PremiumBadge } from "@/components/marketing/premium-badge"
 import { Reveal } from "@/components/marketing/reveal"
-import { DemoCta, FeatureRow, Section, SectionHeading } from "@/components/marketing/marketing-ui"
+import {
+  DemoCta,
+  FeatureRow,
+  Section,
+  SectionHeading,
+  container,
+} from "@/components/marketing/marketing-ui"
 
 export const metadata: Metadata = {
   title: "Asistente IA (premium)",
@@ -34,18 +40,36 @@ export default function AsistenteIaPage() {
   return (
     <>
       <PageHero
-        badge={
-          <Badge variant="secondary" className="gap-1">
-            <Sparkles className="size-3" />
-            Complemento premium · se contrata aparte
-          </Badge>
-        }
+        badge={<PremiumBadge />}
         eyebrow="Asistente IA"
         title="Pregúntale a tus datos"
         lead="Un asistente que responde en lenguaje natural sobre los clientes, el inventario y las oportunidades de tu empresa."
         actions={<CtaLink href="/demo">Consultar precio</CtaLink>}
-        note="No viene en el plan base. No automatiza tareas ni ejecuta acciones — responde preguntas sobre un resumen de tus datos."
+        note="No automatiza tareas ni ejecuta acciones — responde preguntas sobre un resumen de tus datos."
       />
+
+      {/* Promo strip — this module is a paid add-on */}
+      <div className="border-b border-navy/10 bg-navy text-navy-foreground">
+        <div
+          className={`${container} flex flex-col items-start gap-4 py-6 sm:flex-row sm:items-center sm:justify-between`}
+        >
+          <div className="flex items-start gap-3">
+            <Tag className="mt-0.5 size-5 shrink-0 text-amber-400" />
+            <p className="text-sm leading-6">
+              <span className="font-semibold">Este módulo se contrata aparte.</span>{" "}
+              No viene incluido en el plan base de CRM + Inventario — se activa como
+              complemento con costo adicional.
+            </p>
+          </div>
+          <CtaLink
+            href="/demo"
+            size="default"
+            className="shrink-0 bg-amber-400 text-navy hover:bg-amber-300"
+          >
+            Consultar precio
+          </CtaLink>
+        </div>
+      </div>
 
       <div className="border-b bg-card">
         <FeatureRow

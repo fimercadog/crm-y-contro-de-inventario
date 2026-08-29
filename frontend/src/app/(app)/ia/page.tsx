@@ -53,7 +53,7 @@ export default function IaPage() {
       <div>
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-semibold">Asistente IA</h2>
-          <Badge variant="secondary" className="gap-1">
+          <Badge variant="warning" className="gap-1 font-bold uppercase">
             <Sparkles className="size-3" />
             Premium
           </Badge>
@@ -63,11 +63,11 @@ export default function IaPage() {
         </p>
       </div>
 
-      <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
-        <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+      <div className="flex items-start gap-3 rounded-lg border border-amber-400/40 bg-amber-400/10 p-3 text-sm">
+        <Sparkles className="mt-0.5 size-4 shrink-0 text-amber-500" />
         <p className="text-muted-foreground">
-          <span className="font-medium text-foreground">Módulo premium.</span> El Asistente IA
-          se contrata como complemento aparte del plan base.{" "}
+          <span className="font-semibold text-foreground">Módulo premium — se contrata aparte.</span>{" "}
+          No viene incluido en el plan base.{" "}
           {site.whatsappUrl ? (
             <a
               href={site.whatsappUrl}

@@ -61,8 +61,8 @@ export function AppSidebar() {
                         <span>{item.title}</span>
                         {item.badge && (
                           <Badge
-                            variant="secondary"
-                            className="ml-auto h-4 px-1.5 text-[10px] font-semibold group-data-[collapsible=icon]:hidden"
+                            variant="warning"
+                            className="ml-auto h-4 px-1.5 text-[10px] font-bold uppercase group-data-[collapsible=icon]:hidden"
                           >
                             {item.badge}
                           </Badge>
