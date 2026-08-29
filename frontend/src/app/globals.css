@@ -144,41 +144,41 @@
 
 /* ---- Marketing motion ---- */
 @theme {
-  --animate-marketing-float: marketing-float 6s ease-in-out infinite;
-  --animate-marketing-drift: marketing-drift 10s ease-in-out infinite;
-  --animate-marketing-pulse-glow: marketing-pulse-glow 4.5s ease-in-out infinite;
-  --animate-marketing-grid: marketing-grid 14s linear infinite;
-  --animate-marketing-gradient-text: marketing-gradient-text 5s ease infinite;
-  --animate-marketing-aurora: marketing-aurora 22s ease-in-out infinite;
-  --animate-marketing-orbit: marketing-orbit 30s linear infinite;
-  --animate-marketing-sheen: marketing-sheen 7s ease-in-out 1s infinite;
+  --animate-marketing-float: marketing-float 5s ease-in-out infinite;
+  --animate-marketing-drift: marketing-drift 9s ease-in-out infinite;
+  --animate-marketing-pulse-glow: marketing-pulse-glow 4s ease-in-out infinite;
+  --animate-marketing-grid: marketing-grid 9s linear infinite;
+  --animate-marketing-gradient-text: marketing-gradient-text 4s ease infinite;
+  --animate-marketing-aurora: marketing-aurora 14s ease-in-out infinite;
+  --animate-marketing-orbit: marketing-orbit 20s linear infinite;
+  --animate-marketing-sheen: marketing-sheen 6s ease-in-out 1.2s infinite;
 }
 
 @keyframes marketing-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-16px); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-24px) rotate(-0.6deg); }
 }
 @keyframes marketing-drift {
   0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(22px, -18px); }
+  50% { transform: translate(36px, -30px); }
 }
 @keyframes marketing-pulse-glow {
-  0%, 100% { opacity: 0.35; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.08); }
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.18); }
 }
 @keyframes marketing-grid {
   from { background-position: 0 0; }
-  to { background-position: 44px 44px; }
+  to { background-position: 46px 46px; }
 }
 @keyframes marketing-gradient-text {
   0%, 100% { background-position: 0% center; }
   50% { background-position: 100% center; }
 }
-/* Aurora mesh: slow breathing + drift of a layered gradient blob field */
+/* Aurora mesh: breathing + drift of a layered gradient blob field */
 @keyframes marketing-aurora {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.9; }
-  33% { transform: translate3d(3%, -4%, 0) scale(1.12); opacity: 1; }
-  66% { transform: translate3d(-4%, 3%, 0) scale(1.05); opacity: 0.8; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.85; }
+  33% { transform: translate3d(9%, -8%, 0) scale(1.25); opacity: 1; }
+  66% { transform: translate3d(-8%, 7%, 0) scale(1.1); opacity: 0.75; }
 }
 /* Slow rotating conic glow behind the hero */
 @keyframes marketing-orbit {

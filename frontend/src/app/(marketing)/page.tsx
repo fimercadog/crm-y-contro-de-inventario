@@ -91,8 +91,8 @@ function FeatureRow({
           </ul>
           {note && <p className="mt-6 text-xs text-muted-foreground">{note}</p>}
         </Reveal>
-        <Reveal delay={0.1} className={reverse ? "lg:order-1" : undefined}>
-          <ScreenshotFrame src={screenshot} alt={alt} />
+        <Reveal zoom delay={0.12} className={reverse ? "lg:order-1" : undefined}>
+          <ScreenshotFrame src={screenshot} alt={alt} className={cardHover} />
         </Reveal>
       </div>
     </section>
@@ -394,7 +394,7 @@ export default function LandingPage() {
               { src: "/product/stock.png", alt: "Vista de stock con valor en existencias" },
               { src: "/product/auditoria.png", alt: "Bitácora de auditoría con el detalle de cada cambio" },
             ].map((shot, i) => (
-              <Reveal key={shot.src} delay={i * 0.05}>
+              <Reveal key={shot.src} zoom delay={i * 0.08}>
                 <ScreenshotFrame
                   src={shot.src}
                   alt={shot.alt}

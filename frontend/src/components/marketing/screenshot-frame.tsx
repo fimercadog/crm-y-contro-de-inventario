@@ -20,7 +20,7 @@ export function ScreenshotFrame({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border bg-card shadow-elevation-2",
+        "group/frame overflow-hidden rounded-xl border bg-card shadow-elevation-2",
         className
       )}
     >
@@ -29,15 +29,17 @@ export function ScreenshotFrame({
         <span className="size-2.5 rounded-full bg-warning/40" />
         <span className="size-2.5 rounded-full bg-success/40" />
       </div>
-      <Image
-        src={src}
-        alt={alt}
-        width={2880}
-        height={1800}
-        priority={priority}
-        sizes="(max-width: 1024px) 100vw, 720px"
-        className="h-auto w-full"
-      />
+      <div className="overflow-hidden">
+        <Image
+          src={src}
+          alt={alt}
+          width={2880}
+          height={1800}
+          priority={priority}
+          sizes="(max-width: 1024px) 100vw, 720px"
+          className="h-auto w-full transition-transform duration-700 ease-out group-hover/frame:scale-[1.04] motion-reduce:transition-none"
+        />
+      </div>
     </div>
   )
 }

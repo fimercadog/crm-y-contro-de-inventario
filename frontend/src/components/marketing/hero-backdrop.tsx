@@ -29,8 +29,8 @@ export function HeroBackdrop({
         className={cn(
           "absolute inset-0",
           navy
-            ? "bg-[radial-gradient(90%_70%_at_50%_-15%,rgba(47,208,122,0.3),transparent_65%)]"
-            : "bg-[linear-gradient(180deg,color-mix(in_oklab,var(--primary)_9%,var(--background)),var(--background)_55%)]"
+            ? "bg-[radial-gradient(90%_70%_at_50%_-15%,rgba(47,208,122,0.38),transparent_65%)]"
+            : "bg-[linear-gradient(180deg,color-mix(in_oklab,var(--primary)_16%,var(--background)),var(--background)_60%)]"
         )}
       />
 
@@ -38,7 +38,7 @@ export function HeroBackdrop({
       <div
         className={cn(
           "absolute left-1/2 top-0 aspect-square w-[130%] max-w-none -translate-x-1/2 -translate-y-1/2 animate-marketing-orbit rounded-full",
-          navy ? "opacity-25" : "opacity-15"
+          navy ? "opacity-40" : "opacity-25"
         )}
         style={{
           background:
@@ -51,8 +51,8 @@ export function HeroBackdrop({
       {/* aurora blobs — same animation, offset phase */}
       <div
         className={cn(
-          "absolute left-[-12%] top-[-30%] size-168 animate-marketing-aurora rounded-full blur-[70px]",
-          navy ? "opacity-70" : "opacity-55"
+          "absolute left-[-12%] top-[-30%] size-168 animate-marketing-aurora rounded-full blur-[60px]",
+          navy ? "opacity-80" : "opacity-70"
         )}
         style={{
           background:
@@ -61,8 +61,8 @@ export function HeroBackdrop({
       />
       <div
         className={cn(
-          "absolute right-[-12%] top-[8%] size-152 animate-marketing-aurora rounded-full blur-[80px] [animation-delay:-9s]",
-          navy ? "opacity-60" : "opacity-45"
+          "absolute right-[-12%] top-[6%] size-152 animate-marketing-aurora rounded-full blur-[70px] [animation-delay:-6s]",
+          navy ? "opacity-75" : "opacity-60"
         )}
         style={{
           background:
@@ -71,8 +71,8 @@ export function HeroBackdrop({
       />
       <div
         className={cn(
-          "absolute bottom-[-25%] left-[28%] size-128 animate-marketing-pulse-glow rounded-full blur-[80px]",
-          navy ? "bg-[#2fd07a]/40" : "bg-primary/25"
+          "absolute bottom-[-25%] left-[26%] size-128 animate-marketing-pulse-glow rounded-full blur-[70px]",
+          navy ? "bg-[#2fd07a]/55" : "bg-primary/40"
         )}
       />
 
@@ -81,7 +81,7 @@ export function HeroBackdrop({
         <div
           className={cn(
             "absolute inset-0 origin-bottom animate-marketing-grid transform-[rotateX(70deg)] bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-size-[46px_46px] mask-[linear-gradient(to_top,black_5%,transparent_75%)]",
-            navy ? "text-white/25" : "text-primary/15"
+            navy ? "text-white/35" : "text-primary/25"
           )}
         />
       </div>
