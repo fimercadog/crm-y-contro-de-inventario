@@ -30,6 +30,10 @@ export const metadata: Metadata = {
 
 const container = "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
 
+// Card lift on hover — same micro-interaction as the FidelOS landing.
+const cardHover =
+  "transition duration-300 hover:-translate-y-1.5 hover:shadow-(--marketing-shadow) motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+
 function SectionHeading({
   eyebrow,
   title,
@@ -78,8 +82,8 @@ function FeatureRow({
           <SectionHeading eyebrow={eyebrow} title={title} lead={lead} />
           <ul className="mt-8 space-y-3">
             {points.map((p) => (
-              <li key={p.text} className="flex gap-3 text-sm leading-6">
-                <p.icon className="mt-0.5 size-4 shrink-0 text-primary" />
+              <li key={p.text} className="group flex gap-3 text-sm leading-6">
+                <p.icon className="mt-0.5 size-4 shrink-0 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
                 <span>{p.text}</span>
               </li>
             ))}
@@ -99,30 +103,48 @@ export default function LandingPage() {
     <>
       {/* ---------- Hero ---------- */}
       <section className="relative overflow-hidden border-b">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,var(--accent),transparent)]"
-        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,var(--accent),transparent)]" />
+          <div className="absolute -left-24 top-8 size-72 rounded-full bg-primary/10 blur-3xl animate-marketing-float" />
+          <div className="absolute -right-16 top-44 size-80 rounded-full bg-chart-2/10 blur-3xl animate-marketing-drift" />
+          <div className="absolute bottom-0 left-1/3 size-64 rounded-full bg-primary/10 blur-3xl animate-marketing-pulse-glow" />
+          <div className="absolute inset-0 animate-marketing-grid text-foreground opacity-[0.035] bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-size-[44px_44px]" />
+        </div>
         <div className={`${container} grid items-center gap-14 py-16 lg:grid-cols-[1fr_1.05fr] lg:py-24`}>
           <div>
-            <Badge variant="secondary" className="mb-5">
-              CRM + Control de Inventario
-            </Badge>
-            <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
-              {site.tagline}
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">{site.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <CtaLink href="#demo">Solicitar demostración</CtaLink>
-              <CtaLink href="#producto" variant="outline">
-                Ver cómo funciona
-              </CtaLink>
-            </div>
-            <p className="mt-6 text-xs text-muted-foreground">
-              Multiempresa · roles y permisos · auditoría de cada cambio
-            </p>
+            <Reveal mount>
+              <Badge variant="secondary" className="mb-5">
+                CRM + Control de Inventario
+              </Badge>
+            </Reveal>
+            <Reveal mount delay={0.08}>
+              <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
+                CRM + Inventario{" "}
+                <span className="animate-marketing-gradient-text bg-[linear-gradient(90deg,var(--primary),var(--chart-3),var(--primary))] bg-size-[200%_auto] bg-clip-text text-transparent">
+                  en un solo lugar
+                </span>
+              </h1>
+            </Reveal>
+            <Reveal mount delay={0.16}>
+              <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
+                {site.description}
+              </p>
+            </Reveal>
+            <Reveal mount delay={0.24}>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <CtaLink href="#demo">Solicitar demostración</CtaLink>
+                <CtaLink href="#producto" variant="outline">
+                  Ver cómo funciona
+                </CtaLink>
+              </div>
+            </Reveal>
+            <Reveal mount delay={0.32}>
+              <p className="mt-6 text-xs text-muted-foreground">
+                Multiempresa · roles y permisos · auditoría de cada cambio
+              </p>
+            </Reveal>
           </div>
-          <Reveal delay={0.1}>
+          <Reveal mount zoom delay={0.2}>
             <ScreenshotFrame
               src="/product/dashboard.png"
               alt="Panel de CRM + Inventario con indicadores de clientes, pipeline y stock"
@@ -152,7 +174,7 @@ export default function LandingPage() {
               "Información operativa dispersa y sin trazabilidad.",
             ].map((text, i) => (
               <Reveal key={text} delay={i * 0.05}>
-                <Card className="h-full">
+                <Card className={`h-full ${cardHover}`}>
                   <CardContent className="text-sm leading-6 text-muted-foreground">{text}</CardContent>
                 </Card>
               </Reveal>
@@ -183,9 +205,9 @@ export default function LandingPage() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="flex items-center gap-3 rounded-xl border bg-card px-4 py-3.5 text-sm font-medium shadow-elevation-1"
+                className={`group flex items-center gap-3 rounded-xl border bg-card px-4 py-3.5 text-sm font-medium shadow-elevation-1 ${cardHover}`}
               >
-                <item.icon className="size-4 text-primary" />
+                <item.icon className="size-4 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
                 {item.label}
               </div>
             ))}
@@ -336,9 +358,9 @@ export default function LandingPage() {
               },
             ].map((item, i) => (
               <Reveal key={item.title} delay={i * 0.04}>
-                <Card className="h-full">
+                <Card className={`group h-full ${cardHover}`}>
                   <CardContent className="flex gap-4">
-                    <item.icon className="mt-0.5 size-5 shrink-0 text-primary" />
+                    <item.icon className="mt-0.5 size-5 shrink-0 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
                     <div>
                       <h3 className="text-sm font-semibold">{item.title}</h3>
                       <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.text}</p>
@@ -370,7 +392,11 @@ export default function LandingPage() {
               { src: "/product/auditoria.png", alt: "Bitácora de auditoría con el detalle de cada cambio" },
             ].map((shot, i) => (
               <Reveal key={shot.src} delay={i * 0.05}>
-                <ScreenshotFrame src={shot.src} alt={shot.alt} />
+                <ScreenshotFrame
+                  src={shot.src}
+                  alt={shot.alt}
+                  className={cardHover}
+                />
               </Reveal>
             ))}
           </div>
@@ -415,7 +441,7 @@ export default function LandingPage() {
               },
             ].map((b, i) => (
               <Reveal key={b.fn} delay={i * 0.04}>
-                <Card className="h-full">
+                <Card className={`h-full ${cardHover}`}>
                   <CardContent>
                     <Badge variant="secondary">{b.fn}</Badge>
                     <p className="mt-3 text-sm leading-6">{b.benefit}</p>

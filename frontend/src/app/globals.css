@@ -92,6 +92,7 @@
   --sidebar-ring: #6c5ce7;
   --elevation-1: 0 1px 2px 0 rgb(45 47 69 / 0.06), 0 1px 3px 0 rgb(45 47 69 / 0.05);
   --elevation-2: 0 4px 6px -1px rgb(45 47 69 / 0.08), 0 2px 4px -2px rgb(45 47 69 / 0.06);
+  --marketing-shadow: 0 24px 70px rgb(45 47 69 / 0.13);
 }
 
 .dark {
@@ -131,6 +132,47 @@
   --sidebar-ring: #8b7ff0;
   --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 3px 0 rgb(0 0 0 / 0.3);
   --elevation-2: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --marketing-shadow: 0 24px 70px rgb(0 0 0 / 0.4);
+}
+
+/* ---- Marketing motion (mirrors the FidelOS landing) ---- */
+@theme {
+  --animate-marketing-float: marketing-float 6s ease-in-out infinite;
+  --animate-marketing-drift: marketing-drift 10s ease-in-out infinite;
+  --animate-marketing-pulse-glow: marketing-pulse-glow 4.5s ease-in-out infinite;
+  --animate-marketing-grid: marketing-grid 14s linear infinite;
+  --animate-marketing-gradient-text: marketing-gradient-text 5s ease infinite;
+}
+
+@keyframes marketing-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+@keyframes marketing-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(22px, -18px); }
+}
+@keyframes marketing-pulse-glow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+@keyframes marketing-grid {
+  from { background-position: 0 0; }
+  to { background-position: 44px 44px; }
+}
+@keyframes marketing-gradient-text {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marketing-float,
+  .animate-marketing-drift,
+  .animate-marketing-pulse-glow,
+  .animate-marketing-grid,
+  .animate-marketing-gradient-text {
+    animation: none !important;
+  }
 }
 
 @layer base {

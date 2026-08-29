@@ -24,7 +24,11 @@ export function CtaLink({
   className?: string
   children: React.ReactNode
 } & Pick<Variants, "variant" | "size">) {
-  const classes = cn(buttonVariants({ variant, size }), className)
+  const classes = cn(
+    buttonVariants({ variant, size }),
+    "transition-transform duration-200 hover:scale-105 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100",
+    className
+  )
   const isExternal =
     external || href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("#")
 

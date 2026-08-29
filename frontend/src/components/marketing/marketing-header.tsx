@@ -59,9 +59,10 @@ export function MarketingHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="group relative text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {item.label}
+              <span className="absolute -bottom-1 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full motion-reduce:transition-none" />
             </a>
           ))}
         </nav>
