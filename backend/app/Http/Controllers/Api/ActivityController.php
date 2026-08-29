@@ -65,7 +65,7 @@ class ActivityController extends Controller
             ->where('company_id', $user->company_id)
             ->with(['customer', 'opportunity', 'user']);
 
-        if (! $user->hasAnyRole(['super-admin', 'administrador', 'comercial'])) {
+        if (! $user->can('crm.view_all')) {
             $query->where('user_id', $user->id);
         }
 

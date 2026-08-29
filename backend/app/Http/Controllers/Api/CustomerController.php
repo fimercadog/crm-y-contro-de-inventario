@@ -106,7 +106,7 @@ class CustomerController extends Controller
             ->withCount('contacts')
             ->with('assignedUser');
 
-        if ($user->hasRole('vendedor') && ! $user->hasAnyRole(['super-admin', 'administrador', 'comercial'])) {
+        if (! $user->can('crm.view_all')) {
             $query->where('assigned_user_id', $user->id);
         }
 

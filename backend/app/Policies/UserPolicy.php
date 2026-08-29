@@ -6,26 +6,24 @@ use App\Models\User;
 
 class UserPolicy
 {
-    private const MANAGE_ROLES = ['super-admin', 'administrador'];
-
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(self::MANAGE_ROLES);
+        return $user->can('users.manage');
     }
 
     public function view(User $user, User $target): bool
     {
-        return $user->company_id === $target->company_id && $user->hasAnyRole(self::MANAGE_ROLES);
+        return $user->company_id === $target->company_id && $user->can('users.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(self::MANAGE_ROLES);
+        return $user->can('users.manage');
     }
 
     public function update(User $user, User $target): bool
     {
-        return $user->company_id === $target->company_id && $user->hasAnyRole(self::MANAGE_ROLES);
+        return $user->company_id === $target->company_id && $user->can('users.manage');
     }
 
     /**
@@ -36,7 +34,7 @@ class UserPolicy
     public function delete(User $user, User $target): bool
     {
         return $user->company_id === $target->company_id
-            && $user->hasAnyRole(self::MANAGE_ROLES)
+            && $user->can('users.manage')
             && $user->id !== $target->id;
     }
 }

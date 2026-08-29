@@ -25,7 +25,7 @@ class PipelineStageController extends Controller
             ->where('status', 'abierta')
             ->with(['customer', 'assignedUser']);
 
-        if ($user->hasRole('vendedor') && ! $user->hasAnyRole(['super-admin', 'administrador', 'comercial'])) {
+        if (! $user->can('crm.view_all')) {
             $opportunitiesQuery->where('assigned_user_id', $user->id);
         }
 

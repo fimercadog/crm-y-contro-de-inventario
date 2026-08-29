@@ -7,11 +7,9 @@ use App\Models\User;
 
 class CustomerPolicy
 {
-    private const FULL_ACCESS_ROLES = ['super-admin', 'administrador', 'comercial'];
-
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole([...self::FULL_ACCESS_ROLES, 'vendedor']);
+        return $user->can('crm.view');
     }
 
     public function view(User $user, Customer $customer): bool
@@ -21,7 +19,7 @@ class CustomerPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(self::FULL_ACCESS_ROLES);
+        return $user->can('crm.manage');
     }
 
     public function update(User $user, Customer $customer): bool
@@ -31,7 +29,7 @@ class CustomerPolicy
 
     public function delete(User $user, Customer $customer): bool
     {
-        return $this->sameCompany($user, $customer) && $user->hasAnyRole(self::FULL_ACCESS_ROLES);
+        return $this->sameCompany($user, $customer) && $user->can('crm.view_all');
     }
 
     private function sameCompany(User $user, Customer $customer): bool
@@ -40,15 +38,15 @@ class CustomerPolicy
     }
 
     /**
-     * Full-access roles see every customer in the company; a vendedor is
-     * limited to the customers assigned to them (section 26 of the spec).
+     * crm.view_all sees every customer in the company; otherwise a user with
+     * crm.view is limited to the customers assigned to them.
      */
     private function canSee(User $user, Customer $customer): bool
     {
-        if ($user->hasAnyRole(self::FULL_ACCESS_ROLES)) {
+        if ($user->can('crm.view_all')) {
             return true;
         }
 
-        return $user->hasRole('vendedor') && $customer->assigned_user_id === $user->id;
+        return $user->can('crm.view') && $customer->assigned_user_id === $user->id;
     }
 }

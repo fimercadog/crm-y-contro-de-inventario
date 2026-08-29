@@ -1,4 +1,3 @@
-export type UserRole = "super-admin" | "administrador" | "comercial" | "inventario" | "vendedor"
 export type UserStatus = "active" | "inactive"
 
 export interface ManagedUser {
@@ -7,12 +6,31 @@ export interface ManagedUser {
   name: string
   email: string
   status: UserStatus
-  role: UserRole
-  roles: UserRole[]
+  role: string
+  roles: string[]
 }
 
-export interface RoleOverview {
-  name: UserRole
-  description: string
+export interface Role {
+  id: number
+  name: string
+  description: string | null
+  is_system: boolean
+  permissions: string[]
   users_count: number
+}
+
+export interface PermissionInfo {
+  name: string
+  label: string
+}
+
+export interface RolesResponse {
+  data: Role[]
+  available_permissions: PermissionInfo[]
+}
+
+export interface RolePayload {
+  name: string
+  description?: string | null
+  permissions: string[]
 }

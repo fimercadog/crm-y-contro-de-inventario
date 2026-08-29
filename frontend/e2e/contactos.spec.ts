@@ -21,22 +21,17 @@ test("create a contact from the standalone screen, soft-delete it, then restore 
   const row = page.getByRole("row", { name: new RegExp(name) })
   await expect(row).toBeVisible()
 
-  // Soft delete.
+  // Soft delete — the row stays in the list, now flagged as deleted.
   await row.getByRole("button").click()
   await page.getByRole("menuitem", { name: "Eliminar" }).click()
   await page.getByRole("button", { name: "Eliminar" }).click()
   await expect(page.getByText(`Contacto "${name} Prueba" eliminado`)).toBeVisible()
 
-  // It is gone from the active list but shows under "Ver → Eliminados".
-  await expect(page.getByRole("row", { name: new RegExp(name) })).toHaveCount(0)
-  await page.getByRole("button", { name: "Ver" }).click()
-  await page.getByRole("option", { name: "Eliminados" }).click()
-  await page.keyboard.press("Escape")
+  const deletedRow = page.getByRole("row", { name: new RegExp(name) })
+  await expect(deletedRow.getByText("Eliminado")).toBeVisible()
 
-  const trashedRow = page.getByRole("row", { name: new RegExp(name) })
-  await expect(trashedRow.getByText("Eliminado")).toBeVisible()
-
-  await trashedRow.getByRole("button").click()
+  // Restore it from the same row.
+  await deletedRow.getByRole("button").click()
   await page.getByRole("menuitem", { name: "Restaurar" }).click()
   await expect(page.getByText(`Contacto "${name} Prueba" restaurado`)).toBeVisible()
 })

@@ -23,9 +23,7 @@ class StoreUserManagementRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
-            'role' => ['required', Rule::in([
-                'super-admin', 'administrador', 'comercial', 'inventario', 'vendedor',
-            ])],
+            'role' => ['required', Rule::exists('roles', 'name')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
         ];
     }

@@ -27,9 +27,7 @@ class UpdateUserManagementRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($this->route('user')),
             ],
             'password' => ['nullable', 'string', 'min:8'],
-            'role' => ['required', Rule::in([
-                'super-admin', 'administrador', 'comercial', 'inventario', 'vendedor',
-            ])],
+            'role' => ['required', Rule::exists('roles', 'name')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
         ];
     }

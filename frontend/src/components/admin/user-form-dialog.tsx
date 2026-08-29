@@ -27,16 +27,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { IdSelect } from "@/components/forms/id-select"
-import { createManagedUser, updateManagedUser } from "@/features/admin/api"
+import { createManagedUser, listRoles, updateManagedUser } from "@/features/admin/api"
 import type { ManagedUser } from "@/features/admin/types"
 
-const roleOptions = [
-  { value: "super-admin", label: "Super Admin" },
-  { value: "administrador", label: "Administrador" },
-  { value: "comercial", label: "Comercial" },
-  { value: "inventario", label: "Inventario" },
-  { value: "vendedor", label: "Vendedor" },
-]
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 const statusOptions = [
   { value: "active", label: "Activo" },
@@ -69,7 +63,17 @@ interface UserFormDialogProps {
 
 export function UserFormDialog({ open, onOpenChange, user, onSaved }: UserFormDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [roleOptions, setRoleOptions] = useState<{ value: string; label: string }[]>([])
   const schema = user ? editSchema : createSchema
+
+  useEffect(() => {
+    if (!open) return
+    listRoles()
+      .then(({ data }) =>
+        setRoleOptions(data.data.map((r) => ({ value: r.name, label: cap(r.name) })))
+      )
+      .catch(() => setRoleOptions([]))
+  }, [open])
   type FormValues = z.infer<typeof schema>
 
   const form = useForm<FormValues>({

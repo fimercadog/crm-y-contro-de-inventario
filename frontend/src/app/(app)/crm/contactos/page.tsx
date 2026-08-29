@@ -29,9 +29,10 @@ const statusOptions = [
   { label: "Inactivo", value: "inactivo" },
 ]
 
+// Default (nothing selected) shows every row; this narrows by deletion state.
 const viewOptions = [
-  { label: "Activos", value: "active" },
-  { label: "Eliminados", value: "deleted" },
+  { label: "Vigentes", value: "none" },
+  { label: "Eliminados", value: "only" },
 ]
 
 export default function ContactosPage() {
@@ -61,7 +62,7 @@ export default function ContactosPage() {
       per_page: pagination.pageSize,
       search: search || undefined,
       status: status[0],
-      trashed: view[0] === "deleted" ? ("only" as const) : undefined,
+      trashed: view[0] as "none" | "only" | undefined,
     }),
     [pagination, search, status, view]
   )
@@ -214,8 +215,8 @@ export default function ContactosPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar contacto?</AlertDialogTitle>
             <AlertDialogDescription>
-              &quot;{deleting?.full_name}&quot; se marcará como eliminado. Puedes verlo y
-              restaurarlo con el filtro &quot;Ver → Eliminados&quot;.
+              &quot;{deleting?.full_name}&quot; se marcará como eliminado. Seguirá en la lista
+              con la etiqueta &quot;Eliminado&quot; y podrás restaurarlo desde ahí.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

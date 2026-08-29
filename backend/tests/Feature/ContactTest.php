@@ -93,12 +93,12 @@ class ContactTest extends TestCase
 
         $this->assertSoftDeleted('contacts', ['id' => $contact->id]);
 
-        // Hidden from the default list, visible with ?trashed=only.
-        $this->actingAs($admin)->getJson('/api/contacts')->assertJsonCount(0, 'data');
-        $this->actingAs($admin)->getJson('/api/contacts?trashed=only')
+        // The standalone list keeps showing it, flagged with deleted_at.
+        $this->actingAs($admin)->getJson('/api/contacts')
             ->assertOk()
             ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.id', $contact->id);
+            ->assertJsonPath('data.0.id', $contact->id)
+            ->assertJsonPath('data.0.deleted_at', fn ($v) => $v !== null);
 
         $this->actingAs($admin)
             ->postJson("/api/contacts/{$contact->id}/restore")

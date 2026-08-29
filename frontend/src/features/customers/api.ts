@@ -58,7 +58,8 @@ export interface ContactListParams {
   search?: string
   customer_id?: number
   status?: string
-  trashed?: "only" | "with"
+  /** Omit for all rows; "none" = hide deleted; "only" = deleted only. */
+  trashed?: "only" | "none"
 }
 
 export function listContacts(params: ContactListParams) {

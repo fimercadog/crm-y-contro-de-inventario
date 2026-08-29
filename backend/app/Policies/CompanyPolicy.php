@@ -20,7 +20,6 @@ class CompanyPolicy
      */
     public function update(User $user, Company $company): bool
     {
-        return $user->company_id === $company->id
-            && $user->hasAnyRole(['super-admin', 'administrador']);
+        return $user->company_id === $company->id && $user->can('settings.manage');
     }
 }

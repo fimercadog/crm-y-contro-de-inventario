@@ -30,6 +30,7 @@ class DashboardTest extends TestCase
     public function test_dashboard_returns_company_scoped_totals(): void
     {
         $company = Company::factory()->create();
+        $company->seedDefaultPipelineStages();
         $other = Company::factory()->create();
 
         Customer::factory()->count(4)->create(['company_id' => $company->id, 'status' => 'activo']);
@@ -46,7 +47,11 @@ class DashboardTest extends TestCase
                 'activities' => ['pending', 'overdue'],
                 'inventory' => ['products', 'low_stock', 'out_of_stock', 'stock_value'],
                 'recent_movements',
-            ]);
+                'pipeline_by_stage' => [['stage', 'count', 'amount']],
+                'inventory_by_category',
+                'movements_by_day' => [['day', 'count']],
+            ])
+            ->assertJsonCount(14, 'movements_by_day');
     }
 
     public function test_a_vendedor_only_sees_their_assigned_records(): void

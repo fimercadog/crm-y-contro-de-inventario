@@ -20,11 +20,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ReportController extends Controller
 {
-    private const ROLES = ['super-admin', 'administrador'];
-
     private function authorizeReports(Request $request): void
     {
-        abort_unless($request->user()->hasAnyRole(self::ROLES), Response::HTTP_FORBIDDEN);
+        abort_unless($request->user()->can('reports.view'), Response::HTTP_FORBIDDEN);
     }
 
     public function inventoryValuation(Request $request)

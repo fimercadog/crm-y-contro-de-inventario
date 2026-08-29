@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/users', [UserController::class, 'index']);
     Route::apiResource('admin/users', UserManagementController::class)->except('show');
-    Route::get('/admin/roles', [RoleController::class, 'index']);
+    Route::apiResource('admin/roles', RoleController::class)->parameters(['roles' => 'role'])->except('show');
 
     Route::get('/customers/export/csv', [CustomerController::class, 'exportCsv']);
     Route::get('/customers/export/pdf', [CustomerController::class, 'exportPdf']);

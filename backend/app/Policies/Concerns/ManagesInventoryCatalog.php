@@ -13,31 +13,29 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait ManagesInventoryCatalog
 {
-    private const MANAGE_ROLES = ['super-admin', 'administrador', 'inventario'];
-
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(self::MANAGE_ROLES);
+        return $user->can('inventory.manage');
     }
 
     public function view(User $user, Model $model): bool
     {
-        return $this->sameCompany($user, $model) && $user->hasAnyRole(self::MANAGE_ROLES);
+        return $this->sameCompany($user, $model) && $user->can('inventory.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(self::MANAGE_ROLES);
+        return $user->can('inventory.manage');
     }
 
     public function update(User $user, Model $model): bool
     {
-        return $this->sameCompany($user, $model) && $user->hasAnyRole(self::MANAGE_ROLES);
+        return $this->sameCompany($user, $model) && $user->can('inventory.manage');
     }
 
     public function delete(User $user, Model $model): bool
     {
-        return $this->sameCompany($user, $model) && $user->hasAnyRole(self::MANAGE_ROLES);
+        return $this->sameCompany($user, $model) && $user->can('inventory.manage');
     }
 
     private function sameCompany(User $user, Model $model): bool

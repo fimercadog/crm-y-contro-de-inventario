@@ -21,17 +21,19 @@ class ContactController extends Controller
     {
         $user = $request->user();
 
-        $query = Contact::query()
+        // Default: show everything — active, inactive and deleted (deleted rows
+        // are flagged and can be restored). The "Ver" filter narrows this.
+        $query = Contact::withTrashed()
             ->whereHas('customer', fn ($q) => $q->where('company_id', $user->company_id))
             ->with('customer');
 
         match ($request->string('trashed')->value()) {
             'only' => $query->onlyTrashed(),
-            'with' => $query->withTrashed(),
+            'none' => $query->whereNull('deleted_at'),
             default => null,
         };
 
-        if ($user->hasRole('vendedor') && ! $user->hasAnyRole(['super-admin', 'administrador', 'comercial'])) {
+        if (! $user->can('crm.view_all')) {
             $query->whereHas('customer', fn ($q) => $q->where('assigned_user_id', $user->id));
         }
 

@@ -11,15 +11,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { AppColumnDef } from "@/components/data-table/data-table"
-import type { ManagedUser, UserRole } from "@/features/admin/types"
+import type { ManagedUser } from "@/features/admin/types"
 
-const roleLabels: Record<UserRole, string> = {
+const roleLabels: Record<string, string> = {
   "super-admin": "Super Admin",
   administrador: "Administrador",
   comercial: "Comercial",
   inventario: "Inventario",
   vendedor: "Vendedor",
 }
+
+const roleLabel = (role: string) =>
+  roleLabels[role] ?? role.charAt(0).toUpperCase() + role.slice(1)
 
 interface ColumnActions {
   onEdit: (user: ManagedUser) => void
@@ -38,7 +41,7 @@ export function userColumns({
     {
       accessorKey: "role",
       header: "Rol",
-      cell: ({ row }) => <Badge variant="outline">{roleLabels[row.original.role]}</Badge>,
+      cell: ({ row }) => <Badge variant="outline">{roleLabel(row.original.role)}</Badge>,
     },
     {
       accessorKey: "status",

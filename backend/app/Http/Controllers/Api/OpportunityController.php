@@ -151,7 +151,7 @@ class OpportunityController extends Controller
             ->where('company_id', $user->company_id)
             ->with(['customer', 'stage', 'assignedUser']);
 
-        if ($user->hasRole('vendedor') && ! $user->hasAnyRole(['super-admin', 'administrador', 'comercial'])) {
+        if (! $user->can('crm.view_all')) {
             $query->where('assigned_user_id', $user->id);
         }
 

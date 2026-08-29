@@ -6,6 +6,7 @@ import { ArrowDownToLine, ArrowUpFromLine, ArrowLeftRight } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { BarList, Sparkbars } from "@/components/dashboard/charts"
 import { getDashboard, type DashboardData } from "@/features/dashboard/api"
 
 const currency = new Intl.NumberFormat("es-CO", { style: "currency", currency: "USD" })
@@ -56,7 +57,16 @@ export default function DashboardPage() {
     )
   }
 
-  const { customers, opportunities, activities, inventory, recent_movements } = data
+  const {
+    customers,
+    opportunities,
+    activities,
+    inventory,
+    recent_movements,
+    pipeline_by_stage,
+    inventory_by_category,
+    movements_by_day,
+  } = data
 
   return (
     <div className="flex flex-col gap-6">
@@ -98,6 +108,49 @@ export default function DashboardPage() {
           href="/inventario/stock"
         />
       </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Pipeline por etapa</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BarList
+              data={pipeline_by_stage.map((s) => ({
+                label: s.stage,
+                value: Number(s.amount),
+                hint: `${s.count} opp.`,
+              }))}
+              format={(n) => currency.format(n)}
+              emptyMessage="No hay oportunidades abiertas."
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Valor de inventario por categoría</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BarList
+              data={inventory_by_category.map((c) => ({
+                label: c.category,
+                value: Number(c.value),
+              }))}
+              format={(n) => currency.format(n)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Movimientos de inventario · últimos 14 días</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Sparkbars data={movements_by_day} />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

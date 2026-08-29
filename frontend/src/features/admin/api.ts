@@ -1,6 +1,6 @@
 import { api } from "@/lib/api"
 import type { PaginatedResponse } from "@/features/customers/types"
-import type { ManagedUser, RoleOverview } from "@/features/admin/types"
+import type { ManagedUser, Role, RolePayload, RolesResponse } from "@/features/admin/types"
 
 export interface ManagedUserListParams {
   page?: number
@@ -35,5 +35,17 @@ export function deactivateManagedUser(id: number) {
 }
 
 export function listRoles() {
-  return api.get<{ data: RoleOverview[] }>("/admin/roles")
+  return api.get<RolesResponse>("/admin/roles")
+}
+
+export function createRole(payload: RolePayload) {
+  return api.post<{ data: Role }>("/admin/roles", payload)
+}
+
+export function updateRole(id: number, payload: RolePayload) {
+  return api.put<{ data: Role }>(`/admin/roles/${id}`, payload)
+}
+
+export function deleteRole(id: number) {
+  return api.delete(`/admin/roles/${id}`)
 }

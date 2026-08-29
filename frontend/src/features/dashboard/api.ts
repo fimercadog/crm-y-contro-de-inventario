@@ -23,6 +23,9 @@ export interface DashboardData {
     new_stock: number
     occurred_at: string
   }>
+  pipeline_by_stage: Array<{ stage: string; count: number; amount: string }>
+  inventory_by_category: Array<{ category: string; value: string }>
+  movements_by_day: Array<{ day: string; count: number }>
 }
 
 export function getDashboard() {

@@ -10,11 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuditLogController extends Controller
 {
-    private const ROLES = ['super-admin', 'administrador'];
-
     public function index(Request $request)
     {
-        abort_unless($request->user()->hasAnyRole(self::ROLES), Response::HTTP_FORBIDDEN);
+        abort_unless($request->user()->can('audit.view'), Response::HTTP_FORBIDDEN);
 
         $query = AuditLog::query()
             ->where('company_id', $request->user()->company_id)

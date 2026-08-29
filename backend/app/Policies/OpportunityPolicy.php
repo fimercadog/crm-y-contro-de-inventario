@@ -7,11 +7,9 @@ use App\Models\User;
 
 class OpportunityPolicy
 {
-    private const FULL_ACCESS_ROLES = ['super-admin', 'administrador', 'comercial'];
-
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole([...self::FULL_ACCESS_ROLES, 'vendedor']);
+        return $user->can('crm.view');
     }
 
     public function view(User $user, Opportunity $opportunity): bool
@@ -21,7 +19,7 @@ class OpportunityPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole([...self::FULL_ACCESS_ROLES, 'vendedor']);
+        return $user->can('crm.view');
     }
 
     public function update(User $user, Opportunity $opportunity): bool
@@ -31,7 +29,7 @@ class OpportunityPolicy
 
     public function delete(User $user, Opportunity $opportunity): bool
     {
-        return $this->sameCompany($user, $opportunity) && $user->hasAnyRole(self::FULL_ACCESS_ROLES);
+        return $this->sameCompany($user, $opportunity) && $user->can('crm.view_all');
     }
 
     private function sameCompany(User $user, Opportunity $opportunity): bool
@@ -41,10 +39,10 @@ class OpportunityPolicy
 
     private function canSee(User $user, Opportunity $opportunity): bool
     {
-        if ($user->hasAnyRole(self::FULL_ACCESS_ROLES)) {
+        if ($user->can('crm.view_all')) {
             return true;
         }
 
-        return $user->hasRole('vendedor') && $opportunity->assigned_user_id === $user->id;
+        return $user->can('crm.view') && $opportunity->assigned_user_id === $user->id;
     }
 }
