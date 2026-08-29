@@ -20,26 +20,32 @@ Es un panel de administración privado (no hay sitio público). Todo detrás de
 ## Color
 
 Estilo Material-flavoured (elevación, botones pill, Roboto) con una paleta
-SaaS índigo/slate. Tokens en `:root` / `.dark` (globals.css), expuestos a
-Tailwind vía `@theme inline`. Hay toggle Claro/Oscuro/Sistema en el menú de
-usuario.
+**verde esmeralda + azul marino** (según "Guía visual SaaS para CRM e
+inventario"). Tokens en `:root` / `.dark` (globals.css), expuestos a Tailwind
+vía `@theme inline`. Hay toggle Claro/Oscuro/Sistema en el menú de usuario.
 
 | Token | Claro | Oscuro | Uso |
 | --- | --- | --- | --- |
-| `--primary` | `#6c5ce7` | `#8b7ff0` | CTA, enlaces, barras de gráfico, nav activo |
-| `--primary-hover` | `#5a4bd1` | `#7a6ee6` | hover del botón primario |
-| `--foreground` | `#2d2f45` | `#e8e8f2` | texto base |
-| `--muted-foreground` | `#8a8fa3` | `#9a9fb8` | texto secundario, descripciones |
-| `--background` | `#f7f7fb` | `#17182a` | fondo del panel |
-| `--card` / `--popover` | `#ffffff` | `#20223a` | tarjetas, menús, diálogos |
-| `--secondary` | `#f1f0fb` | `#2a2c48` | superficie de controles secundarios, chips |
-| `--muted` | `#f3f3f8` | `#262842` | filas skeleton, zonas suaves |
-| `--accent` | `#f1f0fb` | `#2f315a` | hover/activo |
-| `--border` / `--input` | `#ececf3` / `#e4e3ee` | `#313356` / `#3a3c63` | bordes, campos |
-| `--success` | `#16a34a` | `#34d399` | activo, ganada, completada, entrada, stock normal |
-| `--warning` | `#d97706` | `#fbbf24` | prospecto, pendiente, prioridad media, stock bajo |
-| `--destructive` | `#e5484d` | `#f2555a` | error, perdida, salida, crítico/agotado, eliminado |
-| `--chart-1..5` | índigo / teal / azul / verde / ámbar | versiones claras | series de gráfico |
+| `--primary` | `#15803d` | `#2fd07a` | CTA, enlaces, barras de gráfico, nav activo |
+| `--primary-hover` | `#166534` | `#27b86c` | hover del botón primario |
+| `--navy` | `#0b2545` | `#0b1f38` | secciones oscuras: banda CTA, footer, panel de login |
+| `--navy-foreground` | `#e9f0f7` | `#e9f0f7` | texto sobre `--navy` |
+| `--foreground` | `#0f1e2b` | `#e6edf3` | texto base |
+| `--muted-foreground` | `#57697a` | `#9fb0bd` | texto secundario, descripciones |
+| `--background` | `#f5f7f8` | `#0c1a26` | fondo del panel |
+| `--card` / `--popover` | `#ffffff` | `#12212e` | tarjetas, menús, diálogos |
+| `--secondary` | `#e9f4ee` | `#1b2c3a` | superficie de controles secundarios, chips |
+| `--muted` | `#eef1f4` | `#182935` | filas skeleton, zonas suaves |
+| `--accent` | `#e9f4ee` | `#1f3341` | hover/activo |
+| `--border` / `--input` | `#e2e7eb` / `#d6dde3` | `#24384a` / `#2b4256` | bordes, campos |
+| `--success` | `#15803d` | `#2fd07a` | activo, ganada, completada, entrada, stock normal |
+| `--warning` | `#b45309` | `#fbbf24` | prospecto, pendiente, prioridad media, stock bajo |
+| `--destructive` | `#dc2626` | `#f2555a` | error, perdida, salida, crítico/agotado, eliminado |
+| `--chart-1..5` | esmeralda / navy / ámbar / cielo / rosa | versiones claras | series de gráfico |
+
+**Marketing:** `--marketing-shadow` (sombra grande tintada navy) para el hover
+de tarjetas del sitio web, y utilidades `animate-marketing-{float,drift,pulse-glow,grid,gradient-text}`
+para el fondo ambiental del hero (todas desactivadas bajo `prefers-reduced-motion`).
 
 **Elevación:** `--elevation-1` y `--elevation-2` (sombras suaves tipo Material),
 expuestas como `shadow-elevation-1` / `shadow-elevation-2`.
@@ -92,7 +98,7 @@ expuestas como `shadow-elevation-1` / `shadow-elevation-2`.
 - Forma **pill** (`rounded-full`) en todos los tamaños.
 - **default:** `bg-primary text-primary-foreground`, hover `bg-primary-hover`.
 - **outline:** `border-border bg-background`, hover `bg-muted`.
-- **secondary:** `bg-secondary` (lavanda), texto `secondary-foreground`.
+- **secondary:** `bg-secondary` (verde muy pálido), texto `secondary-foreground`.
 - **ghost:** solo hover `bg-muted`; se usa para el botón de acciones de fila
   (`size="icon"`, `MoreHorizontal`).
 - **destructive:** tinte, no relleno — `bg-destructive/10 text-destructive`.
@@ -108,8 +114,8 @@ El color comunica estado:
 | `success` | verde | activo, ganada, completada, entrada, stock normal |
 | `warning` | ámbar | prospecto, pendiente, prioridad media, stock bajo |
 | `destructive` | rojo | perdida, salida, stock crítico/agotado, **Eliminado**, Anulado |
-| `default` | índigo | oportunidad abierta, evento de auditoría "actualizado" |
-| `secondary` | lavanda | conteos neutros (etapa, nº de contactos), badge "Asistente" |
+| `default` | verde | oportunidad abierta, evento de auditoría "actualizado" |
+| `secondary` | verde pálido | conteos neutros (etapa, nº de contactos), badge "Asistente" |
 | `outline` | borde | inactivo, prioridad baja, etiquetas neutras (rol, ajuste) |
 
 ## Tablas y CRUD
@@ -165,7 +171,7 @@ queda como "Anulado" con su fecha y usuario. Los ajustes no se tocan.
 ## Auditoría
 
 Cada cambio en un modelo `Auditable` queda registrado (usuario, evento, diff
-`{from,to}`, IP). Eventos: creado (verde), actualizado (índigo), eliminado
+`{from,to}`, IP). Eventos: creado (verde), actualizado (verde), eliminado
 (rojo), restaurado (ámbar). Pantalla en `Administración > Auditoría`,
 solo super-admin / administrador.
 

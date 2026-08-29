@@ -31,15 +31,22 @@ Landing Page* de Elegant Themes.
 8. **Seguridad y control** — 6 tarjetas característica → beneficio.
 9. **Así se ve por dentro** — galería de 4 capturas reales (Clientes, Productos, Stock, Auditoría).
 10. **Beneficios** — cada uno ligado a una función real.
-11. **Demo / CTA final** — banda índigo con WhatsApp + correo + "Ya tengo cuenta".
-12. **Footer**.
+11. **Demo / CTA final** — banda azul marino con WhatsApp + correo + "Ya tengo cuenta".
+12. **Footer** azul marino.
 
 ## Diseño
 
 Sigue el **design system del proyecto** (`docs/design.md`, `globals.css`):
-paleta índigo/slate, Roboto, botones pill, sombras de elevación, badges
-semánticos. Theme-aware (claro/oscuro). **No** se usó el verde de la guía —
-ver "Decisiones automáticas".
+paleta **verde esmeralda + azul marino** (según "Guía visual SaaS para CRM e
+inventario"), Roboto, botones pill, sombras de elevación, badges semánticos.
+Theme-aware (claro/oscuro).
+
+**Movimiento** (replica el lenguaje de dfctalentohumano.fidelmercadotech.com):
+scroll-reveal fade + subida de 24px (`Reveal`, IntersectionObserver +
+transiciones CSS, seguro para SSR y `prefers-reduced-motion`); cascada de
+entrada del hero; fondo ambiental animado en el hero (blobs float/drift/
+pulse-glow + grid a la deriva); hover: elevación de tarjeta + `--marketing-shadow`,
+escala de íconos, escala de botones CTA, subrayado creciente en la nav.
 
 ## Argumentos comerciales — solo funciones verificadas
 
@@ -109,17 +116,17 @@ es peor que no tenerlo).
 
 ## Decisiones automáticas pendientes de validación del propietario
 
-1. **Paleta**: la guía usa acento verde; el design system del proyecto es
-   índigo. Se usó **índigo** para que la web combine con las capturas reales
-   del producto. Si prefieres el verde de la guía, se añade un acento propio
-   para marketing.
+1. **Paleta**: se aplicó **verde esmeralda + azul marino** de la guía visual a
+   todo el design system (app + web), y se recapturaron las 11 capturas del
+   producto con los colores nuevos.
 2. **`/` es la landing pública** (antes redirigía a `/dashboard`). Los usuarios
    logueados entran por `/login` → `/dashboard`.
 3. **Sin testimonios ni logos de clientes** (los de la guía son ficticios).
 4. **Sin sección de contingencia/offline** (no existe el módulo).
 5. **CTA de demo = `mailto:` + WhatsApp**, sin formulario. Si quieres captura
    de leads en el CRM, hace falta un endpoint nuevo.
-6. **Número de WhatsApp de ejemplo** en `.env.local` (`573001112233`) solo para
-   QA — reemplázalo por el real.
-7. `framer-motion` queda instalado pero sin uso (era la única dependencia
-   candidata para animación; se resolvió con CSS).
+6. **WhatsApp**: `573027029498` (por defecto en `site.ts`, sobreescribible con
+   `NEXT_PUBLIC_WHATSAPP`).
+7. `framer-motion` queda instalado pero sin uso (el scroll-reveal se resolvió
+   con IntersectionObserver + CSS para evitar un desajuste de hidratación con
+   `prefers-reduced-motion`). Se puede desinstalar.

@@ -30,6 +30,8 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-primary-hover: var(--primary-hover);
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -53,86 +55,91 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Clean SaaS palette — soft indigo primary, lavender-tinted surfaces, calm slate text */
+/* SaaS palette — emerald primary, deep-navy sections, clean cool-grey surfaces.
+   Mirrors "Guía visual SaaS para CRM e inventario". */
 :root {
-  --background: #f7f7fb; /* barely-there lavender grey */
-  --foreground: #2d2f45; /* dark slate-indigo */
+  --background: #f5f7f8; /* clean cool off-white */
+  --foreground: #0f1e2b; /* deep navy-slate ink */
   --card: #ffffff;
-  --card-foreground: #2d2f45;
+  --card-foreground: #0f1e2b;
   --popover: #ffffff;
-  --popover-foreground: #2d2f45;
-  --primary: #6c5ce7; /* soft indigo */
-  --primary-hover: #5a4bd1;
+  --popover-foreground: #0f1e2b;
+  --primary: #15803d; /* emerald 700 — AA on white */
+  --primary-hover: #166534;
   --primary-foreground: #ffffff;
-  --secondary: #f1f0fb; /* lavender surface */
-  --secondary-foreground: #3a3c58;
-  --muted: #f3f3f8;
-  --muted-foreground: #8a8fa3; /* calm grey */
-  --accent: #f1f0fb; /* hover/active tint */
-  --accent-foreground: #5a4bd1;
-  --destructive: #e5484d;
-  --success: #16a34a;
-  --warning: #d97706;
-  --border: #ececf3;
-  --input: #e4e3ee;
-  --ring: #6c5ce7;
-  --chart-1: #6c5ce7; /* indigo */
-  --chart-2: #00b8a9; /* teal */
-  --chart-3: #4d96ff; /* blue */
-  --chart-4: #16a34a; /* green */
-  --chart-5: #f9a826; /* amber */
+  --secondary: #e9f4ee; /* pale green surface */
+  --secondary-foreground: #14532d;
+  --muted: #eef1f4; /* neutral grey */
+  --muted-foreground: #57697a; /* calm slate */
+  --accent: #e9f4ee; /* hover/active tint */
+  --accent-foreground: #166534;
+  --destructive: #dc2626;
+  --success: #15803d;
+  --warning: #b45309;
+  --border: #e2e7eb;
+  --input: #d6dde3;
+  --ring: #15803d;
+  --chart-1: #15803d; /* emerald */
+  --chart-2: #0b2545; /* navy */
+  --chart-3: #f59e0b; /* amber */
+  --chart-4: #0ea5e9; /* sky */
+  --chart-5: #e11d6b; /* rose */
   --radius: 0.75rem;
+  --navy: #0b2545; /* deep sections / CTA band / footer */
+  --navy-foreground: #e9f0f7;
   --sidebar: #ffffff;
-  --sidebar-foreground: #2d2f45;
-  --sidebar-primary: #6c5ce7;
+  --sidebar-foreground: #0f1e2b;
+  --sidebar-primary: #15803d;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f0fb;
-  --sidebar-accent-foreground: #5a4bd1;
-  --sidebar-border: #ececf3;
-  --sidebar-ring: #6c5ce7;
-  --elevation-1: 0 1px 2px 0 rgb(45 47 69 / 0.06), 0 1px 3px 0 rgb(45 47 69 / 0.05);
-  --elevation-2: 0 4px 6px -1px rgb(45 47 69 / 0.08), 0 2px 4px -2px rgb(45 47 69 / 0.06);
-  --marketing-shadow: 0 24px 70px rgb(45 47 69 / 0.13);
+  --sidebar-accent: #e9f4ee;
+  --sidebar-accent-foreground: #166534;
+  --sidebar-border: #e2e7eb;
+  --sidebar-ring: #15803d;
+  --elevation-1: 0 1px 2px 0 rgb(11 37 69 / 0.06), 0 1px 3px 0 rgb(11 37 69 / 0.05);
+  --elevation-2: 0 4px 6px -1px rgb(11 37 69 / 0.08), 0 2px 4px -2px rgb(11 37 69 / 0.06);
+  --marketing-shadow: 0 24px 70px rgb(11 37 69 / 0.15);
 }
 
 .dark {
-  --background: #17182a;
-  --foreground: #e8e8f2;
-  --card: #20223a;
-  --card-foreground: #e8e8f2;
-  --popover: #20223a;
-  --popover-foreground: #e8e8f2;
-  --primary: #8b7ff0;
-  --primary-hover: #7a6ee6;
-  --primary-foreground: #ffffff;
-  --secondary: #2a2c48;
-  --secondary-foreground: #e8e8f2;
-  --muted: #262842;
-  --muted-foreground: #9a9fb8;
-  --accent: #2f315a;
-  --accent-foreground: #c9c3f7;
+  --background: #0c1a26; /* deep navy-slate */
+  --foreground: #e6edf3;
+  --card: #12212e;
+  --card-foreground: #e6edf3;
+  --popover: #12212e;
+  --popover-foreground: #e6edf3;
+  --primary: #2fd07a; /* brighter emerald for dark */
+  --primary-hover: #27b86c;
+  --primary-foreground: #05130a;
+  --secondary: #1b2c3a;
+  --secondary-foreground: #e6edf3;
+  --muted: #182935;
+  --muted-foreground: #9fb0bd;
+  --accent: #1f3341;
+  --accent-foreground: #a7f0c7;
   --destructive: #f2555a;
-  --success: #34d399;
+  --success: #2fd07a;
   --warning: #fbbf24;
-  --border: #313356;
-  --input: #3a3c63;
-  --ring: #8b7ff0;
-  --chart-1: #8b7ff0;
-  --chart-2: #2dd4bf;
-  --chart-3: #60a5fa;
-  --chart-4: #4ade80;
-  --chart-5: #fbbf24;
-  --sidebar: #1c1d33;
-  --sidebar-foreground: #e8e8f2;
-  --sidebar-primary: #8b7ff0;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #2a2c48;
-  --sidebar-accent-foreground: #c9c3f7;
-  --sidebar-border: #313356;
-  --sidebar-ring: #8b7ff0;
+  --border: #24384a;
+  --input: #2b4256;
+  --ring: #2fd07a;
+  --chart-1: #2fd07a;
+  --chart-2: #7cc0ff;
+  --chart-3: #fbbf24;
+  --chart-4: #38bdf8;
+  --chart-5: #f472b6;
+  --navy: #0b1f38;
+  --navy-foreground: #e9f0f7;
+  --sidebar: #0f1d29;
+  --sidebar-foreground: #e6edf3;
+  --sidebar-primary: #2fd07a;
+  --sidebar-primary-foreground: #05130a;
+  --sidebar-accent: #1b2c3a;
+  --sidebar-accent-foreground: #a7f0c7;
+  --sidebar-border: #24384a;
+  --sidebar-ring: #2fd07a;
   --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 1px 3px 0 rgb(0 0 0 / 0.3);
   --elevation-2: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --marketing-shadow: 0 24px 70px rgb(0 0 0 / 0.4);
+  --marketing-shadow: 0 24px 70px rgb(0 0 0 / 0.45);
 }
 
 /* ---- Marketing motion (mirrors the FidelOS landing) ---- */

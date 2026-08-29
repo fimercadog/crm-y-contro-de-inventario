@@ -79,8 +79,12 @@ export default function LoginPage() {
 
   return (
     <main className="grid min-h-svh bg-background text-foreground lg:grid-cols-2">
-      <section className="flex min-h-[40svh] flex-col justify-center bg-primary px-6 py-10 text-primary-foreground sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
-        <div className="max-w-md">
+      <section className="relative flex min-h-[40svh] flex-col justify-center overflow-hidden bg-navy px-6 py-10 text-navy-foreground sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-1/4 size-80 rounded-full bg-primary/20 blur-3xl"
+        />
+        <div className="relative max-w-md">
           <div className="mb-14 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium">
             <Boxes className="size-4" />
             CRM + Inventario
@@ -89,7 +93,7 @@ export default function LoginPage() {
           <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
             Gestiona clientes, ventas e inventario desde un solo lugar
           </h1>
-          <p className="mt-5 max-w-sm text-sm leading-6 text-primary-foreground/80">
+          <p className="mt-5 max-w-sm text-sm leading-6 text-navy-foreground/75">
             Contactos, oportunidades, productos, stock y movimientos conectados en una sola
             plataforma.
           </p>

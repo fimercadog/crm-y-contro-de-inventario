@@ -120,7 +120,7 @@ export default function LandingPage() {
             <Reveal mount delay={0.08}>
               <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
                 CRM + Inventario{" "}
-                <span className="animate-marketing-gradient-text bg-[linear-gradient(90deg,var(--primary),var(--chart-3),var(--primary))] bg-size-[200%_auto] bg-clip-text text-transparent">
+                <span className="animate-marketing-gradient-text bg-[linear-gradient(90deg,var(--primary),#22c55e,var(--primary))] bg-size-[200%_auto] bg-clip-text text-transparent">
                   en un solo lugar
                 </span>
               </h1>
@@ -456,23 +456,21 @@ export default function LandingPage() {
       {/* ---------- Demo / CTA final ---------- */}
       <section id="demo" className="scroll-mt-24 py-20">
         <div className={container}>
-          <div className="relative overflow-hidden rounded-2xl bg-primary px-6 py-14 text-primary-foreground shadow-elevation-2 sm:px-12">
+          <div className="relative overflow-hidden rounded-2xl bg-navy px-6 py-14 text-navy-foreground shadow-elevation-2 sm:px-12">
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_60%_at_100%_0%,rgba(255,255,255,0.15),transparent)]"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_60%_at_100%_0%,rgba(47,208,122,0.18),transparent)]"
             />
             <div className="relative max-w-2xl">
               <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                 Conoce cómo CRM + Inventario puede organizar tu operación
               </h2>
-              <p className="mt-4 text-lg leading-8 text-primary-foreground/85">
+              <p className="mt-4 text-lg leading-8 text-navy-foreground/80">
                 Te mostramos el sistema con tus casos de uso y resolvemos tus dudas.
               </p>
               <div id="contacto" className="mt-8 flex flex-wrap gap-3 scroll-mt-24">
                 {site.whatsappUrl ? (
-                  <CtaLink href={site.whatsappUrl} variant="secondary">
-                    Escríbenos por WhatsApp
-                  </CtaLink>
+                  <CtaLink href={site.whatsappUrl}>Escríbenos por WhatsApp</CtaLink>
                 ) : null}
                 <CtaLink
                   href={`mailto:${site.email}?subject=Solicitud de demostración`}
@@ -483,13 +481,13 @@ export default function LandingPage() {
                 <CtaLink
                   href="/login"
                   variant="ghost"
-                  className="text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
+                  className="text-navy-foreground hover:bg-white/10 hover:text-navy-foreground"
                 >
                   Ya tengo cuenta
                 </CtaLink>
               </div>
               {!site.whatsappUrl && (
-                <p className="mt-4 text-xs text-primary-foreground/70">
+                <p className="mt-4 text-xs text-navy-foreground/70">
                   El canal de WhatsApp se activa configurando <code>NEXT_PUBLIC_WHATSAPP</code>.
                 </p>
               )}
