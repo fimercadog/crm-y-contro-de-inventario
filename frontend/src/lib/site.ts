@@ -2,7 +2,8 @@
  * Marketing site configuration. Contact channels come from env so the owner
  * can set them without touching code (see .env.local.example).
  */
-const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP ?? "" // e.g. 573001112233
+// Business WhatsApp, international format without "+". Override with NEXT_PUBLIC_WHATSAPP.
+const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP ?? "573027029498"
 
 export const site = {
   name: "CRM + Inventario",

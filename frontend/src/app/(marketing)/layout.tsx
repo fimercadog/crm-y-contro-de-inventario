@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 
 import { MarketingHeader } from "@/components/marketing/marketing-header"
 import { MarketingFooter } from "@/components/marketing/marketing-footer"
+import { WhatsappFab } from "@/components/marketing/whatsapp-fab"
 import { site } from "@/lib/site"
 
 export const metadata: Metadata = {
@@ -41,6 +42,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       <MarketingHeader />
       <main className="flex-1">{children}</main>
       <MarketingFooter />
+      <WhatsappFab />
     </div>
   )
 }

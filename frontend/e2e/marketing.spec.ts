@@ -62,6 +62,14 @@ test.describe("landing page", () => {
     )
   })
 
+  test("floating WhatsApp button is pinned and links to the number", async ({ page }) => {
+    await page.goto("/")
+    const fab = page.getByRole("link", { name: "Escríbenos por WhatsApp" }).last()
+    await expect(fab).toBeVisible()
+    await expect(fab).toHaveAttribute("href", /^https:\/\/wa\.me\/573027029498/)
+    expect(await fab.evaluate((el) => getComputedStyle(el).position)).toBe("fixed")
+  })
+
   test("login link goes to the app", async ({ page }) => {
     await page.goto("/")
     await page.getByRole("link", { name: "Iniciar sesión" }).first().click()
