@@ -16,7 +16,7 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 ✅ Layout base: sidebar colapsable, header, breadcrumbs, theme toggle (claro/oscuro/sistema).
 ✅ DataTable reutilizable con TanStack Table v9 (paginación/orden/filtro manuales, pensados para backend).
 ✅ Cliente axios con interceptor de token y redirect a /login en 401.
-⬜ Dashboard con datos reales (placeholder por ahora; se completa cuando existan datos de CRM/Inventario).
+✅ Dashboard con datos reales: `GET /api/dashboard` devuelve KPIs con alcance por empresa (clientes activos/prospectos, pipeline abierto y monto, ganado del mes, actividades pendientes/vencidas, productos, stock bajo/agotado, valor en stock) y los últimos 6 movimientos. Un `vendedor` puro solo ve lo asignado a él (misma regla que las listas). Frontend: tarjetas-enlace + feed de movimientos. 3 tests nuevos.
 
 ## Fase 2 — Auth, usuarios, roles y permisos
 
@@ -119,6 +119,18 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 Reporte completo: [qa-report.md](qa-report.md).
 
 Con esto se cierra el alcance original (Fases 0–14). Numeración de documentos y fuentes/estados configurables siguen diferidos por YAGNI (ver Fases 3 y 9).
+
+## Cierre — pulido post-QA (2026-08-29)
+
+Ajustes tras la revisión visual:
+
+- **Dashboard real** (arriba, Fase 1): dejó de ser placeholder.
+- **Seeders de demo**: `ProductSeeder` ahora genera entradas y salidas reales (no solo el ajuste de stock inicial), así que las pantallas Entradas/Salidas y el reporte de movimientos tienen contenido. `AuditLogSeeder` nuevo escribe ~15 eventos de ejemplo (los demás seeders corren `WithoutModelEvents` a propósito). `OpportunitySeeder`: las oportunidades abiertas ya no caen en etapas cerradas (Ganada/Perdida), lo que hacía que el reporte "Oportunidades abiertas por etapa" mostrara filas incorrectas.
+- **Rate limiting**: `throttle:6,1` en `POST /api/login`, `throttle:20,1` en `POST /api/ai/ask`.
+- **Lint**: la advertencia de `window.location.href` en `lib/api.ts` quedó silenciada con comentario justificado (recarga completa intencional al perder sesión). `npm run lint` ahora sin advertencias.
+- Suite: 88 tests backend, 6 E2E (Edge). `migrate:fresh --seed` verificado.
+
+Todos los módulos crean y editan mediante modales (diálogos), incluida la ficha de cliente — ya era así desde sus fases respectivas.
 
 ## Notas técnicas
 
