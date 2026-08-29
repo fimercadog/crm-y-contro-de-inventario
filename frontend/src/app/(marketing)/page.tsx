@@ -65,6 +65,7 @@ function FeatureRow({
   alt,
   reverse = false,
   note,
+  premium = false,
 }: {
   id: string
   eyebrow: string
@@ -75,11 +76,18 @@ function FeatureRow({
   alt: string
   reverse?: boolean
   note?: string
+  premium?: boolean
 }) {
   return (
     <section id={id} className="scroll-mt-24 py-20">
       <div className={`${container} grid items-center gap-12 lg:grid-cols-2`}>
         <Reveal className={reverse ? "lg:order-2" : undefined}>
+          {premium && (
+            <Badge variant="secondary" className="mb-4 gap-1">
+              <Sparkles className="size-3" />
+              Complemento premium · se contrata aparte
+            </Badge>
+          )}
           <SectionHeading eyebrow={eyebrow} title={title} lead={lead} />
           <ul className="mt-8 space-y-3">
             {points.map((p) => (
@@ -194,7 +202,7 @@ export default function LandingPage() {
               center
               eyebrow="La solución"
               title="Una sola plataforma"
-              lead="CRM, inventario, reportes, IA, control de acceso y auditoría trabajando sobre la misma base de datos."
+              lead="CRM, inventario, reportes, control de acceso y auditoría sobre la misma base de datos — con un asistente de IA opcional."
             />
           </Reveal>
           <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3">
@@ -202,7 +210,7 @@ export default function LandingPage() {
               { icon: Handshake, label: "CRM" },
               { icon: Boxes, label: "Inventario" },
               { icon: BarChart3, label: "Reportes" },
-              { icon: Sparkles, label: "Asistente IA" },
+              { icon: Sparkles, label: "Asistente IA", tag: "Premium" },
               { icon: ShieldCheck, label: "Control de acceso" },
               { icon: History, label: "Auditoría" },
             ].map((item) => (
@@ -210,8 +218,13 @@ export default function LandingPage() {
                 key={item.label}
                 className={`group flex items-center gap-3 rounded-xl border bg-card px-4 py-3.5 text-sm font-medium shadow-elevation-1 ${cardHover}`}
               >
-                <item.icon className="size-4 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
+                <item.icon className="size-4 shrink-0 text-primary transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none" />
                 {item.label}
+                {"tag" in item && item.tag && (
+                  <Badge variant="secondary" className="ml-auto h-4 px-1.5 text-[10px] font-semibold">
+                    {item.tag}
+                  </Badge>
+                )}
               </div>
             ))}
           </div>
@@ -296,6 +309,7 @@ export default function LandingPage() {
       {/* ---------- IA ---------- */}
       <FeatureRow
         id="ia"
+        premium
         eyebrow="Asistente IA"
         title="Pregúntale a tus datos"
         lead="Un asistente que responde en lenguaje natural sobre los clientes, el inventario y las oportunidades de tu empresa."
@@ -314,7 +328,7 @@ export default function LandingPage() {
           },
           { icon: UsersRound, text: "Disponible para los roles de administración." },
         ]}
-        note="No promete automatizar tareas ni ejecutar acciones: responde preguntas sobre un resumen de tus datos."
+        note="Complemento premium: no viene en el plan base, se contrata aparte. No automatiza tareas ni ejecuta acciones — responde preguntas sobre un resumen de tus datos."
       />
 
       {/* ---------- Seguridad ---------- */}

@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Loader2, Send } from "lucide-react"
+import { Loader2, Send, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { askAssistant, type ChatTurn } from "@/features/ai/api"
+import { site } from "@/lib/site"
 
 const SUGGESTIONS = [
   "¿Qué productos tengo con stock bajo?",
@@ -50,9 +51,40 @@ export default function IaPage() {
   return (
     <div className="mx-auto flex h-[calc(100vh-8rem)] w-full max-w-3xl flex-col gap-4">
       <div>
-        <h2 className="text-lg font-semibold">Asistente IA</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-semibold">Asistente IA</h2>
+          <Badge variant="secondary" className="gap-1">
+            <Sparkles className="size-3" />
+            Premium
+          </Badge>
+        </div>
         <p className="text-sm text-muted-foreground">
           Pregunta sobre tus clientes, inventario y oportunidades. Solo ve los datos de tu empresa.
+        </p>
+      </div>
+
+      <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+        <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+        <p className="text-muted-foreground">
+          <span className="font-medium text-foreground">Módulo premium.</span> El Asistente IA
+          se contrata como complemento aparte del plan base.{" "}
+          {site.whatsappUrl ? (
+            <a
+              href={site.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary hover:underline"
+            >
+              Consultar precio
+            </a>
+          ) : (
+            <a
+              href={`mailto:${site.email}?subject=${encodeURIComponent("Complemento Asistente IA")}`}
+              className="font-medium text-primary hover:underline"
+            >
+              Consultar precio
+            </a>
+          )}
         </p>
       </div>
 

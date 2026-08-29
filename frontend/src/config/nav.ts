@@ -27,6 +27,8 @@ export type NavItem = {
   title: string
   url: string
   icon: LucideIcon
+  /** Small tag shown after the label, e.g. "Premium" for paid add-ons. */
+  badge?: string
 }
 
 export type NavGroup = {
@@ -67,7 +69,7 @@ export const navGroups: NavGroup[] = [
     title: "Análisis",
     items: [
       { title: "Reportes", url: "/reportes", icon: BarChart3 },
-      { title: "IA", url: "/ia", icon: Sparkles },
+      { title: "IA", url: "/ia", icon: Sparkles, badge: "Premium" },
     ],
   },
   {

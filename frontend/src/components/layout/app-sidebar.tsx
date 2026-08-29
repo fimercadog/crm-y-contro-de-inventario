@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Boxes } from "lucide-react"
 
 import { navGroups } from "@/config/nav"
+import { Badge } from "@/components/ui/badge"
 import {
   Sidebar,
   SidebarContent,
@@ -58,6 +59,14 @@ export function AppSidebar() {
                       >
                         <item.icon />
                         <span>{item.title}</span>
+                        {item.badge && (
+                          <Badge
+                            variant="secondary"
+                            className="ml-auto h-4 px-1.5 text-[10px] font-semibold group-data-[collapsible=icon]:hidden"
+                          >
+                            {item.badge}
+                          </Badge>
+                        )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   )

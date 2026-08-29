@@ -27,7 +27,7 @@ Landing Page* de Elegant Themes.
 4. **CRM** — captura de Pipeline + funciones verificadas.
 5. **Control de inventario** — captura de Movimientos + funciones verificadas.
 6. **Reportes** — captura de Reportes + los 4 reportes reales + exportación.
-7. **Asistente IA** — captura del chat + capacidades reales (con la nota de que conecta con OpenAI/Anthropic).
+7. **Asistente IA** — marcado como **complemento premium** (badge + nota "se contrata aparte"); captura del chat + capacidades reales (conecta con OpenAI/Anthropic).
 8. **Seguridad y control** — 6 tarjetas característica → beneficio.
 9. **Así se ve por dentro** — galería de 4 capturas reales (Clientes, Productos, Stock, Auditoría).
 10. **Beneficios** — cada uno ligado a una función real.
@@ -60,7 +60,7 @@ Verificadas contra el código y la app en ejecución:
 - CRM: clientes, contactos, oportunidades con **cotización de productos** y monto calculado, pipeline Kanban con drag-and-drop, actividades.
 - Inventario: productos, catálogos (categorías/marcas/unidades/proveedores), registro de entradas/salidas/ajustes con `InventoryService` (transaccional, sin stock negativo), corrección/anulación de movimientos con huella de fecha y usuario, vista de stock con valorización.
 - Reportes: inventario valorizado, resumen de movimientos, oportunidades por etapa, ventas por producto. Exportación **CSV/PDF** en toda la app.
-- IA: asistente que responde sobre un resumen de los datos de la empresa; aislamiento multiempresa; proveedor OpenAI/Anthropic configurable (modo local de demo sin proveedor); solo administradores.
+- IA (**complemento premium**, se contrata aparte del plan base): asistente que responde sobre un resumen de los datos de la empresa; aislamiento multiempresa; proveedor OpenAI/Anthropic configurable (modo local de demo sin proveedor); solo administradores. Aviso visible en la landing (`#ia` + pill "Una sola plataforma"), en el sidebar de la app (badge "Premium") y en `/ia` (banner "Consultar precio").
 - Seguridad: usuarios, roles y **permisos por módulo** (roles a medida), auditoría con diff + IP, aislamiento por empresa, soft-delete con restaurar, token + rate-limit en login.
 
 ## Funciones NO promocionadas (incompletas o inexistentes)
