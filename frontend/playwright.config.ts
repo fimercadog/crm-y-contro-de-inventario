@@ -15,7 +15,7 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [{ name: "edge", use: { ...devices["Desktop Edge"], channel: "msedge" } }],
   webServer: [
     {
       command: "php artisan serve --port=8000",
