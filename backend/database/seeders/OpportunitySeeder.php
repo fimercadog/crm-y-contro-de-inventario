@@ -19,6 +19,9 @@ class OpportunitySeeder extends Seeder
         $customerIds = Customer::where('company_id', $company->id)->pluck('id');
         $products = Product::where('company_id', $company->id)->where('status', 'activo')->get();
         $stages = PipelineStage::where('company_id', $company->id)->orderBy('order')->get();
+        $openStages = $stages->reject(fn ($s) => $s->is_won || $s->is_lost);
+        $wonStage = $stages->firstWhere('is_won', true);
+        $lostStage = $stages->firstWhere('is_lost', true);
         $opportunityProducts = app(OpportunityProductService::class);
         $assignableUserIds = User::where('company_id', $company->id)
             ->whereHas('roles', fn ($q) => $q->whereIn('name', ['comercial', 'vendedor']))
@@ -28,16 +31,23 @@ class OpportunitySeeder extends Seeder
             ->value('id');
 
         for ($i = 0; $i < 15; $i++) {
-            $stage = $stages->random();
             $isClosed = fake()->boolean(30);
+            $won = $isClosed && fake()->boolean(60);
+
+            // Open opportunities live in open stages; closed ones sit in their won/lost stage.
+            $stage = match (true) {
+                $won => $wonStage,
+                $isClosed => $lostStage,
+                default => $openStages->random(),
+            };
 
             $opportunity = Opportunity::factory()->create([
                 'company_id' => $company->id,
                 'customer_id' => $customerIds->random(),
                 'stage_id' => $stage->id,
                 'assigned_user_id' => $assignableUserIds->isNotEmpty() ? $assignableUserIds->random() : null,
-                'status' => $isClosed ? ($stage->is_won ? 'ganada' : 'perdida') : 'abierta',
-                'lost_reason' => $isClosed && ! $stage->is_won ? fake()->randomElement([
+                'status' => $isClosed ? ($won ? 'ganada' : 'perdida') : 'abierta',
+                'lost_reason' => $isClosed && ! $won ? fake()->randomElement([
                     'Precio', 'Eligió a la competencia', 'Sin presupuesto', 'Proyecto pausado',
                 ]) : null,
             ]);

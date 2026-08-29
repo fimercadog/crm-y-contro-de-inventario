@@ -93,5 +93,44 @@ class ProductSeeder extends Seeder
                 notes: 'Stock inicial de demostración',
             );
         }
+
+        $this->seedOperationalMovements($inventory, $user, Product::where('company_id', $company->id)->get());
+    }
+
+    /**
+     * A few real entradas/salidas on top of the initial adjustments, so the
+     * Entradas / Salidas screens and the movements report have demo content.
+     */
+    private function seedOperationalMovements(InventoryService $inventory, User $user, $products): void
+    {
+        foreach ($products as $product) {
+            foreach (range(1, fake()->numberBetween(1, 3)) as $n) {
+                $daysAgo = fake()->numberBetween(1, 45);
+
+                $inventory->move(
+                    product: $product->refresh(),
+                    user: $user,
+                    type: 'entrada',
+                    quantity: fake()->numberBetween(5, 40),
+                    unitCost: (float) $product->cost,
+                    reference: 'OC-'.fake()->numberBetween(1000, 9999),
+                    notes: 'Compra a proveedor',
+                    occurredAt: now()->subDays($daysAgo),
+                );
+
+                $available = $product->refresh()->current_stock;
+                if ($available > 1) {
+                    $inventory->move(
+                        product: $product,
+                        user: $user,
+                        type: 'salida',
+                        quantity: fake()->numberBetween(1, (int) min($available - 1, 20)),
+                        reference: 'REM-'.fake()->numberBetween(1000, 9999),
+                        notes: 'Despacho de pedido',
+                        occurredAt: now()->subDays(max(0, $daysAgo - fake()->numberBetween(0, 3))),
+                    );
+                }
+            }
+        }
     }
 }
