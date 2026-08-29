@@ -67,7 +67,19 @@ test.describe("landing page", () => {
     const fab = page.getByRole("link", { name: "Escríbenos por WhatsApp" }).last()
     await expect(fab).toBeVisible()
     await expect(fab).toHaveAttribute("href", /^https:\/\/wa\.me\/573027029498/)
-    expect(await fab.evaluate((el) => getComputedStyle(el).position)).toBe("fixed")
+    // the button lives in a viewport-pinned container with a pulsing halo
+    const pinned = await fab.evaluate((el) => {
+      const box = el.closest("div")
+      return box ? getComputedStyle(box).position : null
+    })
+    expect(pinned).toBe("fixed")
+    const pulsing = await fab.evaluate(
+      (el) =>
+        [...(el.closest("div")?.querySelectorAll("span") ?? [])].some((s) =>
+          getComputedStyle(s).animationName.includes("ping")
+        )
+    )
+    expect(pulsing).toBe(true)
   })
 
   test("login link goes to the app", async ({ page }) => {
