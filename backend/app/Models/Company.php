@@ -43,6 +43,16 @@ class Company extends Model
         return $this->hasMany(Customer::class);
     }
 
+    public function inventoryMovements(): HasMany
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
+
+    public function opportunityItems(): HasMany
+    {
+        return $this->hasMany(OpportunityItem::class);
+    }
+
     /**
      * The default CRM pipeline (section 9 of the product spec). Called once
      * when a company is created; stages are editable afterwards.

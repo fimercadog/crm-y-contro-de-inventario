@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\InventoryMovementController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PipelineStageController;
 use App\Http\Controllers\Api\ProductController;
@@ -66,4 +67,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products/export/csv', [ProductController::class, 'exportCsv']);
     Route::get('/products/export/pdf', [ProductController::class, 'exportPdf']);
     Route::apiResource('products', ProductController::class);
+
+    Route::apiResource('inventory-movements', InventoryMovementController::class)->only(['index', 'store']);
 });

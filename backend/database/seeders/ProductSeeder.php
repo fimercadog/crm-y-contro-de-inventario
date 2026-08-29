@@ -8,6 +8,8 @@ use App\Models\Company;
 use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Unit;
+use App\Models\User;
+use App\Services\InventoryService;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -50,6 +52,8 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $company = Company::firstOrFail();
+        $user = User::where('company_id', $company->id)->firstOrFail();
+        $inventory = app(InventoryService::class);
         $categories = Category::where('company_id', $company->id)->get()->keyBy('name');
         $units = Unit::where('company_id', $company->id)->get()->keyBy('abbreviation');
         $brandIds = Brand::where('company_id', $company->id)->pluck('id');
@@ -75,11 +79,19 @@ class ProductSeeder extends Seeder
                 'sale_price' => round($cost * fake()->randomFloat(2, 1.25, 1.7), 2),
                 'minimum_stock' => $minimumStock,
                 'maximum_stock' => $minimumStock * 10,
-                'current_stock' => $currentStock,
                 'status' => 'activo',
             ]);
 
             $product->suppliers()->attach($supplierIds->random(min(2, $supplierIds->count())));
+            $inventory->move(
+                product: $product,
+                user: $user,
+                type: 'ajuste',
+                quantity: $currentStock,
+                unitCost: $cost,
+                reference: 'STOCK-INICIAL',
+                notes: 'Stock inicial de demostración',
+            );
         }
     }
 }
