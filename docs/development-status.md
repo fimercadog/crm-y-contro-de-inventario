@@ -97,7 +97,8 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 11 — Reportes y exportaciones
 
-⬜ Pendiente.
+✅ Backend: `ReportController` con 4 reportes agregados, todos con alcance por empresa y solo para super-admin/administrador (`abort_unless` por rol, sin policy dedicada porque no hay recurso). Cada endpoint responde JSON por defecto y CSV/PDF con `?format=csv|pdf` reutilizando `TableExporter` (un solo camino de exportación, sin rutas `/export` extra): `inventory-valuation` (valor de stock por categoría), `movements-summary` (movimientos y unidades por tipo en rango de fechas), `opportunities-by-stage` (oportunidades abiertas y monto por etapa), `sales-by-product` (cantidad y total por producto en oportunidades ganadas, por rango de `expected_close_date`). Agregados con query builder (`SUM`/`COUNT`/`GROUP BY`) portables a MySQL. 4 tests nuevos, 76 en total.
+✅ Frontend: `/reportes` con selector de rango de fechas (`<input type="date">` nativo) y 4 tarjetas de reporte; cada una carga su tabla y tiene botones CSV/PDF. Las tarjetas sin período ignoran el rango.
 
 ## Fase 12 — Auditoría
 

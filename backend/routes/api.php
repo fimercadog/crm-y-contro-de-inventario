@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\InventoryMovementController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\PipelineStageController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\UnitController;
@@ -71,4 +72,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/inventory-movements/export/csv', [InventoryMovementController::class, 'exportCsv']);
     Route::get('/inventory-movements/export/pdf', [InventoryMovementController::class, 'exportPdf']);
     Route::apiResource('inventory-movements', InventoryMovementController::class)->only(['index', 'store']);
+
+    Route::get('/reports/inventory-valuation', [ReportController::class, 'inventoryValuation']);
+    Route::get('/reports/movements-summary', [ReportController::class, 'movementsSummary']);
+    Route::get('/reports/opportunities-by-stage', [ReportController::class, 'opportunitiesByStage']);
+    Route::get('/reports/sales-by-product', [ReportController::class, 'salesByProduct']);
 });
