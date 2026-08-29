@@ -107,7 +107,8 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
 ## Fase 13 — Arquitectura IA
 
-⬜ Pendiente.
+✅ Backend: asistente de preguntas en lenguaje natural con proveedor intercambiable. `Services\Ai\AiProvider` (interfaz) + 3 implementaciones: `StubProvider` (offline, por defecto — devuelve el snapshot + la pregunta, sin API key), `OpenAiProvider` y `AnthropicProvider` (vía `Http`, timeout 30s, `AiUnavailableException` → 503). El binding se elige con `config('services.ai.provider')` en `AppServiceProvider::register()`. `Services\Ai\BusinessContext` arma un resumen compacto (conteos, productos con stock bajo, últimos 10 movimientos) **siempre filtrado por `company_id`** — el modelo nunca ve otro tenant y no hay tool-calling. `Assistant` concatena `history` + `message`. `POST /api/ai/ask` (cualquier usuario autenticado, sobre su propia empresa), valida `message` (≤2000) e `history` (≤20 turnos). 5 tests nuevos (stub scoped a empresa, auth requerida, validación, fallo → 503, `Http::fake` de OpenAI), 84 en total. Doc: [ai-architecture.md](ai-architecture.md).
+✅ Frontend: `/ia` (chat de una sola vista: historial, sugerencias iniciales, textarea con Enter-para-enviar, badge del rol, manejo de 503 con toast y restauración del mensaje). Link "IA" ya presente en el nav de Análisis. `npm run build` y `npm run lint` verdes.
 
 ## Fase 14 — QA completo
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityController;
+use App\Http\Controllers\Api\AiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
@@ -75,6 +76,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('inventory-movements', InventoryMovementController::class)->only(['index', 'store']);
 
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
+
+    Route::post('/ai/ask', [AiController::class, 'ask']);
 
     Route::get('/reports/inventory-valuation', [ReportController::class, 'inventoryValuation']);
     Route::get('/reports/movements-summary', [ReportController::class, 'movementsSummary']);
