@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Customer;
 use App\Models\Opportunity;
 use App\Models\PipelineStage;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -115,5 +116,110 @@ class OpportunityTest extends TestCase
         $this->actingAs($inventario)
             ->getJson('/api/opportunities')
             ->assertForbidden();
+    }
+
+    public function test_opportunity_can_be_created_with_product_items_and_calculated_amount(): void
+    {
+        $company = Company::factory()->create();
+        $comercial = $this->makeUser('comercial', $company);
+        $customer = Customer::factory()->create(['company_id' => $company->id]);
+        $stage = PipelineStage::factory()->create(['company_id' => $company->id]);
+        $drill = Product::factory()->create(['company_id' => $company->id, 'sale_price' => 100]);
+        $paint = Product::factory()->create(['company_id' => $company->id, 'sale_price' => 25]);
+
+        $response = $this->actingAs($comercial)->postJson('/api/opportunities', [
+            'customer_id' => $customer->id,
+            'title' => 'Cotización con productos',
+            'amount' => 1,
+            'probability' => 50,
+            'stage_id' => $stage->id,
+            'status' => 'abierta',
+            'items' => [
+                [
+                    'product_id' => $drill->id,
+                    'quantity' => 2,
+                    'unit_price' => 100,
+                    'discount_amount' => 10,
+                ],
+                [
+                    'product_id' => $paint->id,
+                    'quantity' => 3,
+                    'unit_price' => 25,
+                ],
+            ],
+        ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('data.amount', 265)
+            ->assertJsonCount(2, 'data.items');
+
+        $this->assertDatabaseHas('opportunity_items', [
+            'product_id' => $drill->id,
+            'quantity' => 2,
+            'subtotal' => 190,
+        ]);
+    }
+
+    public function test_opportunity_items_can_be_updated_and_recalculate_amount(): void
+    {
+        $company = Company::factory()->create();
+        $admin = $this->makeUser('administrador', $company);
+        $customer = Customer::factory()->create(['company_id' => $company->id]);
+        $stage = PipelineStage::factory()->create(['company_id' => $company->id]);
+        $product = Product::factory()->create(['company_id' => $company->id]);
+        $opportunity = Opportunity::factory()->create([
+            'company_id' => $company->id,
+            'customer_id' => $customer->id,
+            'stage_id' => $stage->id,
+            'amount' => 500,
+        ]);
+
+        $this->actingAs($admin)->putJson("/api/opportunities/{$opportunity->id}", [
+            'customer_id' => $customer->id,
+            'title' => $opportunity->title,
+            'amount' => 500,
+            'probability' => 60,
+            'stage_id' => $stage->id,
+            'status' => 'abierta',
+            'items' => [
+                [
+                    'product_id' => $product->id,
+                    'quantity' => 4,
+                    'unit_price' => 40,
+                    'discount_amount' => 15,
+                ],
+            ],
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.amount', 145)
+            ->assertJsonCount(1, 'data.items');
+
+        $this->assertSame('145.00', $opportunity->fresh()->amount);
+    }
+
+    public function test_opportunity_items_cannot_reference_products_from_another_company(): void
+    {
+        $company = Company::factory()->create();
+        $otherCompany = Company::factory()->create();
+        $comercial = $this->makeUser('comercial', $company);
+        $customer = Customer::factory()->create(['company_id' => $company->id]);
+        $stage = PipelineStage::factory()->create(['company_id' => $company->id]);
+        $foreignProduct = Product::factory()->create(['company_id' => $otherCompany->id]);
+
+        $this->actingAs($comercial)->postJson('/api/opportunities', [
+            'customer_id' => $customer->id,
+            'title' => 'Producto ajeno',
+            'amount' => 100,
+            'probability' => 50,
+            'stage_id' => $stage->id,
+            'status' => 'abierta',
+            'items' => [
+                [
+                    'product_id' => $foreignProduct->id,
+                    'quantity' => 1,
+                    'unit_price' => 100,
+                ],
+            ],
+        ])->assertUnprocessable();
     }
 }

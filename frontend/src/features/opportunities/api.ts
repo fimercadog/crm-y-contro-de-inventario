@@ -22,14 +22,31 @@ export function getOpportunity(id: number) {
 
 export type OpportunityPayload = Omit<
   Opportunity,
-  "id" | "created_at" | "updated_at" | "customer_name" | "stage_name" | "assigned_user_name"
+  | "id"
+  | "created_at"
+  | "updated_at"
+  | "customer_name"
+  | "stage_name"
+  | "assigned_user_name"
+  | "items"
 >
 
-export function createOpportunity(payload: Partial<OpportunityPayload>) {
+export interface OpportunityItemPayload {
+  product_id: number
+  quantity: number
+  unit_price?: number | null
+  discount_amount?: number | null
+}
+
+export type SaveOpportunityPayload = Partial<OpportunityPayload> & {
+  items?: OpportunityItemPayload[]
+}
+
+export function createOpportunity(payload: SaveOpportunityPayload) {
   return api.post<{ data: Opportunity }>("/opportunities", payload)
 }
 
-export function updateOpportunity(id: number, payload: Partial<OpportunityPayload>) {
+export function updateOpportunity(id: number, payload: SaveOpportunityPayload) {
   return api.put<{ data: Opportunity }>(`/opportunities/${id}`, payload)
 }
 

@@ -28,6 +28,16 @@ class OpportunityResource extends JsonResource
             'source' => $this->source,
             'status' => $this->status,
             'lost_reason' => $this->lost_reason,
+            'items' => $this->whenLoaded('items', fn () => $this->items->map(fn ($item) => [
+                'id' => $item->id,
+                'product_id' => $item->product_id,
+                'product_name' => $item->relationLoaded('product') ? $item->product?->name : null,
+                'product_sku' => $item->relationLoaded('product') ? $item->product?->sku : null,
+                'quantity' => $item->quantity,
+                'unit_price' => (float) $item->unit_price,
+                'discount_amount' => (float) $item->discount_amount,
+                'subtotal' => (float) $item->subtotal,
+            ])),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

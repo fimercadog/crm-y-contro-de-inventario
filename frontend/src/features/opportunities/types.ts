@@ -16,8 +16,20 @@ export interface Opportunity {
   source: string | null
   status: OpportunityStatus
   lost_reason: string | null
+  items?: OpportunityItem[]
   created_at: string
   updated_at: string
+}
+
+export interface OpportunityItem {
+  id?: number
+  product_id: number
+  product_name?: string | null
+  product_sku?: string | null
+  quantity: number
+  unit_price: number
+  discount_amount: number
+  subtotal: number
 }
 
 export interface PipelineStage {

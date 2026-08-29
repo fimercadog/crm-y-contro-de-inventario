@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateOpportunityRequest;
 use App\Http\Requests\UpdateOpportunityStageRequest;
 use App\Http\Resources\OpportunityResource;
 use App\Models\Opportunity;
+use App\Services\OpportunityProductService;
 use App\Support\TableExporter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -37,11 +38,14 @@ class OpportunityController extends Controller
         return OpportunityResource::collection($opportunities);
     }
 
-    public function store(StoreOpportunityRequest $request)
+    public function store(StoreOpportunityRequest $request, OpportunityProductService $opportunityProducts)
     {
-        $opportunity = DB::transaction(function () use ($request) {
+        $validated = $request->validated();
+        $items = $validated['items'] ?? null;
+
+        $opportunity = DB::transaction(function () use ($request, $validated, $items, $opportunityProducts) {
             $opportunity = Opportunity::create([
-                ...$request->validated(),
+                ...collect($validated)->except('items')->all(),
                 'company_id' => $request->user()->company_id,
             ]);
 
@@ -52,10 +56,14 @@ class OpportunityController extends Controller
                 'created_at' => now(),
             ]);
 
+            if (is_array($items)) {
+                $opportunityProducts->syncItems($opportunity, $items);
+            }
+
             return $opportunity;
         });
 
-        return new OpportunityResource($opportunity->load(['customer', 'stage', 'assignedUser']));
+        return new OpportunityResource($opportunity->load(['customer', 'stage', 'assignedUser', 'items.product']));
     }
 
     public function show(Opportunity $opportunity)
@@ -63,15 +71,20 @@ class OpportunityController extends Controller
         $this->authorize('view', $opportunity);
 
         return new OpportunityResource(
-            $opportunity->load(['customer', 'stage', 'assignedUser', 'stageHistory.toStage', 'stageHistory.user'])
+            $opportunity->load(['customer', 'stage', 'assignedUser', 'items.product', 'stageHistory.toStage', 'stageHistory.user'])
         );
     }
 
-    public function update(UpdateOpportunityRequest $request, Opportunity $opportunity)
+    public function update(UpdateOpportunityRequest $request, Opportunity $opportunity, OpportunityProductService $opportunityProducts)
     {
-        $opportunity->update($request->validated());
+        $validated = $request->validated();
+        $opportunity->update(collect($validated)->except('items')->all());
 
-        return new OpportunityResource($opportunity->fresh(['customer', 'stage', 'assignedUser']));
+        if (array_key_exists('items', $validated)) {
+            $opportunityProducts->syncItems($opportunity, $validated['items'] ?? []);
+        }
+
+        return new OpportunityResource($opportunity->fresh(['customer', 'stage', 'assignedUser', 'items.product']));
     }
 
     public function updateStage(UpdateOpportunityStageRequest $request, Opportunity $opportunity)

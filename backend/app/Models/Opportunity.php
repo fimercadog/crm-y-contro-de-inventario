@@ -63,4 +63,9 @@ class Opportunity extends Model
     {
         return $this->hasMany(Activity::class);
     }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(OpportunityItem::class);
+    }
 }
