@@ -194,13 +194,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marketing-float,
-  .animate-marketing-drift,
-  .animate-marketing-pulse-glow,
-  .animate-marketing-grid,
-  .animate-marketing-gradient-text,
-  .animate-marketing-aurora,
-  .animate-marketing-orbit,
+  /* Only cut the light sweep — it's the one element that visibly travels
+     across the screen. The rest are slow ambient loops (a breathing
+     gradient, a drifting grid) that stay, so the hero still feels alive
+     for visitors with the OS setting on. Scroll reveals (Reveal) still
+     degrade to an opacity-only fade — see that component. */
   .animate-marketing-sheen {
     animation: none !important;
   }

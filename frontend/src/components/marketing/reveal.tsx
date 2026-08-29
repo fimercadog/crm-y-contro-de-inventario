@@ -8,8 +8,9 @@ import { cn } from "@/lib/utils"
  * Reveal on scroll (or on mount): rise + blur-in + fade, 0.7s spring-out.
  * `mount` fires on load instead of on scroll (above-the-fold content).
  * `zoom` swaps the rise for a scale-down (hero screenshot).
- * Under prefers-reduced-motion it degrades to an opacity-only cross-fade —
- * no transform, no blur — which is safe for vestibular sensitivity.
+ * Under prefers-reduced-motion, the *scroll* variant degrades to an
+ * opacity-only cross-fade (scroll-linked movement is the vestibular risk);
+ * the `mount` entrance keeps its full motion since it fires once on load.
  * CSS transitions + IntersectionObserver: SSR-safe, no hydration divergence.
  */
 export function Reveal({
@@ -53,7 +54,8 @@ export function Reveal({
       ref={ref}
       className={cn(
         "transition-[opacity,transform,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[opacity,transform]",
-        "motion-reduce:transition-opacity motion-reduce:duration-500 motion-reduce:translate-y-0! motion-reduce:scale-100! motion-reduce:blur-0!",
+        !mount &&
+          "motion-reduce:transition-opacity motion-reduce:duration-500 motion-reduce:translate-y-0! motion-reduce:scale-100! motion-reduce:blur-0!",
         shown
           ? "translate-y-0 scale-100 blur-0 opacity-100"
           : zoom
