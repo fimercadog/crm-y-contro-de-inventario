@@ -153,6 +153,10 @@ Rate limit de `/api/login` subido a `throttle:30,1` (6/min bloqueaba la suite E2
 
 Suite: 99 tests backend, 7 E2E (Edge).
 
+## Sitio web comercial (2026-08-29)
+
+Landing pública en `/` (grupo `(marketing)` con layout propio), con el stack existente — sin WordPress/Divi ni dependencias nuevas. El `/` que redirigía a `/dashboard` se eliminó. Estructura tipo SaaS landing (hero + captura real del dashboard, problema, plataforma unificada, CRM, inventario, reportes, IA, seguridad, tour de producto con capturas reales, beneficios ligados a funciones reales, CTA con WhatsApp/correo, footer). Solo se comercializan funciones verificadas contra el código; contingencia/offline, reportes programados, numeración de documentos y testimonios/logos ficticios quedan fuera. Capturas reales de la app en `frontend/public/product/`, SEO (metadata/OpenGraph/sitemap/robots/OG dinámica), `not-found` con marca, 10 tests Playwright (desktop + móvil). Suite E2E total: 17. Detalle y decisiones: [website.md](website.md).
+
 ## Notas técnicas
 
 - PHP local es 8.2.12 (el pedido original sugería 8.3+). Laravel 12 solo requiere `^8.2`, así que no bloquea nada; se puede subir el entorno a 8.3 más adelante sin cambios de código.
