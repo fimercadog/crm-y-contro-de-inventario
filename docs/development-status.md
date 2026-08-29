@@ -33,6 +33,7 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 ⬜ Numeración de documentos (entradas/salidas): se construye en la Fase 9 cuando esos módulos existan, no antes.
 
 **Bugs reales encontrados y corregidos en esta fase:**
+
 - El `Controller` base de Laravel 12 no incluye `AuthorizesRequests` por defecto — `$this->authorize()` fallaba con 500 en cualquier controlador. Se agregó el trait una sola vez en `app/Http/Controllers/Controller.php`.
 - El menú de usuario del sidebar (Fase 2) crasheaba con Base UI (`MenuGroupContext is missing`) porque `DropdownMenuLabel` no estaba envuelto en `DropdownMenuGroup`. Corregido y verificado en navegador.
 
@@ -42,6 +43,7 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 ✅ Frontend: `/crm/clientes` (DataTable con búsqueda, filtros por estado/tipo, exportar CSV/PDF, crear/editar/eliminar), `/crm/clientes/[id]` (ficha con datos generales, notas, y gestión de contactos inline), `/crm/contactos` (listado plano de todos los contactos con filtro por estado). Verificado de punta a punta en navegador real (CRUD completo de clientes y contactos, filtros, exportación, paginación) — 0 errores de consola.
 
 **Bugs reales encontrados y corregidos en esta fase:**
+
 - `StoreContactRequest::authorize()` llamaba `Customer::findOrFail($this->route('customer'))`, pero Laravel ya había resuelto ese parámetro de ruta a una instancia de `Customer` (route-model binding), así que `findOrFail` recibía un objeto en vez de un id y siempre devolvía 404. Corregido para usar el modelo ya vinculado directamente.
 - El `DataTableFacetedFilter` original asumía columnas de TanStack Table (client-side), pero todos los filtros de esta app son server-side. Se generalizó para recibir `value`/`onChange` en vez de fingir un objeto `Column` con `as any`.
 
@@ -50,8 +52,9 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 ✅ Backend: `Opportunity` (con `OpportunityStageHistory` inmutable — cada creación y cada cambio de etapa queda registrado), `Activity`. Policies (comercial/administrador/super-admin acceso completo; vendedor limitado a lo propio; inventario sin acceso a ninguno de los dos). `PATCH /api/opportunities/{id}/stage` mueve de etapa y registra el historial en una transacción. `GET /api/pipeline` agrupa oportunidades abiertas por etapa para el Kanban. Exportación CSV/PDF de oportunidades reutilizando `TableExporter`. Seeders: 15 oportunidades + 25 actividades coherentes. 13 tests nuevos (Opportunity, Activity, Pipeline), 34 en total, todos verdes.
 ✅ Frontend: `/crm/oportunidades` (lista con filtros/exportación), `/crm/pipeline` (Kanban con `@dnd-kit`, drag-and-drop entre etapas persistido en backend), `/crm/actividades` (lista con filtros por estado/prioridad).
 🟡 Verificación en navegador: se probó de punta a punta (listas, crear/editar, filtros, exportación CSV, y el flujo completo de arrastrar-soltar en el pipeline incluyendo persistencia tras recargar — sin errores de consola). Quedaron dos hallazgos de esa sesión:
-  - **Corregido**: los `Select` de IDs (cliente, etapa, responsable) mostraban el valor crudo en vez del nombre — Base UI (a diferencia de Radix) no resuelve la etiqueta automáticamente desde el `SelectItem` seleccionado. Se creó `components/forms/id-select.tsx`, que pasa el mapa `items` que Base UI sí usa para resolver la etiqueta, y se migraron todos los `Select` de la app (no solo los de esta fase) a este componente.
-  - **Sin confirmar todavía**: el botón "Nueva oportunidad"/"Nueva actividad" pareció necesitar más de un clic para abrir el diálogo en una corrida de pruebas automatizadas. No se reprodujo de forma concluyente ni se descartó como artefacto de temporización del navegador automatizado (clic disparado antes de que termine la hidratación). Revisar con una interacción manual real antes de dar por cerrado.
+
+- **Corregido**: los `Select` de IDs (cliente, etapa, responsable) mostraban el valor crudo en vez del nombre — Base UI (a diferencia de Radix) no resuelve la etiqueta automáticamente desde el `SelectItem` seleccionado. Se creó `components/forms/id-select.tsx`, que pasa el mapa `items` que Base UI sí usa para resolver la etiqueta, y se migraron todos los `Select` de la app (no solo los de esta fase) a este componente.
+- **Sin confirmar todavía**: el botón "Nueva oportunidad"/"Nueva actividad" pareció necesitar más de un clic para abrir el diálogo en una corrida de pruebas automatizadas. No se reprodujo de forma concluyente ni se descartó como artefacto de temporización del navegador automatizado (clic disparado antes de que termine la hidratación). Revisar con una interacción manual real antes de dar por cerrado.
 
 ## Fase 6 — Catálogos de inventario
 
@@ -59,6 +62,7 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 ✅ Frontend: `/inventario/categorias`, `/marcas`, `/unidades`, `/proveedores`, construidos sobre un `CatalogPage` genérico compartido (paginación/búsqueda/filtro/exportación/eliminar quedan en un solo lugar) con un diálogo de formulario propio por catálogo. Verificado en navegador real: las 4 páginas cargan, el picker de columnas (que había crasheado antes en otra pantalla) no crashea aquí, crear/editar/eliminar funciona con toasts correctos, filtro por estado funciona.
 
 **Bugs reales encontrados y corregidos en esta fase:**
+
 - El picker de "Columnas" mostraba el nombre crudo del campo (`contact_name`, `description`) en vez de la etiqueta en español. Ahora usa el `header` de la columna cuando es un string, con un *fallback* que humaniza el id.
 - Los toasts y botones de los catálogos usaban terminaciones masculinas fijas ("Categoría creado", "Nuevo unidad") sin importar el género gramatical del sustantivo. `CatalogPage` ahora recibe un prop `gender` explícito por catálogo.
 - Nota (no confirmada como bug real): en varias corridas de QA automatizado, algunos botones parecieron necesitar un segundo clic para responder. Ocurrió siempre mientras se editaban archivos activamente (Fast Refresh de Next.js recompilando en caliente), nunca en una build de producción — probablemente un artefacto del hot-reload del servidor de desarrollo, no un bug de la aplicación. Si vuelve a aparecer fuera de una sesión de edición activa, investigar en serio.
@@ -69,6 +73,7 @@ Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 ✅ Frontend: `/inventario/productos` (DataTable con búsqueda, filtro de estado, botón "Stock bajo", exportar CSV/PDF, crear/editar/eliminar) con diálogo de formulario que carga categorías/marcas/unidades/proveedores, incluye checkboxes de proveedores, y muestra "Stock actual" como campo deshabilitado con nota explicando que solo cambia por entradas/salidas/ajustes — nunca editable desde este formulario.
 
 **Bugs reales encontrados y corregidos en esta fase (todos verificados en navegador real):**
+
 - `Product::create()` no reflejaba el valor por *default* de la columna `current_stock` (0) en el modelo devuelto — Eloquent no vuelve a leer los defaults de base de datos tras un insert. Se cambió `->load(...)` por `->refresh()` + `->load(...)` en el controlador.
 - Ese mismo cambio casi introduce un bug nuevo: usar `->fresh(...)` en vez de `->refresh()` habría hecho perder la bandera `wasRecentlyCreated`, de la cual depende Laravel para devolver 201 en vez de 200 al crear un recurso. `refresh()` sí la preserva porque muta la misma instancia.
 - El picker de "Columnas" seguía mostrando texto sin traducir (`Sale Price`, `Current Stock`) en columnas que usan un header con función (encabezado ordenable), porque el fix de la Fase 6 solo cubría headers de tipo string. Se generalizó para leer el prop `title` del elemento renderizado por esas funciones antes de recurrir al *fallback* que humaniza el id.
@@ -137,6 +142,7 @@ Todos los módulos crean y editan mediante modales (diálogos), incluida la fich
 Regla del proyecto: **eliminar nunca borra la fila, hace soft delete**. Clientes y productos ya lo tenían; ahora también `contacts`, `activities`, `opportunities`, `categories`, `brands`, `units`, `suppliers` (trait `SoftDeletes` + columna `deleted_at`). Los `unique(company_id, name)` de los catálogos ignoran las filas eliminadas, así que se puede volver a usar un nombre liberado. El trait `Auditable` registra ahora `deleted` y `restored` (una sola fila por soft delete — el `updated` que también dispara queda sin cambios porque `deleted_at` está excluido).
 
 **Contactos** (`/crm/contactos`) recibió el tratamiento completo:
+
 - Botón "Nuevo contacto" con selector de cliente en el mismo modal (antes solo se creaba desde la ficha del cliente).
 - Al eliminar: soft delete, el toast nombra al contacto, y el diálogo explica que se puede restaurar.
 - Filtro "Ver → Eliminados" muestra los contactos borrados con badge "Eliminado" y acción "Restaurar" (`POST /api/contacts/{id}/restore`).
