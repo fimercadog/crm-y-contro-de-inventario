@@ -131,7 +131,7 @@ export default function ContactosPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold">Contactos</h2>
+          <h2 className="text-xl font-bold tracking-tight">Contactos</h2>
           <p className="text-sm text-muted-foreground">
             {total} contacto{total === 1 ? "" : "s"} en todos los clientes.
           </p>

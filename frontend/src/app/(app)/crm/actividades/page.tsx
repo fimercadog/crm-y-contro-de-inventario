@@ -134,7 +134,7 @@ export default function ActividadesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Actividades</h2>
+          <h2 className="text-xl font-bold tracking-tight">Actividades</h2>
           <p className="text-sm text-muted-foreground">
             {total} actividad{total === 1 ? "" : "es"} registradas
           </p>

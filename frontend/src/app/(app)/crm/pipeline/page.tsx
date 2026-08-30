@@ -89,7 +89,7 @@ export default function PipelinePage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h2 className="text-lg font-semibold">Pipeline</h2>
+        <h2 className="text-xl font-bold tracking-tight">Pipeline</h2>
         <p className="text-sm text-muted-foreground">
           Arrastra las oportunidades entre etapas para actualizar su estado.
         </p>

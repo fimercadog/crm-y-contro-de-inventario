@@ -105,7 +105,7 @@ export default function ClienteDetailPage({
           <ArrowLeft />
         </Button>
         <div className="flex-1">
-          <h2 className="text-lg font-semibold">{customer.name}</h2>
+          <h2 className="text-xl font-bold tracking-tight">{customer.name}</h2>
           <p className="text-sm text-muted-foreground">
             {customer.type === "empresa" ? "Empresa" : "Persona"} ·{" "}
             {statusLabel[customer.status]}

@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { HeroBackdrop } from "@/components/marketing/hero-backdrop"
+import { GradientBlob } from "@/components/marketing/gradient-blob"
 import { Reveal } from "@/components/marketing/reveal"
 import { useAppDispatch } from "@/lib/hooks"
 import { login } from "@/features/auth/authSlice"
@@ -80,24 +80,26 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-svh bg-background text-foreground lg:grid-cols-2">
-      <section className="relative isolate flex min-h-[40svh] flex-col justify-center overflow-hidden bg-navy px-6 py-10 text-navy-foreground sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
-        <HeroBackdrop variant="navy" />
+    <main className="marketing-theme grid min-h-svh bg-background text-foreground lg:grid-cols-2">
+      <section className="relative isolate flex min-h-[40svh] flex-col justify-center overflow-hidden bg-ink px-6 py-12 text-ink-foreground sm:px-10 lg:min-h-svh lg:px-14 xl:px-20">
+        <GradientBlob className="right-[-20%] top-[-10%] size-[70%]" float />
+        <GradientBlob className="bottom-[-25%] left-[-15%] size-[55%] opacity-70" />
         <div className="relative max-w-md">
           <Reveal mount>
-            <div className="mb-14 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium">
-              <Boxes className="size-4" />
-              CRM + Inventario
-            </div>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">
+              CRM + Control de inventario
+            </p>
           </Reveal>
 
           <Reveal mount delay={0.1}>
-            <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
-              Gestiona clientes, ventas e inventario desde un solo lugar
+            <h1 className="mt-4 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
+              Tu operación
+              <br />
+              en un solo lugar
             </h1>
           </Reveal>
           <Reveal mount delay={0.2}>
-            <p className="mt-5 max-w-sm text-sm leading-6 text-navy-foreground/75">
+            <p className="mt-5 max-w-sm text-sm leading-6 text-white/70">
               Contactos, oportunidades, productos, stock y movimientos conectados en una sola
               plataforma.
             </p>
@@ -109,8 +111,8 @@ export default function LoginPage() {
 
               return (
                 <Reveal mount delay={0.3 + i * 0.08} key={item.label}>
-                  <div className="flex h-11 items-center gap-3 rounded-lg bg-white/10 px-4 text-xs font-medium backdrop-blur-sm transition-colors hover:bg-white/15">
-                    <Icon className="size-4" />
+                  <div className="flex h-11 items-center gap-3 rounded-xl border border-white/10 bg-white/4 px-4 text-xs font-semibold">
+                    <Icon className="size-4 text-primary" />
                     {item.label}
                   </div>
                 </Reveal>
@@ -122,20 +124,19 @@ export default function LoginPage() {
 
       <section className="flex items-center justify-center px-6 py-10 sm:px-10">
         <div className="w-full max-w-90">
-          <div className="mb-7 flex justify-center">
-            <div className="flex h-11 items-center gap-2 rounded-lg border bg-card px-4 shadow-elevation-1">
-              <Boxes className="size-5 text-primary" />
-              <div className="leading-none">
-                <div className="text-sm font-bold">CRM</div>
-                <div className="text-[10px] font-medium uppercase tracking-wide text-primary">
-                  Inventario
-                </div>
-              </div>
+          <div className="mb-8 flex justify-center">
+            <div className="flex items-center gap-2.5">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-ink text-primary">
+                <Boxes className="size-5" />
+              </span>
+              <span className="text-base font-black tracking-tight">
+                CRM<span className="text-primary">+</span>Inventario
+              </span>
             </div>
           </div>
 
           <div className="mb-5">
-            <h2 className="text-xl font-semibold">Iniciar sesión</h2>
+            <h2 className="text-2xl font-black tracking-tight">Iniciar sesión</h2>
             <p className="mt-1 text-xs text-muted-foreground">
               Usa un usuario demo para entrar al panel y probar roles.
             </p>
@@ -185,16 +186,22 @@ export default function LoginPage() {
                 ¿Olvidaste tu contraseña?
               </button>
 
-              <Button type="submit" className="h-10 w-full" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                className="h-11 w-full rounded-full text-sm font-semibold"
+                disabled={isSubmitting}
+              >
                 {isSubmitting && !activeDemoEmail && <Loader2 className="animate-spin" />}
                 Entrar al panel
               </Button>
             </form>
           </Form>
 
-          <div className="mt-6 rounded-xl border bg-card p-3 shadow-elevation-1">
+          <div className="mt-6 rounded-2xl border border-border p-3">
             <div className="mb-3 px-1">
-              <h3 className="text-xs font-semibold">Usuarios demo</h3>
+              <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                Usuarios demo
+              </h3>
               <p className="mt-1 text-[11px] text-muted-foreground">
                 Password para todos: password
               </p>
@@ -206,7 +213,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => handleDemoLogin(user.email)}
                   disabled={isSubmitting}
-                  className="rounded-lg border px-3 py-2 text-left transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70"
+                  className="rounded-xl border border-border px-3 py-2 text-left transition-colors hover:border-primary/50 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <span className="flex items-center justify-between gap-3">
                     <span>

@@ -143,7 +143,7 @@ export default function AuditoriaPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h2 className="text-lg font-semibold">Auditoría</h2>
+        <h2 className="text-xl font-bold tracking-tight">Auditoría</h2>
         <p className="text-sm text-muted-foreground">
           {total} registro{total === 1 ? "" : "s"} · quién cambió qué y cuándo
         </p>

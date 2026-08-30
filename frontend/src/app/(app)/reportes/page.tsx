@@ -165,7 +165,7 @@ export default function ReportesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-lg font-semibold">Reportes</h2>
+        <h2 className="text-xl font-bold tracking-tight">Reportes</h2>
         <p className="text-sm text-muted-foreground">
           Solo disponible para administradores. Los reportes con período usan el rango de abajo.
         </p>

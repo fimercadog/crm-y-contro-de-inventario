@@ -19,29 +19,35 @@ Es un panel de administración privado (no hay sitio público). Todo detrás de
 
 ## Color
 
-Estilo Material-flavoured (elevación, botones pill, Roboto) con una paleta
-**verde esmeralda + azul marino** (según "Guía visual SaaS para CRM e
-inventario"). Tokens en `:root` / `.dark` (globals.css), expuestos a Tailwind
-vía `@theme inline`. Hay toggle Claro/Oscuro/Sistema en el menú de usuario.
+Paleta **Divi "SaaS Product"** (Elegant Themes): superficies **blancas**, tinta
+**casi negra**, acento **verde**. Una sola paleta para el sitio web y el panel.
+Tokens en `:root` / `.dark` (globals.css), expuestos a Tailwind vía
+`@theme inline`. Hay toggle Claro/Oscuro/Sistema en el menú de usuario; el
+**sitio de marketing y el login se quedan siempre en claro** (`.marketing-theme`
+re-declara la paleta clara para ganarle a `.dark`).
 
 | Token | Claro | Oscuro | Uso |
 | --- | --- | --- | --- |
-| `--primary` | `#15803d` | `#2fd07a` | CTA, enlaces, barras de gráfico, nav activo |
-| `--primary-hover` | `#166534` | `#27b86c` | hover del botón primario |
-| `--navy` | `#0b2545` | `#0b1f38` | secciones oscuras: banda CTA, footer, panel de login |
-| `--navy-foreground` | `#e9f0f7` | `#e9f0f7` | texto sobre `--navy` |
-| `--foreground` | `#0f1e2b` | `#e6edf3` | texto base |
-| `--muted-foreground` | `#57697a` | `#9fb0bd` | texto secundario, descripciones |
-| `--background` | `#f5f7f8` | `#0c1a26` | fondo del panel |
-| `--card` / `--popover` | `#ffffff` | `#12212e` | tarjetas, menús, diálogos |
-| `--secondary` | `#e9f4ee` | `#1b2c3a` | superficie de controles secundarios, chips |
-| `--muted` | `#eef1f4` | `#182935` | filas skeleton, zonas suaves |
-| `--accent` | `#e9f4ee` | `#1f3341` | hover/activo |
-| `--border` / `--input` | `#e2e7eb` / `#d6dde3` | `#24384a` / `#2b4256` | bordes, campos |
-| `--success` | `#15803d` | `#2fd07a` | activo, ganada, completada, entrada, stock normal |
-| `--warning` | `#b45309` | `#fbbf24` | prospecto, pendiente, prioridad media, stock bajo |
+| `--primary` | `#15803d` | `#4ade80` | CTA, enlaces, barras de gráfico, nav activo |
+| `--primary-hover` | `#166534` | `#22c55e` | hover del botón primario |
+| `--ink` / `--navy` | `#0f1012` | `#000000` | tarjetas/secciones oscuras (widget cards, banda CTA, panel de login) |
+| `--ink-foreground` / `--navy-foreground` | `#f4f4f5` | `#f4f4f5` | texto sobre `--ink` |
+| `--foreground` | `#0f1012` | `#f4f4f5` | texto base |
+| `--muted-foreground` | `#6b7280` | `#a1a1aa` | texto secundario |
+| `--background` | `#ffffff` | `#0d0d0f` | fondo |
+| `--card` / `--popover` | `#ffffff` | `#161618` | tarjetas, menús, diálogos |
+| `--secondary` | `#f1f5f0` | `#1f1f22` | chips, superficies secundarias |
+| `--muted` | `#f4f4f5` | `#1c1c1f` | filas skeleton, zonas suaves |
+| `--accent` | `#ecfdf3` | `#14311f` | hover/activo |
+| `--border` / `--input` | `#e6e7ea` / `#d9dade` | `#2a2a2e` / `#323236` | bordes hairline, campos |
+| `--success` | `#15803d` | `#4ade80` | activo, ganada, completada, entrada, stock normal |
+| `--warning` | `#b45309` | `#fbbf24` | prospecto, pendiente, stock bajo |
 | `--destructive` | `#dc2626` | `#f2555a` | error, perdida, salida, crítico/agotado, eliminado |
-| `--chart-1..5` | esmeralda / navy / ámbar / cielo / rosa | versiones claras | series de gráfico |
+| `--chart-1..5` | verde / ink / ámbar / azul / rosa | versiones claras | series de gráfico |
+| `--blob` / `--blob-warm` | degradado verde→lima / ámbar→coral | — | formas orgánicas del sitio web |
+
+**Tipografía**: los títulos de página (`<h2>`) van en `text-xl font-bold
+tracking-tight`; los heros del sitio web en `font-black`.
 
 **Marketing / heros:** `--marketing-shadow` (sombra grande tintada navy) para
 el hover de tarjetas del sitio web. `<HeroBackdrop>` (`components/marketing/`)

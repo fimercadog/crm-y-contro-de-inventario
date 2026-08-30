@@ -58,92 +58,99 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* SaaS palette — emerald primary, deep-navy sections, clean cool-grey surfaces.
-   Mirrors "Guía visual SaaS para CRM e inventario". */
+/* Divi "SaaS Product" palette — white surfaces, near-black ink, medium-green
+   accent. Shared by the marketing site and the app (`.marketing-theme` kept
+   as an alias in case anything still references it). */
 :root {
-  --background: #f5f7f8; /* clean cool off-white */
-  --foreground: #0f1e2b; /* deep navy-slate ink */
+  --background: #ffffff;
+  --foreground: #0f1012; /* near-black */
   --card: #ffffff;
-  --card-foreground: #0f1e2b;
+  --card-foreground: #0f1012;
   --popover: #ffffff;
-  --popover-foreground: #0f1e2b;
-  --primary: #15803d; /* emerald 700 — AA on white */
+  --popover-foreground: #0f1012;
+  --primary: #15803d; /* green 700 — AA on white for text + fills */
   --primary-hover: #166534;
   --primary-foreground: #ffffff;
-  --secondary: #e9f4ee; /* pale green surface */
+  --secondary: #f1f5f0; /* pale green surface */
   --secondary-foreground: #14532d;
-  --muted: #eef1f4; /* neutral grey */
-  --muted-foreground: #57697a; /* calm slate */
-  --accent: #e9f4ee; /* hover/active tint */
-  --accent-foreground: #166534;
+  --muted: #f4f4f5; /* neutral grey */
+  --muted-foreground: #6b7280;
+  --accent: #ecfdf3; /* hover/active tint */
+  --accent-foreground: #15803d;
   --destructive: #dc2626;
   --success: #15803d;
   --warning: #b45309;
-  --border: #e2e7eb;
-  --input: #d6dde3;
+  --border: #e6e7ea; /* hairline */
+  --input: #d9dade;
   --ring: #15803d;
-  --chart-1: #15803d; /* emerald */
-  --chart-2: #0b2545; /* navy */
+  --chart-1: #15803d; /* green */
+  --chart-2: #0f1012; /* ink */
   --chart-3: #f59e0b; /* amber */
-  --chart-4: #0ea5e9; /* sky */
-  --chart-5: #e11d6b; /* rose */
-  --radius: 0.75rem;
-  --navy: #0b2545; /* deep sections / CTA band / footer */
-  --navy-foreground: #e9f0f7;
+  --chart-4: #3b82f6; /* blue */
+  --chart-5: #ec4899; /* pink */
+  --radius: 0.875rem;
+  --navy: #0f1012; /* dark contrast sections (name kept for shared components) */
+  --navy-foreground: #f4f4f5;
+  --ink: #0f1012; /* near-black cards / headlines */
+  --ink-foreground: #f4f4f5;
+  --blob: linear-gradient(140deg, #16a34a 0%, #4ade80 35%, #a3e635 70%, #e3f0a0 100%);
+  --blob-warm: linear-gradient(140deg, #f59e0b 0%, #fb923c 45%, #fda4af 100%);
   --sidebar: #ffffff;
-  --sidebar-foreground: #0f1e2b;
+  --sidebar-foreground: #0f1012;
   --sidebar-primary: #15803d;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e9f4ee;
-  --sidebar-accent-foreground: #166534;
-  --sidebar-border: #e2e7eb;
+  --sidebar-accent: #ecfdf3;
+  --sidebar-accent-foreground: #15803d;
+  --sidebar-border: #e6e7ea;
   --sidebar-ring: #15803d;
-  /* Material Design 3 elevation — umbra + penumbra, tinted navy */
-  --elevation-1: 0 1px 2px 0 rgb(11 37 69 / 0.12), 0 1px 3px 1px rgb(11 37 69 / 0.06);
-  --elevation-2: 0 1px 2px 0 rgb(11 37 69 / 0.12), 0 2px 6px 2px rgb(11 37 69 / 0.08);
-  --elevation-3: 0 1px 3px 0 rgb(11 37 69 / 0.12), 0 4px 8px 3px rgb(11 37 69 / 0.09);
-  --elevation-4: 0 2px 3px 0 rgb(11 37 69 / 0.12), 0 6px 10px 4px rgb(11 37 69 / 0.10);
-  --elevation-5: 0 4px 4px 0 rgb(11 37 69 / 0.12), 0 8px 12px 6px rgb(11 37 69 / 0.11);
-  --marketing-shadow: 0 24px 70px rgb(11 37 69 / 0.15);
+  /* light, layered elevation */
+  --elevation-1: 0 1px 2px 0 rgb(15 16 18 / 0.06), 0 1px 3px 1px rgb(15 16 18 / 0.04);
+  --elevation-2: 0 2px 4px 0 rgb(15 16 18 / 0.06), 0 4px 12px 2px rgb(15 16 18 / 0.06);
+  --elevation-3: 0 4px 8px 0 rgb(15 16 18 / 0.07), 0 12px 28px 4px rgb(15 16 18 / 0.08);
+  --elevation-4: 0 6px 12px 0 rgb(15 16 18 / 0.08), 0 18px 36px 6px rgb(15 16 18 / 0.10);
+  --elevation-5: 0 10px 20px 0 rgb(15 16 18 / 0.09), 0 28px 52px 10px rgb(15 16 18 / 0.12);
+  --marketing-shadow: 0 30px 60px -12px rgb(15 16 18 / 0.22);
 }
 
 .dark {
-  --background: #0c1a26; /* deep navy-slate */
-  --foreground: #e6edf3;
-  --card: #12212e;
-  --card-foreground: #e6edf3;
-  --popover: #12212e;
-  --popover-foreground: #e6edf3;
-  --primary: #2fd07a; /* brighter emerald for dark */
-  --primary-hover: #27b86c;
-  --primary-foreground: #05130a;
-  --secondary: #1b2c3a;
-  --secondary-foreground: #e6edf3;
-  --muted: #182935;
-  --muted-foreground: #9fb0bd;
-  --accent: #1f3341;
-  --accent-foreground: #a7f0c7;
+  --background: #0d0d0f;
+  --foreground: #f4f4f5;
+  --card: #161618;
+  --card-foreground: #f4f4f5;
+  --popover: #161618;
+  --popover-foreground: #f4f4f5;
+  --primary: #4ade80; /* bright green on dark */
+  --primary-hover: #22c55e;
+  --primary-foreground: #052e14;
+  --secondary: #1f1f22;
+  --secondary-foreground: #f4f4f5;
+  --muted: #1c1c1f;
+  --muted-foreground: #a1a1aa;
+  --accent: #14311f;
+  --accent-foreground: #86efac;
   --destructive: #f2555a;
-  --success: #2fd07a;
+  --success: #4ade80;
   --warning: #fbbf24;
-  --border: #24384a;
-  --input: #2b4256;
-  --ring: #2fd07a;
-  --chart-1: #2fd07a;
-  --chart-2: #7cc0ff;
+  --border: #2a2a2e;
+  --input: #323236;
+  --ring: #4ade80;
+  --chart-1: #4ade80;
+  --chart-2: #f4f4f5;
   --chart-3: #fbbf24;
-  --chart-4: #38bdf8;
+  --chart-4: #60a5fa;
   --chart-5: #f472b6;
-  --navy: #0b1f38;
-  --navy-foreground: #e9f0f7;
-  --sidebar: #0f1d29;
-  --sidebar-foreground: #e6edf3;
-  --sidebar-primary: #2fd07a;
-  --sidebar-primary-foreground: #05130a;
-  --sidebar-accent: #1b2c3a;
-  --sidebar-accent-foreground: #a7f0c7;
-  --sidebar-border: #24384a;
-  --sidebar-ring: #2fd07a;
+  --navy: #000000;
+  --navy-foreground: #f4f4f5;
+  --ink: #000000;
+  --ink-foreground: #f4f4f5;
+  --sidebar: #101012;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #4ade80;
+  --sidebar-primary-foreground: #052e14;
+  --sidebar-accent: #1f1f22;
+  --sidebar-accent-foreground: #86efac;
+  --sidebar-border: #2a2a2e;
+  --sidebar-ring: #4ade80;
   --elevation-1: 0 1px 2px 0 rgb(0 0 0 / 0.5), 0 1px 3px 1px rgb(0 0 0 / 0.35);
   --elevation-2: 0 1px 2px 0 rgb(0 0 0 / 0.5), 0 2px 6px 2px rgb(0 0 0 / 0.4);
   --elevation-3: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 4px 8px 3px rgb(0 0 0 / 0.42);
@@ -152,48 +159,48 @@
   --marketing-shadow: 0 24px 70px rgb(0 0 0 / 0.45);
 }
 
-/* ---- Marketing site theme: Divi "SaaS Product" — white / near-black / green,
-   black UI-widget cards, green→lime gradient blobs. Scoped so the app keeps
-   its emerald palette. ---- */
+/* The marketing site + login commit to the light Divi look — re-assert the
+   light palette so `.dark` on <html> (the app's theme toggle) can't reach here. */
 .marketing-theme {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #0f1012;
   --card: #ffffff;
   --card-foreground: #0f1012;
   --popover: #ffffff;
   --popover-foreground: #0f1012;
-  --primary: #16a34a; /* friendly medium green — pills, accents */
-  --primary-hover: #15803d;
+  --primary: #15803d;
+  --primary-hover: #166534;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f0;
   --secondary-foreground: #14532d;
-  --muted: #f5f5f6;
+  --muted: #f4f4f5;
   --muted-foreground: #6b7280;
   --accent: #ecfdf3;
   --accent-foreground: #15803d;
   --destructive: #dc2626;
-  --success: #16a34a;
-  --warning: #d97706;
+  --success: #15803d;
+  --warning: #b45309;
   --border: #e6e7ea;
   --input: #d9dade;
-  --ring: #16a34a;
-  --chart-1: #16a34a;
-  --chart-2: #0f0f10;
+  --ring: #15803d;
+  --chart-1: #15803d;
+  --chart-2: #0f1012;
   --chart-3: #f59e0b;
   --chart-4: #3b82f6;
   --chart-5: #ec4899;
-  --radius: 0.875rem;
-  --navy: #101012; /* dark contrast sections (kept name for shared components) */
-  --navy-foreground: #f5f5f6;
-  /* Divi extras */
-  --ink: #0f1012; /* near-black cards / headlines */
+  --navy: #0f1012;
+  --navy-foreground: #f4f4f5;
+  --ink: #0f1012;
   --ink-foreground: #f4f4f5;
-  --blob: linear-gradient(140deg, #16a34a 0%, #4ade80 35%, #a3e635 70%, #e3f0a0 100%);
-  --blob-warm: linear-gradient(140deg, #f59e0b 0%, #fb923c 45%, #fda4af 100%);
-  --elevation-1: 0 1px 2px 0 rgb(15 16 18 / 0.06), 0 1px 3px 1px rgb(15 16 18 / 0.04);
-  --elevation-2: 0 2px 4px 0 rgb(15 16 18 / 0.06), 0 4px 12px 2px rgb(15 16 18 / 0.06);
-  --elevation-3: 0 4px 8px 0 rgb(15 16 18 / 0.07), 0 12px 28px 4px rgb(15 16 18 / 0.08);
-  --marketing-shadow: 0 30px 60px -12px rgb(15 16 18 / 0.22);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f1012;
+  --sidebar-primary: #15803d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ecfdf3;
+  --sidebar-accent-foreground: #15803d;
+  --sidebar-border: #e6e7ea;
+  --sidebar-ring: #15803d;
 }
 
 @theme inline {

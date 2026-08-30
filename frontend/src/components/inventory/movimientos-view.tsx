@@ -232,7 +232,7 @@ export function MovimientosView({ title, lockedType, readOnly }: MovimientosView
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="text-xl font-bold tracking-tight">{title}</h2>
           <p className="text-sm text-muted-foreground">
             {readOnly
               ? `${total} movimiento${total === 1 ? "" : "s"} · registro consolidado, solo lectura`

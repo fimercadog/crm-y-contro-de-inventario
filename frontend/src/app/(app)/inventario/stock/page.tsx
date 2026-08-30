@@ -117,7 +117,7 @@ export default function StockPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h2 className="text-lg font-semibold">Stock</h2>
+        <h2 className="text-xl font-bold tracking-tight">Stock</h2>
         <p className="text-sm text-muted-foreground">
           {total} producto{total === 1 ? "" : "s"} · valor en esta página: {currency.format(pageValue)}
         </p>

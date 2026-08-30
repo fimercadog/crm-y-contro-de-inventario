@@ -52,7 +52,7 @@ export default function IaPage() {
     <div className="mx-auto flex h-[calc(100vh-8rem)] w-full max-w-3xl flex-col gap-4">
       <div>
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-semibold">Asistente IA</h2>
+          <h2 className="text-xl font-bold tracking-tight">Asistente IA</h2>
           <Badge variant="warning" className="gap-1 font-bold uppercase">
             <Sparkles className="size-3" />
             Premium

@@ -75,7 +75,7 @@ export default function RolesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold">Roles</h2>
+          <h2 className="text-xl font-bold tracking-tight">Roles</h2>
           <p className="text-sm text-muted-foreground">
             Cada permiso controla el acceso real a un módulo. Los roles base no se pueden
             renombrar ni eliminar, pero sí ajustar sus permisos.
