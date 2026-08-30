@@ -28,10 +28,12 @@ página es real, estática, con su `<h1>`, su `metadata` (title + description +
 | `/beneficios` | 6 tarjetas función → beneficio |
 | `/asistente-ia` | **Complemento premium**: hero con badge, `FeatureRow` de uso, tabla de proveedores (local / OpenAI / Anthropic) |
 | `/seguridad` | 6 tarjetas de control de acceso y trazabilidad |
-| `/demo` | Canales de contacto (WhatsApp / correo / login) + "qué incluye la demo". Sin formulario. |
+| `/demo` | Canales de contacto (WhatsApp / correo / login) + "qué incluye la demo" + formulario de contacto (`mailto:`, sin backend) con casilla de autorización de datos obligatoria (Ley 1581) |
+| `/privacidad` | Política de privacidad (Ley 1581 / Decreto 1377). Componente compartido `LegalPage` |
+| `/terminos` | Términos y condiciones. Componente compartido `LegalPage` |
 | `/login` | App (sin cambios) |
 | `/dashboard`, `/crm/**`, `/inventario/**`, `/admin/**`, … | App detrás de `AuthGuard` (sin cambios) |
-| `/sitemap.xml`, `/robots.txt`, `/opengraph-image` | Generados por convención de Next; el sitemap lista todas las páginas de marketing |
+| `/sitemap.xml`, `/robots.txt`, `/opengraph-image` | Generados por convención de Next; el sitemap lista todas las páginas de marketing más `/privacidad` y `/terminos` |
 
 El antiguo `/` que redirigía a `/dashboard` se eliminó. El menú del header hace
 navegación real (`<Link>`) con estado activo (`usePathname` + `aria-current`).
@@ -128,9 +130,19 @@ Verificadas contra el código y la app en ejecución:
 
 `site.ts` lee `NEXT_PUBLIC_WHATSAPP`, `NEXT_PUBLIC_CONTACT_EMAIL`,
 `NEXT_PUBLIC_SITE_URL` de env (documentadas en `.env.local.example`). Sin
-número, el botón de WhatsApp se oculta. El CTA de demo abre `mailto:` — no hay
-formulario con backend (no se pidió y un formulario que no envía a ningún lado
-es peor que no tenerlo).
+número, el botón de WhatsApp se oculta. El formulario de `/demo`
+(`demo-contact-form.tsx`) no tiene backend: al enviar arma un `mailto:` con el
+mensaje ya redactado. La casilla de autorización de datos personales es un
+`<input required>` nativo, así que el navegador bloquea el envío hasta marcarla.
+
+## Legal (Ley 1581)
+
+`components/marketing/legal-page.tsx` es el shell compartido (hero compacto +
+columna de prosa). `/privacidad` y `/terminos` aportan solo su texto. Los datos
+del responsable del tratamiento (razón social, NIT, ciudad) salen de
+`site.company`, con valores por defecto que el propietario debe reemplazar
+(`NEXT_PUBLIC_LEGAL_NAME`, `NEXT_PUBLIC_LEGAL_NIT`, `NEXT_PUBLIC_LEGAL_CITY`).
+Enlazadas desde el footer (columna "Legal", `site.legal`) y el sitemap.
 
 ## Decisiones automáticas pendientes de validación del propietario
 

@@ -12,6 +12,13 @@ export const site = {
     "Gestiona clientes, oportunidades, productos, stock y movimientos desde una plataforma que centraliza la operación de tu empresa.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "hola@example.com",
+  // Datos del responsable del tratamiento (Ley 1581 de 2012). El propietario
+  // debe reemplazar estos valores por los reales antes de publicar.
+  company: {
+    legalName: process.env.NEXT_PUBLIC_LEGAL_NAME ?? "CRM + Inventario S.A.S.",
+    nit: process.env.NEXT_PUBLIC_LEGAL_NIT ?? "900.000.000-0",
+    city: process.env.NEXT_PUBLIC_LEGAL_CITY ?? "Bogotá D.C., Colombia",
+  },
   whatsappNumber,
   whatsappUrl: whatsappNumber
     ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
@@ -25,5 +32,9 @@ export const site = {
     { label: "IA", href: "/asistente-ia" },
     { label: "Seguridad", href: "/seguridad" },
     { label: "Demo", href: "/demo" },
+  ],
+  legal: [
+    { label: "Política de privacidad", href: "/privacidad" },
+    { label: "Términos y condiciones", href: "/terminos" },
   ],
 } as const

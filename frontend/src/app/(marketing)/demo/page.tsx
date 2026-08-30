@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Check } from "lucide-react"
 
+import { DemoContactForm } from "@/components/marketing/demo-contact-form"
 import { PageHero } from "@/components/marketing/page-hero"
 import { Reveal } from "@/components/marketing/reveal"
 import { ContactChannels, Section } from "@/components/marketing/marketing-ui"
@@ -50,6 +51,21 @@ export default function DemoPage() {
               </Reveal>
             ))}
           </ul>
+        </div>
+      </Section>
+
+      <Section className="border-t border-border">
+        <div className="mx-auto max-w-xl">
+          <Reveal>
+            <h2 className="text-2xl font-black tracking-tight">Escríbenos</h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              Cuéntanos qué necesitas y te contactamos. Al enviar se abre tu correo con el mensaje
+              listo.
+            </p>
+          </Reveal>
+          <div className="mt-8">
+            <DemoContactForm />
+          </div>
         </div>
       </Section>
     </>

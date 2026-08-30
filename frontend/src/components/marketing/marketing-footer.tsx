@@ -21,12 +21,16 @@ const columns = [
       { label: "Iniciar sesión", href: "/login" },
     ],
   },
+  {
+    title: "Legal",
+    links: [...site.legal],
+  },
 ]
 
 export function MarketingFooter() {
   return (
     <footer className="border-t border-border bg-background">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr] lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div className="max-w-xs">
           <div className="flex items-center gap-2.5">
             <span className="flex size-9 items-center justify-center rounded-xl bg-ink text-primary">

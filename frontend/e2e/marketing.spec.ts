@@ -119,6 +119,45 @@ test.describe("marketing site", () => {
     const xml = await sitemap.text()
     expect(xml).toContain("<loc>")
     expect(xml).toContain("/funciones")
+    expect(xml).toContain("/privacidad")
+    expect(xml).toContain("/terminos")
+  })
+
+  test("legal pages load and are linked from the footer", async ({ page }) => {
+    await page.goto("/")
+    const footer = page.locator("footer")
+    for (const { path, h1 } of [
+      { path: "/privacidad", h1: /Política de privacidad/ },
+      { path: "/terminos", h1: /Términos y condiciones/ },
+    ]) {
+      await footer.getByRole("link", { name: new RegExp(path.slice(1), "i") }).click()
+      await expect(page).toHaveURL(new RegExp(`${path}$`))
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(h1)
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute("href")
+      expect(canonical).toContain(path)
+      await page.goBack()
+    }
+  })
+
+  test("demo contact form requires the Ley 1581 consent checkbox", async ({ page }) => {
+    await page.goto("/demo")
+    const form = page.locator("main form")
+    await form.getByLabel("Nombre").fill("Ana")
+    await form.getByLabel("Correo").fill("ana@example.com")
+    await form.getByLabel("Mensaje").fill("Quiero una demo")
+    const consent = form.getByRole("checkbox")
+    await expect(consent).toHaveAttribute("required", "")
+
+    // Unchecked: native validation blocks submission.
+    await form.getByRole("button", { name: "Enviar solicitud" }).click()
+    expect(await consent.evaluate((el: HTMLInputElement) => el.validity.valid)).toBe(false)
+
+    await consent.check()
+    expect(await consent.evaluate((el: HTMLInputElement) => el.validity.valid)).toBe(true)
+    await expect(form.getByRole("link", { name: "Política de privacidad" })).toHaveAttribute(
+      "href",
+      "/privacidad"
+    )
   })
 
   test("unknown route renders a 404", async ({ page }) => {
