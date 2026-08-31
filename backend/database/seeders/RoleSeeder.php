@@ -27,7 +27,8 @@ class RoleSeeder extends Seeder
     public const SYSTEM_ROLES = ['super-admin', 'administrador', 'comercial', 'inventario', 'vendedor'];
 
     private const ROLE_PERMISSIONS = [
-        // super-admin bypasses every check via Gate::before; listed for the UI.
+        // super-admin holds every permission, but tenant isolation (same
+        // company_id) still applies — see CustomerPolicy and CustomerTest.
         'super-admin' => 'all',
         'administrador' => 'all',
         'comercial' => ['crm.view', 'crm.view_all', 'crm.manage', 'inventory.view'],

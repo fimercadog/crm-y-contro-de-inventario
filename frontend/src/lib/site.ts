@@ -16,7 +16,7 @@ export const site = {
   // debe reemplazar estos valores por los reales antes de publicar.
   company: {
     legalName: process.env.NEXT_PUBLIC_LEGAL_NAME ?? "CRM + Inventario S.A.S.",
-    nit: process.env.NEXT_PUBLIC_LEGAL_NIT ?? "900.000.000-0",
+    nit: process.env.NEXT_PUBLIC_LEGAL_NIT ?? "79.904.410-4",
     city: process.env.NEXT_PUBLIC_LEGAL_CITY ?? "Bogotá D.C., Colombia",
   },
   whatsappNumber,

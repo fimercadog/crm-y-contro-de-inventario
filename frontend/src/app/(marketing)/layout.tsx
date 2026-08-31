@@ -20,7 +20,6 @@ export const metadata: Metadata = {
     "control de stock",
     "software para pymes",
   ],
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "es_CO",

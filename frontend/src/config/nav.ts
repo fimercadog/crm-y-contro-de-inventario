@@ -29,6 +29,17 @@ export type NavItem = {
   icon: LucideIcon
   /** Small tag shown after the label, e.g. "Premium" for paid add-ons. */
   badge?: string
+  /**
+   * Permission the API requires for this module (see backend RoleSeeder /
+   * policies). The sidebar hides items the current user lacks. Undefined =
+   * visible to any authenticated user.
+   */
+  permission?: string
+  /**
+   * Paid add-on. Stays visible even without `permission`, but renders locked
+   * (padlock + badge, not clickable) as an upsell.
+   */
+  premium?: boolean
 }
 
 export type NavGroup = {
@@ -44,41 +55,41 @@ export const navGroups: NavGroup[] = [
   {
     title: "CRM",
     items: [
-      { title: "Clientes", url: "/crm/clientes", icon: Users },
-      { title: "Contactos", url: "/crm/contactos", icon: Contact },
-      { title: "Oportunidades", url: "/crm/oportunidades", icon: Handshake },
-      { title: "Pipeline", url: "/crm/pipeline", icon: KanbanSquare },
-      { title: "Actividades", url: "/crm/actividades", icon: ListChecks },
+      { title: "Clientes", url: "/crm/clientes", icon: Users, permission: "crm.view" },
+      { title: "Contactos", url: "/crm/contactos", icon: Contact, permission: "crm.view" },
+      { title: "Oportunidades", url: "/crm/oportunidades", icon: Handshake, permission: "crm.view" },
+      { title: "Pipeline", url: "/crm/pipeline", icon: KanbanSquare, permission: "crm.view" },
+      { title: "Actividades", url: "/crm/actividades", icon: ListChecks, permission: "crm.view" },
     ],
   },
   {
     title: "Inventario",
     items: [
-      { title: "Productos", url: "/inventario/productos", icon: Package },
-      { title: "Categorías", url: "/inventario/categorias", icon: Tags },
-      { title: "Marcas", url: "/inventario/marcas", icon: Award },
-      { title: "Unidades", url: "/inventario/unidades", icon: Ruler },
-      { title: "Proveedores", url: "/inventario/proveedores", icon: Truck },
-      { title: "Stock", url: "/inventario/stock", icon: Boxes },
-      { title: "Movimientos", url: "/inventario/movimientos", icon: ArrowLeftRight },
-      { title: "Entradas", url: "/inventario/entradas", icon: ArrowDownToLine },
-      { title: "Salidas", url: "/inventario/salidas", icon: ArrowUpFromLine },
+      { title: "Productos", url: "/inventario/productos", icon: Package, permission: "inventory.view" },
+      { title: "Categorías", url: "/inventario/categorias", icon: Tags, permission: "inventory.manage" },
+      { title: "Marcas", url: "/inventario/marcas", icon: Award, permission: "inventory.manage" },
+      { title: "Unidades", url: "/inventario/unidades", icon: Ruler, permission: "inventory.manage" },
+      { title: "Proveedores", url: "/inventario/proveedores", icon: Truck, permission: "inventory.manage" },
+      { title: "Stock", url: "/inventario/stock", icon: Boxes, permission: "inventory.view" },
+      { title: "Movimientos", url: "/inventario/movimientos", icon: ArrowLeftRight, permission: "inventory.manage" },
+      { title: "Entradas", url: "/inventario/entradas", icon: ArrowDownToLine, permission: "inventory.manage" },
+      { title: "Salidas", url: "/inventario/salidas", icon: ArrowUpFromLine, permission: "inventory.manage" },
     ],
   },
   {
     title: "Análisis",
     items: [
-      { title: "Reportes", url: "/reportes", icon: BarChart3 },
-      { title: "IA", url: "/ia", icon: Sparkles, badge: "Premium" },
+      { title: "Reportes", url: "/reportes", icon: BarChart3, permission: "reports.view" },
+      { title: "IA", url: "/ia", icon: Sparkles, badge: "Premium", permission: "ai.use", premium: true },
     ],
   },
   {
     title: "Administración",
     items: [
-      { title: "Usuarios", url: "/admin/usuarios", icon: UserCog },
-      { title: "Roles", url: "/admin/roles", icon: ShieldCheck },
-      { title: "Auditoría", url: "/admin/auditoria", icon: History },
-      { title: "Configuración", url: "/admin/configuracion", icon: Settings },
+      { title: "Usuarios", url: "/admin/usuarios", icon: UserCog, permission: "users.manage" },
+      { title: "Roles", url: "/admin/roles", icon: ShieldCheck, permission: "users.manage" },
+      { title: "Auditoría", url: "/admin/auditoria", icon: History, permission: "audit.view" },
+      { title: "Configuración", url: "/admin/configuracion", icon: Settings, permission: "settings.manage" },
     ],
   },
 ]

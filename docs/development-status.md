@@ -1,6 +1,6 @@
 # Estado de desarrollo
 
-Última actualización: 2026-08-29.
+Última actualización: 2026-08-31.
 
 Leyenda: ✅ completo · 🟡 parcial · ⬜ pendiente · 🔴 bloqueado
 
@@ -162,6 +162,19 @@ Suite: 99 tests backend, 7 E2E (Edge).
 ## Sitio web comercial (2026-08-29)
 
 Landing pública en `/` (grupo `(marketing)` con layout propio), con el stack existente — sin WordPress/Divi ni dependencias nuevas. El `/` que redirigía a `/dashboard` se eliminó. Estructura tipo SaaS landing (hero + captura real del dashboard, problema, plataforma unificada, CRM, inventario, reportes, IA, seguridad, tour de producto con capturas reales, beneficios ligados a funciones reales, CTA con WhatsApp/correo, footer). Solo se comercializan funciones verificadas contra el código; contingencia/offline, reportes programados, numeración de documentos y testimonios/logos ficticios quedan fuera. Capturas reales de la app en `frontend/public/product/`, SEO (metadata/OpenGraph/sitemap/robots/OG dinámica), `not-found` con marca, 10 tests Playwright (desktop + móvil). Suite E2E total: 17. Detalle y decisiones: [website.md](website.md).
+
+## Cierre — menú por rol + IA como complemento (2026-08-31)
+
+Revisión de roles a pedido (probar como administrador y como empleado):
+
+- **La API ya valida rol** en todos los módulos vía policies / `can()` (no había nada que arreglar en el backend). Verificado: `administrador` recorre los 21 módulos sin error; `vendedor` recibe 403 en `/api/admin/*` e inventario, y la pantalla degrada a un mensaje ("No se pudieron cargar…"), no a pantalla en blanco.
+- **El sidebar ahora respeta los permisos**: antes mostraba todo a todos. `config/nav.ts` declara el permiso de cada módulo y `AppSidebar` filtra grupos e ítems contra `user.permissions`. `vendedor` ve solo CRM; `inventario` solo Inventario; `comercial` CRM + Productos/Stock.
+- **IA es un complemento premium**: en vez de ocultarse, aparece siempre pero **bloqueada** (candado + badge "Premium", no clicable) para roles sin `ai.use`. `administrador` la ve como enlace normal.
+- **Menú móvil del dashboard**: funcionaba al abrir, pero se quedaba abierto tras navegar. `AppSidebar` cierra el `Sheet` en cada cambio de ruta (`useEffect` sobre `pathname`).
+- NIT por defecto de las páginas legales → `79.904.410-4` (`site.company.nit`, sobreescribible con `NEXT_PUBLIC_LEGAL_NIT`).
+- Fix de dos tests de marketing con aserciones frágiles (canonical duplicado en soft-nav → se quitó el `canonical` fijo del layout `(marketing)`; texto "Casos de uso" ambiguo).
+
+Sin cambios de lógica en el backend (solo un comentario del `RoleSeeder`). Suite: 99 backend, 31 E2E (`e2e/roles.spec.ts` nuevo: 8 casos — recorrido de módulos, menú por rol, IA bloqueada, degradación 403, menú móvil).
 
 ## Notas técnicas
 
