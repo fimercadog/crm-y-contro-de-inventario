@@ -5,6 +5,7 @@ import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
 import { Reveal } from "@/components/marketing/reveal"
 import { DemoCta, FeatureCard, Section } from "@/components/marketing/marketing-ui"
+import { site } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Seguridad y control",
@@ -53,7 +54,7 @@ export default function SeguridadPage() {
         eyebrow="Seguridad y control"
         title="Cada persona ve lo que le corresponde"
         lead="El control de acceso y la trazabilidad no son un módulo aparte: están en toda la plataforma, y todo queda registrado."
-        actions={<CtaLink href="/demo">Solicitar demostración</CtaLink>}
+        actions={<CtaLink href={site.demos.crmInventario}>Ver demostración</CtaLink>}
         visual="screenshot"
         screenshot={{ src: "/product/auditoria.png", alt: "Bitácora de auditoría con el detalle de cada cambio" }}
       />

@@ -19,7 +19,7 @@ test.describe("marketing site", () => {
     await expect(page).toHaveTitle(/CRM \+ Inventario/)
     await expect(page.locator("h1")).toHaveCount(1)
     await expect(page.getByRole("heading", { level: 1 })).toContainText("un solo lugar")
-    await expect(page.getByRole("link", { name: "Solicitar demostración" }).first()).toBeVisible()
+    await expect(page.getByRole("link", { name: "Ver demostración" }).first()).toBeVisible()
     await expect(page.getByRole("link", { name: "Ver cómo funciona" })).toBeVisible()
 
     expect(errors, errors.join("\n")).toHaveLength(0)
@@ -106,6 +106,28 @@ test.describe("marketing site", () => {
     expect(pulsing).toBe(true)
   })
 
+  test("use case demo links point to their own demo sites", async ({ page }) => {
+    await page.goto("/")
+    const main = page.locator("main")
+    await expect(main.getByText("Casos de uso", { exact: true })).toBeVisible()
+    await expect(main.getByRole("heading", { name: "CRM + Inventario" })).toBeVisible()
+    await expect(main.getByRole("heading", { name: "CRM inmobiliaria" })).toBeVisible()
+    await expect(main.getByRole("heading", { name: "Recursos humanos" })).toBeVisible()
+
+    await expect(main.getByRole("link", { name: "Ver demostración" }).nth(1)).toHaveAttribute(
+      "href",
+      "https://crm-inventario-demo.fidelmercadotech.com/"
+    )
+    await expect(main.getByRole("link", { name: "Ver demostración" }).nth(2)).toHaveAttribute(
+      "href",
+      "https://crminmobiliaria.fidelmercadotech.com/"
+    )
+    await expect(main.getByRole("link", { name: "Ver demostración" }).nth(3)).toHaveAttribute(
+      "href",
+      "https://demorrhh.fidelmercadotech.com/"
+    )
+  })
+
   test("login link goes to the app", async ({ page }) => {
     await page.goto("/")
     await page.getByRole("link", { name: "Iniciar sesión" }).first().click()
@@ -124,18 +146,21 @@ test.describe("marketing site", () => {
   })
 
   test("legal pages load and are linked from the footer", async ({ page }) => {
-    await page.goto("/")
-    const footer = page.locator("footer")
-    for (const { path, h1 } of [
-      { path: "/privacidad", h1: /Política de privacidad/ },
-      { path: "/terminos", h1: /Términos y condiciones/ },
+    for (const { path, link, h1 } of [
+      { path: "/privacidad", link: "Política de privacidad", h1: /Política de privacidad/ },
+      { path: "/terminos", link: "Términos y condiciones", h1: /Términos y condiciones/ },
     ]) {
-      await footer.getByRole("link", { name: new RegExp(path.slice(1), "i") }).click()
+      await page.goto("/")
+      await page.locator("footer").getByRole("link", { name: link }).click()
       await expect(page).toHaveURL(new RegExp(`${path}$`))
       await expect(page.getByRole("heading", { level: 1 })).toHaveText(h1)
-      const canonical = await page.locator('link[rel="canonical"]').getAttribute("href")
-      expect(canonical).toContain(path)
-      await page.goBack()
+
+      // Canonical from a direct load (SSR): exactly one, pointing at this page.
+      await page.goto(path)
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        "href",
+        new RegExp(`${path}$`)
+      )
     }
   })
 
@@ -173,7 +198,7 @@ test.describe("mobile", () => {
   test("hamburger menu opens, navigates to a page and closes", async ({ page }) => {
     await page.goto("/")
     await expect(
-      page.locator("header").getByRole("link", { name: "Solicitar demostración" })
+      page.locator("header").getByRole("link", { name: "Ver demostración" })
     ).toBeHidden()
     await page.getByRole("button", { name: "Abrir menú" }).click()
     const menu = page.getByRole("navigation", { name: "Móvil" })
@@ -186,6 +211,6 @@ test.describe("mobile", () => {
   test("hero heading and a CTA are visible on a phone", async ({ page }) => {
     await page.goto("/")
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
-    await expect(page.getByRole("link", { name: "Solicitar demostración" }).first()).toBeVisible()
+    await expect(page.getByRole("link", { name: "Ver demostración" }).first()).toBeVisible()
   })
 })

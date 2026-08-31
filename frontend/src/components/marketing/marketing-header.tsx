@@ -87,8 +87,8 @@ export function MarketingHeader() {
           >
             Iniciar sesión
           </Link>
-          <CtaLink href="/demo" size="sm">
-            Solicitar demostración
+          <CtaLink href={site.demos.crmInventario} size="sm">
+            Ver demostración
           </CtaLink>
         </div>
 
@@ -133,9 +133,14 @@ export function MarketingHeader() {
               />
               <SheetClose
                 render={
-                  <Link href="/demo" className={buttonVariants()}>
-                    Solicitar demostración
-                  </Link>
+                  <a
+                    href={site.demos.crmInventario}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonVariants()}
+                  >
+                    Ver demostración
+                  </a>
                 }
               />
             </div>

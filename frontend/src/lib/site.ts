@@ -25,6 +25,11 @@ export const site = {
         "Hola, quiero una demostración de CRM + Inventario."
       )}`
     : null,
+  demos: {
+    crmInventario: "https://crm-inventario-demo.fidelmercadotech.com/",
+    inmobiliaria: "https://crminmobiliaria.fidelmercadotech.com/",
+    rrhh: "https://demorrhh.fidelmercadotech.com/",
+  },
   nav: [
     { label: "Producto", href: "/producto" },
     { label: "Funciones", href: "/funciones" },

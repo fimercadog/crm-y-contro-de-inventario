@@ -1,8 +1,10 @@
 import {
   BarChart3,
   Boxes,
+  Building2,
   Handshake,
   History,
+  UsersRound,
   ShieldCheck,
   Sparkles,
 } from "lucide-react"
@@ -99,7 +101,7 @@ export function FeatureRow({
   alt,
   reverse = false,
   note,
-  cta = { href: "/demo", label: "Solicitar demostración" },
+  cta = { href: site.demos.crmInventario, label: "Ver demostración" },
 }: {
   eyebrow: string
   title: string
@@ -146,6 +148,59 @@ export function FeatureRow({
         )}
       </Reveal>
     </div>
+  )
+}
+
+const useCases = [
+  {
+    icon: Boxes,
+    title: "CRM + Inventario",
+    text: "Ventas, clientes, productos, stock y movimientos conectados en una sola operación.",
+    href: site.demos.crmInventario,
+  },
+  {
+    icon: Building2,
+    title: "CRM inmobiliaria",
+    text: "Seguimiento de clientes, inmuebles, oportunidades y proceso comercial inmobiliario.",
+    href: site.demos.inmobiliaria,
+  },
+  {
+    icon: UsersRound,
+    title: "Recursos humanos",
+    text: "Gestión de colaboradores, procesos internos y datos clave del equipo.",
+    href: site.demos.rrhh,
+  },
+]
+
+export function UseCasesGrid() {
+  return (
+    <>
+      <Reveal>
+        <SectionHeading
+          eyebrow="Casos de uso"
+          title="Elige la demostración que quieres ver"
+          lead="Cada demo abre una experiencia separada para que puedas revisar el flujo que más se parece a tu operación."
+        />
+      </Reveal>
+      <div className="mt-14 grid gap-5 md:grid-cols-3">
+        {useCases.map((item, i) => (
+          <Reveal key={item.href} delay={i * 0.05}>
+            <div className={cn("flex h-full flex-col rounded-2xl border border-border bg-card p-6", cardHover)}>
+              <span className="grid size-11 place-items-center rounded-xl border border-border text-primary">
+                <item.icon className="size-5" />
+              </span>
+              <h3 className="mt-5 text-base font-bold">{item.title}</h3>
+              <p className="mt-2 flex-1 text-sm leading-6 text-muted-foreground">{item.text}</p>
+              <div className="mt-6">
+                <CtaLink href={item.href} variant="outline" size="sm">
+                  Ver demostración
+                </CtaLink>
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </>
   )
 }
 
@@ -222,7 +277,7 @@ export function DemoCta() {
             Te mostramos el sistema con tus casos de uso y resolvemos tus dudas.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <CtaLink href="/demo">Solicitar demostración</CtaLink>
+            <CtaLink href={site.demos.crmInventario}>Ver demostración</CtaLink>
             <CtaLink
               href="/login"
               variant="ghost"

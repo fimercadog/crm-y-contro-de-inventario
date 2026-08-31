@@ -10,6 +10,7 @@ import {
   SectionHeading,
   TourGrid,
 } from "@/components/marketing/marketing-ui"
+import { site } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Producto",
@@ -36,7 +37,7 @@ export default function ProductoPage() {
         lead="Clientes, oportunidades, productos, stock y movimientos sobre la misma base de datos, con control de acceso y auditoría en todo."
         actions={
           <>
-            <CtaLink href="/demo">Solicitar demostración</CtaLink>
+            <CtaLink href={site.demos.crmInventario}>Ver demostración</CtaLink>
             <CtaLink href="/funciones" variant="outline">
               Ver funciones
             </CtaLink>

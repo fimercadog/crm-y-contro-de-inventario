@@ -11,6 +11,7 @@ import {
   Section,
   SectionHeading,
   TourGrid,
+  UseCasesGrid,
   cardHover,
 } from "@/components/marketing/marketing-ui"
 import { site } from "@/lib/site"
@@ -55,7 +56,7 @@ export default function HomePage() {
         lead={site.description}
         actions={
           <>
-            <CtaLink href="/demo">Solicitar demostración</CtaLink>
+            <CtaLink href={site.demos.crmInventario}>Ver demostración</CtaLink>
             <CtaLink href="/producto" variant="outline">
               Ver cómo funciona
             </CtaLink>
@@ -101,6 +102,10 @@ export default function HomePage() {
 
       <Section className="border-t border-border">
         <TourGrid />
+      </Section>
+
+      <Section className="border-t border-border">
+        <UseCasesGrid />
       </Section>
 
       <DemoCta />

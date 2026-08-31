@@ -17,7 +17,7 @@ const columns = [
     title: "Empresa",
     links: [
       { label: "Seguridad", href: "/seguridad" },
-      { label: "Solicitar demo", href: "/demo" },
+      { label: "Ver demostración", href: site.demos.crmInventario },
       { label: "Iniciar sesión", href: "/login" },
     ],
   },
@@ -49,16 +49,20 @@ export function MarketingFooter() {
               {col.title}
             </p>
             <ul className="mt-4 space-y-2.5">
-              {col.links.map((l) => (
+              {col.links.map((l) => {
+                const isExternal = l.href.startsWith("http")
+                return (
                 <li key={l.href}>
                   <Link
                     href={l.href}
+                    {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="text-sm text-foreground/80 transition-colors hover:text-primary"
                   >
                     {l.label}
                   </Link>
                 </li>
-              ))}
+                )
+              })}
             </ul>
           </nav>
         ))}

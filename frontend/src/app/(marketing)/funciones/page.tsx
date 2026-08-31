@@ -19,6 +19,7 @@ import { PremiumBadge } from "@/components/marketing/premium-badge"
 import { Reveal } from "@/components/marketing/reveal"
 import { RippleLink } from "@/components/marketing/ripple"
 import { DemoCta, FeatureRow, Section } from "@/components/marketing/marketing-ui"
+import { site } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Funciones",
@@ -34,7 +35,7 @@ export default function FuncionesPage() {
         eyebrow="Funciones"
         title="Lo que hace el sistema"
         lead="Tres bloques que trabajan juntos: CRM, control de inventario y reportes. Todo lo de abajo está verificado contra el producto real."
-        actions={<CtaLink href="/demo">Solicitar demostración</CtaLink>}
+        actions={<CtaLink href={site.demos.crmInventario}>Ver demostración</CtaLink>}
         visual="screenshot"
         screenshot={{ src: "/product/pipeline.png", alt: "Tablero Kanban del pipeline de ventas" }}
       />
@@ -46,7 +47,7 @@ export default function FuncionesPage() {
           lead="Cada cliente, cada conversación y cada oportunidad en un mismo lugar, con un responsable claro."
           screenshot="/product/pipeline.png"
           alt="Tablero Kanban del pipeline de ventas con oportunidades por etapa"
-          cta={{ href: "/demo", label: "Ver una demo del CRM" }}
+          cta={{ href: site.demos.crmInventario, label: "Ver demostración" }}
           points={[
             { icon: UsersRound, text: "Clientes y contactos centralizados, con responsable asignado." },
             { icon: Handshake, text: "Oportunidades con etapa, monto y probabilidad." },
@@ -75,7 +76,7 @@ export default function FuncionesPage() {
           reverse
           screenshot="/product/movimientos.png"
           alt="Registro consolidado de movimientos de inventario"
-          cta={{ href: "/demo", label: "Ver el control de inventario" }}
+          cta={{ href: site.demos.crmInventario, label: "Ver demostración" }}
           points={[
             { icon: PackageSearch, text: "Productos con SKU, costo, precio y stock mínimo / máximo." },
             { icon: Boxes, text: "Catálogos de categorías, marcas, unidades y proveedores." },
@@ -104,7 +105,7 @@ export default function FuncionesPage() {
           lead="Cuatro reportes agregados sobre tus datos, listos para consultar y exportar."
           screenshot="/product/reportes.png"
           alt="Pantalla de reportes con inventario valorizado y oportunidades por etapa"
-          cta={{ href: "/demo", label: "Ver los reportes" }}
+          cta={{ href: site.demos.crmInventario, label: "Ver demostración" }}
           points={[
             { icon: BarChart3, text: "Inventario valorizado por categoría." },
             { icon: BarChart3, text: "Resumen de movimientos por tipo y período." },

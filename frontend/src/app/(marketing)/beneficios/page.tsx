@@ -4,6 +4,7 @@ import { CtaLink } from "@/components/marketing/cta-link"
 import { PageHero } from "@/components/marketing/page-hero"
 import { Reveal } from "@/components/marketing/reveal"
 import { DemoCta, Section } from "@/components/marketing/marketing-ui"
+import { site } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: "Beneficios",
@@ -46,7 +47,7 @@ export default function BeneficiosPage() {
         eyebrow="Beneficios"
         title="Cada beneficio sale de una función real"
         lead="Nada de promesas genéricas: esto es lo que cambia en tu operación cuando todo vive en un mismo sistema."
-        actions={<CtaLink href="/demo">Solicitar demostración</CtaLink>}
+        actions={<CtaLink href={site.demos.crmInventario}>Ver demostración</CtaLink>}
       />
 
       <Section className="border-t border-border">
