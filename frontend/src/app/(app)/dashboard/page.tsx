@@ -6,7 +6,7 @@ import { ArrowDownToLine, ArrowUpFromLine, ArrowLeftRight } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { BarList, Sparkbars } from "@/components/dashboard/charts"
+import { BarList, CategoryDonut, Sparkbars } from "@/components/dashboard/charts"
 import { getDashboard, type DashboardData } from "@/features/dashboard/api"
 
 const currency = new Intl.NumberFormat("es-CO", { style: "currency", currency: "USD" })
@@ -132,12 +132,13 @@ export default function DashboardPage() {
             <CardTitle className="text-base">Valor de inventario por categoría</CardTitle>
           </CardHeader>
           <CardContent>
-            <BarList
+            <CategoryDonut
               data={inventory_by_category.map((c) => ({
                 label: c.category,
                 value: Number(c.value),
               }))}
               format={(n) => currency.format(n)}
+              emptyMessage="Sin productos con stock."
             />
           </CardContent>
         </Card>
