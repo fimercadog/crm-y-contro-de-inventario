@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation"
 
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { BetaNoticeButton } from "@/components/layout/beta-notice"
 import { navGroups } from "@/config/nav"
 
 function currentTitle(pathname: string) {
@@ -23,6 +24,9 @@ export function SiteHeader() {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       <h1 className="text-base font-medium">{currentTitle(pathname)}</h1>
+      <div className="ml-auto">
+        <BetaNoticeButton />
+      </div>
     </header>
   )
 }

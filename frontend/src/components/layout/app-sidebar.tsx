@@ -58,7 +58,15 @@ export function AppSidebar() {
                 <Boxes className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">CRM + Inventario</span>
+                <span className="flex items-center gap-1.5 truncate font-semibold">
+                  CRM + Inventario
+                  <Badge
+                    variant="warning"
+                    className="h-4 px-1.5 text-[10px] font-bold uppercase"
+                  >
+                    Beta
+                  </Badge>
+                </span>
                 <span className="truncate text-xs text-muted-foreground">
                   One platform
                 </span>

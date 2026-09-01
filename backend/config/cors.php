@@ -20,11 +20,12 @@ return [
 
     'allowed_origins' => array_values(array_filter([
         env('FRONTEND_URL'),
-        'http://localhost:3000',
         'https://crm-inventario-demo.fidelmercadotech.com',
     ])),
 
-    'allowed_origins_patterns' => [],
+    // Cualquier puerto de localhost, para desarrollo (Next arranca en 3000,
+    // 3100, etc. según qué otro proyecto tenga tomado el puerto).
+    'allowed_origins_patterns' => ['#^http://localhost:\d+$#'],
 
     'allowed_headers' => ['*'],
 

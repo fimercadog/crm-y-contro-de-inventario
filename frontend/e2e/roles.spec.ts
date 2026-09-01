@@ -109,6 +109,44 @@ test.describe("API role enforcement + scoped menu", () => {
     // ...and the API 403 surfaces as a handled message.
     await expect(page.getByText("No se pudieron cargar los usuarios.")).toBeVisible()
   })
+
+  test("row-level data is scoped: a vendedor sees fewer clients than an admin", async ({
+    page,
+  }) => {
+    // The demo company has 20 customers; the table page size is 20.
+    await loginAs(page, "Administrador")
+    await page.goto("/crm/clientes")
+    await expect(page.locator("tbody tr")).toHaveCount(20)
+
+    await loginAs(page, "Vendedor")
+    await page.goto("/crm/clientes")
+    await expect(page.locator("tbody tr").first()).toBeVisible()
+    const vendedorRows = await page.locator("tbody tr").count()
+
+    expect(vendedorRows).toBeGreaterThan(0) // sees the clients assigned to him
+    expect(vendedorRows).toBeLessThan(20) // but not the whole company
+  })
+})
+
+test.describe("beta notice", () => {
+  test("opens on app load, closes, and reopens from the header", async ({ page }) => {
+    await loginAs(page, "Administrador", { dismissBeta: false })
+
+    const dialog = page.getByRole("dialog")
+    await expect(dialog.getByRole("heading", { name: "Versión beta" })).toBeVisible()
+    await expect(dialog.getByText(/entorno de laboratorio/i)).toBeVisible()
+
+    await dialog.getByRole("button", { name: "Entendido" }).click()
+    await expect(page.getByRole("dialog")).toHaveCount(0)
+
+    await page.getByRole("button", { name: "Ver el aviso de versión beta" }).click()
+    await expect(page.getByRole("dialog").getByRole("heading", { name: "Versión beta" })).toBeVisible()
+  })
+
+  test("the sidebar shows a BETA badge", async ({ page }) => {
+    await loginAs(page, "Administrador")
+    await expect(page.locator('[data-slot="sidebar"]').getByText("Beta", { exact: true })).toBeVisible()
+  })
 })
 
 test.describe("mobile dashboard menu", () => {
